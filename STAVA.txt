@@ -1,0 +1,282 @@
+## STAVA - Ośrodek domków letniskowych
+
+## Cel projektu
+STAVA – Ośrodek Domków Letniskowych
+To nowoczesna, responsywna strona dla ośrodka STAVA położonego w malowniczej Starej Kiszewie. Ma za zadanie:
+
+Przedstawić ośrodek – zachwycić użytkownika dużym, pełnoekranowym filmem z drona (hero video) oraz krótką sekcją opisu.
+
+Zaprezentować ofertę domków – każda karta domku prowadzi do dedykowanej podstrony ze zdjęciami, opisem i szczegółami (liczba osób, wyposażenie).
+
+Umożliwić rezerwację – prosty, intuicyjny formularz z wyborem domku, kalendarzem (min. 3 dni), liczbą osób i danymi kontaktowymi.
+
+Zapewnić kontakt – formularz typu “napisz do nas”, mapkę Google z lokalizacją oraz dane e-mail/tel w stopce.
+
+Wyróżnić regulamin – osobna podstrona z pełnym tekstem zasad pobytu.
+
+Zapewnić łatwą nawigację – stały Header z logo, nazwą “STAVA — Stara Kiszewa”, rozwijanym menu “Domki” (lista wszystkich domków), linkami do Galerii, Kontakt, Regulamin i wyróżnionym przyciskiem “Rezerwuj”.
+
+Zamknąć wszystko w eleganckim Footerze – ikony social, dane prawne, link do regulaminu.
+
+Edycja treści przez Firestore – gospodarz może w Firestore w prosty sposób aktualizować dane domków i linki do zdjęć.
+
+Wysyłka maili przez Resend – po wypełnieniu rezerwacji e-mail z potwierdzeniem trafia do gościa (kontakt@stavakiszewa.pl jako nadawca) i do gospodarza, który później zatwierdza lub odrzuca rezerwację.
+
+Stylistyka:
+– Kolorystyka leśna (zieleń, beż, brązowe akcenty)
+– Tekstury “naszywki” w tle sekcji hero i footer
+– Nowoczesny Tailwind CSS, komponenty React, Next.js App Router
+
+## Główne funkcjonalności
+1. Prezentacja ośrodka i domków letniskowych
+2. System rezerwacji domków przez użytkowników
+3. System zarządzania rezerwacjami dla gospodarza
+4. Galeria zdjęć
+5. Formularz kontaktowy
+
+## Przepływ rezerwacji
+1. Użytkownik wybiera domek i termin w kalendarzu
+2. Użytkownik wypełnia formularz z danymi
+3. Po zatwierdzeniu system wysyła:
+   - Email do użytkownika z potwierdzeniem, informacjami o płatności i całkowitą kwotą do zapłaty
+   - Email do gospodarza z informacją o rezerwacji i linkiem do potwierdzenia/odrzucenia
+4. Gospodarz może zatwierdzić lub odrzucić rezerwację poprzez link w mailu
+5. Po zatwierdzeniu termin staje się niedostępny w kalendarzu
+
+## Struktura aplikacji
+
+### Strony:
+1. **Strona główna** (/)
+   - Film w tle nagrany dronem prezentujący ośrodek
+   - CTA kierujące do sekcji domków
+   - Krótki opis ośrodka i główne zalety
+
+2. **Lista domków** (/domki)
+   - Przegląd wszystkich dostępnych domków
+   - Zdjęcie główne, krótki opis, podstawowe informacje
+   - Przycisk "Rezerwuj" przy każdym domku
+
+3. **Szczegóły domku** (/domek/[id])
+   - Galeria zdjęć domku
+   - Szczegółowy opis i wyposażenie
+   - Ceny i warunki
+   - Przycisk "Zarezerwuj"
+
+4. **Rezerwacja** (/rezerwacja/[id])
+   - Wybór terminu w kalendarzu (z blokadą zajętych terminów)
+   - Formularz z danymi osobowymi i kontaktowymi
+   - Podsumowanie i potwierdzenie rezerwacji
+
+5. **Potwierdzenie rezerwacji** (/potwierdzenie/[token])
+   - Strona dla gospodarza z przyciskami "Potwierdź" i "Odrzuć"
+   - Szczegóły rezerwacji
+
+6. **Galeria** (/galeria)
+   - Sekcje: domki, okolica, ośrodek
+   - Możliwość powiększania zdjęć
+   - Filtry kategorii
+
+7. **Kontakt** (/kontakt)
+   - Formularz kontaktowy
+   - Dane teleadresowe
+   - Mapa Google Maps z lokalizacją ośrodka
+
+8. **Polityka prywatności** (/polityka-prywatnosci)
+   - Informacje o przetwarzaniu danych osobowych
+   - Polityka cookies
+   - Prawa użytkowników
+
+### Komponenty globalne:
+1. **Header**
+   - Po lewej: Logo (link do strony głównej)
+   - Na środku: Przycisk "Rezerwacja"
+   - Po prawej: Linki do stron (Galeria, Kontakt, itp.)
+
+2. **Footer**
+   - Informacje prawne
+   - Dane kontaktowe
+   - Ikony social media
+   - Polityka prywatności
+
+## Design
+- Styl leśny, nawiązujący do natury
+- Tekstura przypominająca naszywkę (jak w logo)
+- Kolorystyka naturalna: drewno, zieleń, beż, ciemny zielony
+- Responsywny design (mobile-first)
+- Fonty:
+  - Główny: Lora
+  - Nagłówki i ozdobniki: Amatic SC
+  - Teksty i opisy: Nunito
+
+## Dane kontaktowe
+- Nazwa: STAVA
+- Email: kontakt@stavakiszewa.pl
+
+## Technologie
+- **Next.js** (v14+, App Router, JS) - framework frontend
+- **Tailwind CSS** - system stylowania
+- **React Hook Form** - obsługa formularzy
+- **React Datepicker** - komponent kalendarza
+- **Firebase SDK** - baza danych i storage
+- **Resend** - wysyłka emaili
+- **Vercel** - hosting
+
+## Konfiguracja Firebase
+
+const firebaseConfig = {
+  apiKey: "AIzaSyAzW6mPqwTJMmaPITRa_iOHW4aVEJtqIpA",
+  authDomain: "stava-62c2a.firebaseapp.com",
+  projectId: "stava-62c2a",
+  storageBucket: "stava-62c2a.firebasestorage.app",
+  messagingSenderId: "750690294845",
+  appId: "1:750690294845:web:ae128701a288da83b25e54"
+};
+
+
+const resendApiKey = "re_3VwEhZap_CfrGokxrozdCY4j6SmZLA4on";
+
+// Adresy email do konfiguracji
+const fromEmail = "noreply@stavakiszewa.pl"; // lub kontakt@stavakiszewa.pl
+```
+
+## Struktura bazy danych (Firestore)
+
+### Kolekcje:
+1. **domki**
+   - id: string (automatycznie generowane)
+   - nazwa: string
+   - opis: string
+   - opisKrotki: string
+   - cenaZaDobe: number
+   - iloscOsob: number
+   - powierzchnia: number
+   - wyposazenie: array<string>
+   - udogodnienia: array<string>
+   - zdjeciaURLs: array<string>
+   - zdjecieGlowneURL: string
+   - dostepny: boolean
+   - metadane: {
+     createdAt: timestamp,
+     updatedAt: timestamp
+   }
+
+2. **rezerwacje**
+   - id: string (automatycznie generowane)
+   - domekId: string (referencja do domku)
+   - startDate: timestamp
+   - endDate: timestamp
+   - status: string (enum: "oczekujaca", "potwierdzona", "odrzucona", "zakonczona")
+   - daneKlienta: {
+     imie: string,
+     nazwisko: string,
+     email: string,
+     telefon: string,
+     adres: string,
+     uwagi: string
+   }
+   - tokenPotwierdzenia: string
+   - cenaCałkowita: number
+   - metadane: {
+     createdAt: timestamp,
+     updatedAt: timestamp
+   }
+
+3. **settings**
+   - id: "global"
+   - contactInfo: {
+     email: string,
+     phone: string,
+     address: string
+   }
+   - socialMedia: {
+     facebook: string,
+     instagram: string
+   }
+   - emailTemplates: {
+     userConfirmationSubject: string,
+     userConfirmationTemplate: string,
+     ownerNotificationSubject: string,
+     ownerNotificationTemplate: string
+   }
+   - daneDoWplaty: {
+     numerKonta: string,
+     nazwaBanku: string,
+     odbiorca: string,
+     tytulPrzelewu: string
+   }
+
+### Reguły Firestore:
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+    match /domki/{document=**} {
+      allow read: true;
+      allow write: false;
+    }
+    match /rezerwacje/{document=**} {
+      allow create: true;
+      allow read, update, delete: false;
+    }
+    match /settings/{document=**} {
+      allow read: true;
+      allow write: false;
+    }
+  }
+}
+
+
+### Reguły Storage:
+
+service firebase.storage {
+  match /b/{bucket}/o {
+    match /{allPaths=**} {
+      allow read: true;
+      allow write: false;
+    }
+  }
+}
+
+
+## Struktura Storage:
+1. **/domki/{domekId}/** - katalogi ze zdjęciami poszczególnych domków
+2. **/okolica/** - zdjęcia okolicy, atrakcji turystycznych
+3. **/osrodek/** - zdjęcia całego ośrodka, części wspólnych
+4. **/hero/** - materiały wideo i zdjęcia do strony głównej
+
+## Dodatkowe informacje
+### Rezerwacje
+- Minimalny czas rezerwacji: 3 noce
+- System obliczania ceny: stała stawka za dobę niezależnie od terminu
+- Statusy rezerwacji w kalendarzu:
+  - Zielony: dostępny, można zarezerwować
+  - Pomarańczowy: oczekujący na potwierdzenie przez gospodarza
+  - Czerwony: potwierdzony, niedostępny do rezerwacji
+
+### Tokeny
+- Generowanie: automatyczne przy tworzeniu rezerwacji
+- Format: UUID v4 lub podobny bezpieczny format
+- Bez terminu ważności
+- Używane tylko przez gospodarza do potwierdzenia/odrzucenia rezerwacji
+
+### SEO i metadane
+- Tytuł główny: "STAVA - Domki letniskowe w Kiszewie"
+- Struktura URL: 
+  - Domki: /domki
+  - Szczegóły domku: /domek/[nazwa-domku]
+  - Rezerwacja: /rezerwacja/[nazwa-domku]
+  - Galeria: /galeria
+  - Kontakt: /kontakt
+  - Polityka prywatności: /polityka-prywatnosci
+
+### Polityka prywatności
+- Standardowa polityka RODO
+- Informacje o przetwarzaniu danych osobowych tylko w celu realizacji rezerwacji
+- Informacje o wykorzystywaniu plików cookies
+- Dane nie będą udostępniane podmiotom trzecim
+- Użytkownicy mają prawo do wglądu, modyfikacji i usunięcia swoich danych
+
+### Wdrożenie
+- Najpierw przygotowanie aplikacji Next.js
+- Następnie konfiguracja i wdrożenie na Vercel
+- Konfiguracja zmiennych środowiskowych na Vercel (API keys, etc.)
+- Połączenie z domeną stavakiszewa.pl 

@@ -1,0 +1,349 @@
+@import url('https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,500;0,600;0,700;1,400&family=Amatic+SC:wght@400;700&family=Nunito:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ====== FUNDAMENTY LEŚNEGO DESIGNU - STONOWANE KOLORY ====== */
+
+* {
+  scroll-behavior: smooth;
+}
+
+body {
+  margin: 0 !important;
+  font-family: 'Nunito', -apple-system, BlinkMacSystemFont, sans-serif;
+  background: linear-gradient(135deg, #f7f6f4 0%, #ede8e1 100%);
+  color: #2d3e2b;
+  line-height: 1.6;
+}
+
+/* ====== TYPOGRAFIA LEŚNA ====== */
+
+.font-display {
+  font-family: 'Amatic SC', cursive;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+}
+
+.font-primary {
+  font-family: 'Lora', serif;
+}
+
+.font-body {
+  font-family: 'Nunito', sans-serif;
+}
+
+/* ====== KOMPONENTY LEŚNE - STONOWANE ====== */
+
+@layer components {
+  
+  /* Przyciski leśne - stonowane */
+  .btn-forest {
+    @apply inline-flex items-center justify-center px-6 py-3 rounded-xl font-medium transition-all duration-300 ease-out transform hover:scale-105 active:scale-95 shadow-lg hover:shadow-xl;
+    background: linear-gradient(135deg, #92400e 0%, #7c2d12 100%);
+    color: white;
+    border: 2px solid transparent;
+    position: relative;
+    overflow: hidden;
+  }
+  
+  .btn-forest::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+    transition: left 0.6s ease-in-out;
+  }
+  
+  .btn-forest:hover::before {
+    left: 100%;
+  }
+  
+  .btn-forest-secondary {
+    @apply btn-forest;
+    background: linear-gradient(135deg, #365314 0%, #3f6212 100%);
+  }
+  
+  .btn-forest-outline {
+    @apply inline-flex items-center justify-center px-6 py-3 rounded-xl font-medium transition-all duration-300 ease-out transform hover:scale-105 active:scale-95 border-2;
+    background: transparent;
+    color: #365314;
+    border-color: #365314;
+    position: relative;
+    overflow: hidden;
+  }
+  
+  .btn-forest-outline:hover {
+    background: #365314;
+    color: white;
+    box-shadow: 0 10px 25px rgba(54, 83, 20, 0.3);
+  }
+
+  /* Karty leśne - stonowane */
+  .card-forest {
+    @apply bg-white rounded-2xl shadow-lg border border-stone-200 transition-all duration-300 ease-out hover:shadow-2xl hover:-translate-y-2;
+    background: linear-gradient(135deg, #ffffff 0%, #fefefe 100%);
+    position: relative;
+    overflow: hidden;
+  }
+  
+  .card-forest::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 4px;
+    background: linear-gradient(90deg, #92400e, #7c2d12, #365314);
+    transform: scaleX(0);
+    transition: transform 0.3s ease-out;
+  }
+  
+  .card-forest:hover::before {
+    transform: scaleX(1);
+  }
+
+  /* Animowane tło sekcji - stonowane */
+  .section-forest {
+    position: relative;
+    background: linear-gradient(135deg, #f6f3f0 0%, #e7e5e4 50%, #d6d3d1 100%);
+  }
+  
+  .section-forest::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-image: 
+      radial-gradient(circle at 20% 80%, rgba(146, 64, 14, 0.1) 0%, transparent 50%),
+      radial-gradient(circle at 80% 20%, rgba(54, 83, 20, 0.1) 0%, transparent 50%);
+    animation: forestBreeze 20s ease-in-out infinite alternate;
+  }
+
+  /* Nagłówki z efektem - stonowane */
+  .heading-forest {
+    @apply font-display relative;
+    color: #365314;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
+  }
+  
+  .heading-forest::after {
+    content: '';
+    position: absolute;
+    bottom: -8px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 60px;
+    height: 3px;
+    background: linear-gradient(90deg, #92400e, #7c2d12);
+    border-radius: 2px;
+  }
+
+  /* Loading animacja leśna - stonowana */
+  .loading-forest {
+    @apply inline-block w-8 h-8 border-4 border-stone-300 rounded-full;
+    border-top-color: #365314;
+    animation: forestSpin 1s linear infinite;
+  }
+
+  /* Input leśne - stonowane */
+  .input-forest {
+    @apply w-full px-4 py-3 rounded-xl border-2 border-stone-300 focus:border-stone-500 focus:ring-4 focus:ring-stone-100 transition-all duration-300 font-body bg-white;
+    box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.1);
+  }
+  
+  .input-forest:focus {
+    transform: translateY(-1px);
+    box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.1), 0 4px 12px rgba(54, 83, 20, 0.15);
+  }
+
+  /* Select leśny - stonowany */
+  select.input-forest {
+    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%236b7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='m6 8 4 4 4-4'/%3e%3c/svg%3e");
+    background-position: right 0.5rem center;
+    background-repeat: no-repeat;
+    background-size: 1.5em 1.5em;
+    padding-right: 2.5rem;
+    appearance: none;
+  }
+  
+  select.input-forest:focus {
+    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%23365314' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='m6 8 4 4 4-4'/%3e%3c/svg%3e");
+  }
+
+  /* Texture overlay - stonowane */
+  .texture-forest {
+    background-image: url("data:image/svg+xml,%3Csvg width='20' height='20' viewBox='0 0 20 20' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='%23365314' fill-opacity='0.03' fill-rule='evenodd'%3E%3Ccircle cx='3' cy='3' r='3'/%3E%3Ccircle cx='13' cy='13' r='3'/%3E%3C/g%3E%3C/svg%3E");
+  }
+}
+
+/* ====== ANIMACJE LEŚNE ====== */
+
+@keyframes forestBreeze {
+  0%, 100% {
+    transform: rotate(0deg) scale(1);
+    opacity: 0.3;
+  }
+  50% {
+    transform: rotate(0.5deg) scale(1.02);
+    opacity: 0.5;
+  }
+}
+
+@keyframes forestSpin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+@keyframes leafFloat {
+  0%, 100% {
+    transform: translateY(0px) rotate(0deg);
+  }
+  33% {
+    transform: translateY(-10px) rotate(2deg);
+  }
+  66% {
+    transform: translateY(5px) rotate(-1deg);
+  }
+}
+
+/* Scrollbar leśny - stonowany */
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: #f6f3f0;
+}
+
+::-webkit-scrollbar-thumb {
+  background: linear-gradient(135deg, #92400e, #7c2d12);
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: linear-gradient(135deg, #7c2d12, #365314);
+}
+
+/* ====== EFEKTY SPECJALNE - STONOWANE ====== */
+
+.nature-pulse {
+  animation: leafFloat 3s ease-in-out infinite;
+}
+
+.forest-glow {
+  box-shadow: 0 0 20px rgba(146, 64, 14, 0.3);
+}
+
+/* Hover effects dla obrazów */
+.image-forest {
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  border-radius: 16px;
+  overflow: hidden;
+}
+
+.image-forest:hover {
+  transform: scale(1.05) rotate(1deg);
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+}
+
+/* ====== STYLE KALENDARZA REACT-DATEPICKER ====== */
+
+.react-datepicker-wrapper {
+  width: 100%;
+}
+
+.react-datepicker {
+  font-family: 'Nunito', sans-serif !important;
+  border: 2px solid #d6d3d1 !important;
+  border-radius: 16px !important;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1) !important;
+}
+
+.react-datepicker__header {
+  background: linear-gradient(135deg, #365314 0%, #3f6212 100%) !important;
+  border-bottom: none !important;
+  border-radius: 14px 14px 0 0 !important;
+  padding: 16px !important;
+}
+
+.react-datepicker__current-month {
+  color: white !important;
+  font-weight: 600 !important;
+  font-size: 18px !important;
+  margin-bottom: 8px !important;
+}
+
+.react-datepicker__day-name {
+  color: rgba(255, 255, 255, 0.9) !important;
+  font-weight: 500 !important;
+  font-size: 12px !important;
+}
+
+.react-datepicker__day {
+  color: #365314 !important;
+  font-weight: 500 !important;
+  border-radius: 8px !important;
+  margin: 2px !important;
+  transition: all 0.2s ease !important;
+}
+
+.react-datepicker__day:hover {
+  background: #f6f3f0 !important;
+  color: #365314 !important;
+  transform: scale(1.1) !important;
+}
+
+.react-datepicker__day--selected {
+  background: linear-gradient(135deg, #92400e 0%, #7c2d12 100%) !important;
+  color: white !important;
+  font-weight: 600 !important;
+}
+
+.react-datepicker__day--in-selecting-range,
+.react-datepicker__day--in-range {
+  background: rgba(146, 64, 14, 0.2) !important;
+  color: #365314 !important;
+}
+
+.react-datepicker__day--range-start,
+.react-datepicker__day--range-end {
+  background: linear-gradient(135deg, #92400e 0%, #7c2d12 100%) !important;
+  color: white !important;
+}
+
+.react-datepicker__day--excluded {
+  background: #f3f4f6 !important;
+  color: #9ca3af !important;
+  text-decoration: line-through !important;
+  cursor: not-allowed !important;
+}
+
+.react-datepicker__day--excluded:hover {
+  background: #f3f4f6 !important;
+  transform: none !important;
+}
+
+.react-datepicker__navigation {
+  top: 20px !important;
+}
+
+.react-datepicker__navigation--previous {
+  border-right-color: white !important;
+}
+
+.react-datepicker__navigation--next {
+  border-left-color: white !important;
+}
+
+.react-datepicker__navigation:hover {
+  transform: scale(1.2) !important;
+}
+
+/* Diagnostic Styles were here */
