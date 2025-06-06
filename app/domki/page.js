@@ -4,6 +4,7 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { useState, useEffect } from 'react';
 import { getAllDomki } from '@/lib/firestore';
+import { getStorageUrl } from '@/lib/storage';
 
 export default function DomkiPage() {
   const [domki, setDomki] = useState([]);
@@ -15,7 +16,28 @@ export default function DomkiPage() {
       try {
         setLoading(true);
         const data = await getAllDomki();
-        setDomki(data);
+        
+        // Firebase Storage: Load main images for each domek from storage path
+        const domkiWithImages = await Promise.all(
+          data.map(async (domek) => {
+            try {
+              // Firebase Storage: Get main image from domki/{domekId}/main.jpg
+              const mainImageUrl = await getStorageUrl(`domki/${domek.id}/main.jpg`);
+              return {
+                ...domek,
+                zdjecieGlowneURL: mainImageUrl || null
+              };
+            } catch (error) {
+              console.error(`Error loading main image for domek ${domek.id}:`, error);
+              return {
+                ...domek,
+                zdjecieGlowneURL: null
+              };
+            }
+          })
+        );
+        
+        setDomki(domkiWithImages);
       } catch (err) {
         console.error('Błąd podczas pobierania domków:', err);
         setError('Nie udało się załadować domków. Spróbuj ponownie później.');
@@ -112,14 +134,24 @@ export default function DomkiPage() {
                   >
                     {/* Image Container */}
                     <div className="relative h-64 overflow-hidden">
-                      <Image 
-                        src={domek.zdjecieGlowneURL || 'https://via.placeholder.com/600x400/e7e5e4/365314?text=🏡+Domek'} 
-                        alt={`Zdjęcie domku ${domek.nazwa}`} 
-                        fill 
-                        style={{ objectFit: 'cover' }} 
-                        sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-                        className="image-forest group-hover:scale-110 transition-all duration-500"
-                      />
+                      {domek.zdjecieGlowneURL ? (
+                        <Image 
+                          src={domek.zdjecieGlowneURL} 
+                          alt={`Zdjęcie domku ${domek.nazwa}`} 
+                          fill 
+                          style={{ objectFit: 'cover' }} 
+                          sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                          className="image-forest group-hover:scale-110 transition-all duration-500"
+                        />
+                      ) : (
+                        // Firebase Storage: Placeholder when image not available
+                        <div className="w-full h-full bg-gradient-to-br from-stone-200 to-stone-300 flex items-center justify-center">
+                          <div className="text-center text-stone-500">
+                            <div className="text-4xl mb-2">🏡</div>
+                            <p className="text-sm">Brak zdjęcia</p>
+                          </div>
+                        </div>
+                      )}
                       
                       {/* Price badge */}
                       <div className="absolute top-4 left-4 bg-amber-800 text-white px-3 py-1 rounded-full text-sm font-semibold shadow-lg">

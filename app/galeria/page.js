@@ -1,48 +1,108 @@
 'use client';
 
 import Image from 'next/image';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import Link from 'next/link';
-
-const placeholderGalleryImages = {
-  domki: [
-    { id: 'd1', src: 'https://via.placeholder.com/600x400/e7e5e4/365314?text=🏡+Domek+Nowoczesny', alt: 'Zdjęcie nowoczesnego domku z zewnątrz', category: 'domki' },
-    { id: 'd2', src: 'https://via.placeholder.com/600x400/d6d3d1/7c2d12?text=🛏️+Wnętrze+Domku', alt: 'Przytulne wnętrze domku', category: 'domki' },
-    { id: 'd3', src: 'https://via.placeholder.com/600x400/f6f3f0/92400e?text=🏡+Domek+Widok', alt: 'Domek z tarasem i widokiem', category: 'domki' },
-    { id: 'd4', src: 'https://via.placeholder.com/600x400/e7e5e4/365314?text=🍽️+Kuchnia', alt: 'Drewniana kuchnia w domku', category: 'domki' },
-    { id: 'd5', src: 'https://via.placeholder.com/600x400/d6d3d1/7c2d12?text=🛌+Sypialnia', alt: 'Sypialnia w domku', category: 'domki' },
-    { id: 'd6', src: 'https://via.placeholder.com/600x400/f6f3f0/92400e?text=🪟+Detal', alt: 'Detal okna domku', category: 'domki' },
-  ],
-  okolica: [
-    { id: 'o1', src: 'https://via.placeholder.com/600x400/365314/e7e5e4?text=🏞️+Jezioro+Las', alt: 'Malownicze jezioro w kaszubskim lesie', category: 'okolica' },
-    { id: 'o2', src: 'https://via.placeholder.com/600x400/7c2d12/f6f3f0?text=🌲+Ścieżka+Leśna', alt: 'Leśna ścieżka spacerowa latem', category: 'okolica' },
-    { id: 'o3', src: 'https://via.placeholder.com/600x400/92400e/d6d3d1?text=🌅+Zachód+Słońca', alt: 'Zachód słońca nad rzeką na Kaszubach', category: 'okolica' },
-    { id: 'o4', src: 'https://via.placeholder.com/600x400/365314/e7e5e4?text=🛶+Spływ+Kajakowy', alt: 'Spływ kajakowy rzeką', category: 'okolica' },
-  ],
-  osrodek: [
-    { id: 's1', src: 'https://via.placeholder.com/600x400/7c2d12/f6f3f0?text=🏠+Ośrodek+Widok', alt: 'Widok ogólny na ośrodek z lotu ptaka', category: 'osrodek' },
-    { id: 's2', src: 'https://via.placeholder.com/600x400/92400e/d6d3d1?text=🎠+Plac+Zabaw', alt: 'Plac zabaw dla dzieci na terenie ośrodka', category: 'osrodek' },
-    { id: 's3', src: 'https://via.placeholder.com/600x400/365314/e7e5e4?text=🔥+Ognisko', alt: 'Miejsce na ognisko wieczorem', category: 'osrodek' },
-    { id: 's4', src: 'https://via.placeholder.com/600x400/7c2d12/f6f3f0?text=🏢+Recepcja', alt: 'Recepcja ośrodka', category: 'osrodek' },
-  ],
-};
-
-const allImages = [
-  ...placeholderGalleryImages.domki,
-  ...placeholderGalleryImages.okolica,
-  ...placeholderGalleryImages.osrodek,
-];
-
-const categories = [
-  { key: 'all', name: 'Wszystkie', icon: '🖼️', count: allImages.length },
-  { key: 'domki', name: 'Domki', icon: '🏡', count: placeholderGalleryImages.domki.length },
-  { key: 'okolica', name: 'Okolica', icon: '🌲', count: placeholderGalleryImages.okolica.length },
-  { key: 'osrodek', name: 'Ośrodek', icon: '🏠', count: placeholderGalleryImages.osrodek.length },
-];
+import { getStorageUrl } from '@/lib/storage';
+import { getAllDomki } from '@/lib/firestore';
 
 function GalleryContent() {
   const [selectedCategory, setSelectedCategory] = useState('all');
   const [lightboxImage, setLightboxImage] = useState(null);
+  const [loading, setLoading] = useState(true);
+  // Firebase Storage: Gallery images loaded dynamically
+  const [galleryImages, setGalleryImages] = useState({
+    domki: [],
+    okolica: [],
+    osrodek: []
+  });
+
+  useEffect(() => {
+    const loadGalleryImages = async () => {
+      try {
+        setLoading(true);
+        
+        // Firebase Storage: Load images from different categories
+        const [domkiData, okolicaImages, osrodekImages] = await Promise.all([
+          // Load domki data and their main images
+          getAllDomki().then(async (domki) => {
+            const domkiWithImages = await Promise.all(
+              domki.map(async (domek) => {
+                try {
+                  const mainImageUrl = await getStorageUrl(`domki/${domek.id}/main.jpg`);
+                  return {
+                    id: `domek-${domek.id}`,
+                    src: mainImageUrl,
+                    alt: `Domek ${domek.nazwa}`,
+                    category: 'domki',
+                    title: domek.nazwa
+                  };
+                } catch (error) {
+                  console.error(`Error loading image for domek ${domek.id}:`, error);
+                  return null;
+                }
+              })
+            );
+            return domkiWithImages.filter(img => img && img.src);
+          }),
+          
+          // Firebase Storage: Load okolica images (1.jpg, 2.jpg, etc.)
+          Promise.all(
+            Array.from({ length: 15 }, (_, i) => 
+              getStorageUrl(`galeria/okolica/${i + 1}.jpg`).catch(() => null)
+            )
+          ).then(urls => 
+            urls.map((url, index) => url ? {
+              id: `okolica-${index + 1}`,
+              src: url,
+              alt: `Okolica - zdjęcie ${index + 1}`,
+              category: 'okolica'
+            } : null).filter(Boolean)
+          ),
+          
+          // Firebase Storage: Load osrodek images (1.jpg, 2.jpg, etc.)
+          Promise.all(
+            Array.from({ length: 15 }, (_, i) => 
+              getStorageUrl(`galeria/osrodek/${i + 1}.jpg`).catch(() => null)
+            )
+          ).then(urls => 
+            urls.map((url, index) => url ? {
+              id: `osrodek-${index + 1}`,
+              src: url,
+              alt: `Ośrodek - zdjęcie ${index + 1}`,
+              category: 'osrodek'
+            } : null).filter(Boolean)
+          )
+        ]);
+
+        setGalleryImages({
+          domki: domkiData,
+          okolica: okolicaImages,
+          osrodek: osrodekImages
+        });
+        
+      } catch (error) {
+        console.error('Error loading gallery images:', error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    loadGalleryImages();
+  }, []);
+
+  const allImages = [
+    ...galleryImages.domki,
+    ...galleryImages.okolica,
+    ...galleryImages.osrodek,
+  ];
+
+  const categories = [
+    { key: 'all', name: 'Wszystkie', icon: '🖼️', count: allImages.length },
+    { key: 'domki', name: 'Domki', icon: '🏡', count: galleryImages.domki.length },
+    { key: 'okolica', name: 'Okolica', icon: '🌲', count: galleryImages.okolica.length },
+    { key: 'osrodek', name: 'Ośrodek', icon: '🏠', count: galleryImages.osrodek.length },
+  ];
 
   const filteredImages = selectedCategory === 'all' 
     ? allImages 
@@ -50,6 +110,16 @@ function GalleryContent() {
 
   const openLightbox = (image) => setLightboxImage(image);
   const closeLightbox = () => setLightboxImage(null);
+
+  if (loading) {
+    return (
+      <div className="text-center py-20">
+        <div className="loading-forest mb-6"></div>
+        <h2 className="text-3xl font-display text-stone-800 mb-4">Ładujemy Galerię</h2>
+        <p className="text-stone-700 font-body">Przygotowujemy najpiękniejsze zdjęcia...</p>
+      </div>
+    );
+  }
 
   return (
     <>
@@ -107,7 +177,7 @@ function GalleryContent() {
                     <div className="w-12 h-12 bg-white/20 rounded-full flex items-center justify-center mb-3 mx-auto backdrop-blur-sm">
                       <span className="text-2xl">🔍</span>
                     </div>
-                    <p className="text-sm font-body line-clamp-2">{image.alt}</p>
+                    <p className="text-sm font-body line-clamp-2">{image.title || image.alt}</p>
                   </div>
                 </div>
 
@@ -123,7 +193,7 @@ function GalleryContent() {
         <div className="text-center py-20">
           <div className="text-6xl mb-6">📸</div>
           <h3 className="text-2xl font-display text-stone-800 mb-4">Brak zdjęć w tej kategorii</h3>
-          <p className="text-stone-700 font-body">Spróbuj wybrać inną kategorię lub dodać nowe zdjęcia.</p>
+          <p className="text-stone-700 font-body">Dodaj zdjęcia do odpowiedniego folderu w Firebase Storage.</p>
         </div>
       )}
 
@@ -174,7 +244,7 @@ function GalleryContent() {
 
             {/* Footer */}
             <div className="p-4 bg-gray-50 border-t">
-              <p className="text-center text-stone-800 font-body text-sm">{lightboxImage.alt}</p>
+              <p className="text-center text-stone-800 font-body text-sm">{lightboxImage.title || lightboxImage.alt}</p>
             </div>
           </div>
         </div>

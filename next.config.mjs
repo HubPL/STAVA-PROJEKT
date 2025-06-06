@@ -3,24 +3,7 @@ const nextConfig = {
   reactStrictMode: true,
   images: {
     remotePatterns: [
-      {
-        protocol: 'https',
-        hostname: 'loremflickr.com',
-        port: '',
-        pathname: '/**',
-      },
-      {
-        protocol: 'https',
-        hostname: 'via.placeholder.com',
-        port: '',
-        pathname: '/**',
-      },
-      {
-        protocol: 'https',
-        hostname: 'images.unsplash.com',
-        port: '',
-        pathname: '/**',
-      },
+      // Firebase Storage: Main storage for all images
       {
         protocol: 'https',
         hostname: 'firebasestorage.googleapis.com',
@@ -33,6 +16,7 @@ const nextConfig = {
         port: '',
         pathname: '/**',
       },
+      // Google services (for potential Google Maps, etc.)
       {
         protocol: 'https',
         hostname: 'lh3.googleusercontent.com',
