@@ -2,10 +2,10 @@
 
 import Link from 'next/link';
 import { useSearchParams } from 'next/navigation';
-import { useEffect, useState } from 'react';
+import { useEffect, useState, Suspense } from 'react';
 import { getRezerwacjaByToken } from '@/lib/firestore';
 
-export default function PotwierdzenieGosciaPage() {
+function PotwierdzenieGosciaContent() {
   const searchParams = useSearchParams();
   const token = searchParams.get('token');
   const [reservation, setReservation] = useState(null);
@@ -283,5 +283,25 @@ export default function PotwierdzenieGosciaPage() {
         </div>
       </div>
     </div>
+  );
+}
+
+export default function PotwierdzenieGosciaPage() {
+  return (
+    <Suspense fallback={
+      <div className="min-h-screen section-forest flex flex-col items-center justify-center px-4">
+        <div className="text-center">
+          <div className="loading-forest mb-6"></div>
+          <h1 className="text-4xl md:text-5xl font-display text-stone-800 mb-4 heading-forest">
+            Ładowanie...
+          </h1>
+          <p className="text-stone-700 font-body text-lg">
+            Pobieramy szczegóły Twojej rezerwacji...
+          </p>
+        </div>
+      </div>
+    }>
+      <PotwierdzenieGosciaContent />
+    </Suspense>
   );
 } 

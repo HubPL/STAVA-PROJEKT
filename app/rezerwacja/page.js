@@ -5,6 +5,7 @@ import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { getDomekById, createRezerwacja, generateConfirmationToken } from '@/lib/firestore';
 import DateRangePicker from '@/app/components/DateRangePicker';
+import { Suspense } from 'react';
 
 function ReservationFormContent() {
   const searchParams = useSearchParams();
@@ -348,7 +349,14 @@ export default function RezerwacjaPage() {
           </p>
         </div>
         
-        <ReservationFormContent />
+        <Suspense fallback={
+          <div className="text-center py-12">
+            <div className="loading-forest mb-6"></div>
+            <p className="text-stone-700 font-body">Ładowanie formularza rezerwacji...</p>
+          </div>
+        }>
+          <ReservationFormContent />
+        </Suspense>
       </div>
     </div>
   );
