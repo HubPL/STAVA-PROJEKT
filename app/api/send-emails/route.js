@@ -1,8 +1,18 @@
 import { NextResponse } from 'next/server';
 import { sendConfirmationEmailToGuest, sendNewReservationEmailToAdmin } from '@/lib/email';
+import { rateLimit, getClientIP } from '@/lib/rate-limit';
 
 export async function POST(request) {
   try {
+    // Rate limiting
+    const clientIP = getClientIP(request);
+    if (!rateLimit(clientIP, 3, 10 * 60 * 1000)) { // 3 requesty na 10 minut
+      return NextResponse.json(
+        { error: 'Za dużo żądań. Spróbuj ponownie za kilka minut.' },
+        { status: 429 }
+      );
+    }
+
     const rezerwacjaData = await request.json();
     
     console.log('📧 Wysyłanie emaili dla rezerwacji:', rezerwacjaData.tokenPotwierdzenia);
