@@ -55,7 +55,7 @@ export const metadata = {
     },
   },
   verification: {
-    // google: 'twój-google-verification-kod', // Dodaj po weryfikacji w Google Search Console
+            // Miejsce na kody weryfikacji
   },
 };
 
@@ -63,10 +63,9 @@ export default function RootLayout({ children }) {
   return (
     <html lang="pl" className="scroll-smooth overflow-x-hidden">
       <head>
-        {/* Firebase Storage: Favicon from global/favicon.ico */}
         <link rel="icon" href="https://firebasestorage.googleapis.com/v0/b/stava-62c2a.firebasestorage.app/o/global%2Ffavicon.ico?alt=media" type="image/x-icon" />
         
-        {/* Structured Data */}
+        {/* Dane strukturalne */}
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{

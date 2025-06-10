@@ -45,7 +45,7 @@ export default function PotwierdzeniePage({ params }) {
       setReservation({ ...reservation, status: 'potwierdzona' });
       setActionMessage('Rezerwacja została POTWIERDZONA.');
       
-      // Wyślij email do klienta o potwierdzeniu
+              // Wyślij email do gościa o potwierdzeniu
       try {
         const emailResponse = await fetch('/api/send-status-email', {
           method: 'POST',
@@ -85,7 +85,7 @@ export default function PotwierdzeniePage({ params }) {
       setReservation({ ...reservation, status: 'odrzucona' });
       setActionMessage('Rezerwacja została ODRZUCONA.');
       
-      // Wyślij email do klienta o odrzuceniu
+              // Wyślij email do gościa o odrzuceniu
       try {
         const emailResponse = await fetch('/api/send-status-email', {
           method: 'POST',
@@ -119,17 +119,17 @@ export default function PotwierdzeniePage({ params }) {
   const formatDate = (date) => {
     if (!date) return 'Brak daty';
     
-    // Jeśli date jest Firestore Timestamp
+    // Jeśli data jest znacznikiem czasowym
     if (date.toDate && typeof date.toDate === 'function') {
       return date.toDate().toLocaleDateString('pl-PL');
     }
     
-    // Jeśli date jest już obiektem Date
+    // Jeśli data jest już obiektem daty
     if (date instanceof Date) {
       return date.toLocaleDateString('pl-PL');
     }
     
-    // Jeśli date jest stringiem
+    // Jeśli data jest tekstem
     if (typeof date === 'string') {
       return new Date(date).toLocaleDateString('pl-PL');
     }
@@ -220,7 +220,7 @@ export default function PotwierdzeniePage({ params }) {
           </div>
           
           <div className="grid md:grid-cols-2 gap-8 mb-8">
-            {/* Dane domku */}
+            {/* Informacje o domku */}
             <div className="space-y-4">
               <h3 className="text-lg font-primary font-semibold text-stone-800 border-b border-stone-200 pb-2">
                 📍 Informacje o domku
@@ -235,7 +235,7 @@ export default function PotwierdzeniePage({ params }) {
               </div>
             </div>
 
-            {/* Dane klienta */}
+                          {/* Dane gościa */}
             <div className="space-y-4">
               <h3 className="text-lg font-primary font-semibold text-stone-800 border-b border-stone-200 pb-2">
                 👤 Dane klienta
@@ -254,7 +254,7 @@ export default function PotwierdzeniePage({ params }) {
             </div>
           </div>
 
-          {/* Status i akcje */}
+                      {/* Status i działania */}
           <div className="section-forest p-6 rounded-xl mb-8">
             <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
               <div className="flex items-center gap-3">

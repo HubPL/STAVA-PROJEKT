@@ -4,11 +4,11 @@ import Link from "next/link";
 export default function HomePage() {
   return (
     <>
-      {/* Hero Section z leśnym klimatem */}
+      {/* Sekcja główna */}
       <section className="relative min-h-[80vh] section-forest texture-forest">
         <div className="absolute inset-0 bg-gradient-to-br from-stone-800/20 via-transparent to-amber-800/10"></div>
         
-        {/* Floating elements */}
+        {/* Elementy dekoracyjne */}
         <div className="absolute top-20 left-10 w-4 h-4 bg-amber-700 rounded-full opacity-40 nature-pulse"></div>
         <div className="absolute top-40 right-20 w-6 h-6 bg-orange-800 rounded-full opacity-30 nature-pulse" style={{animationDelay: '1s'}}></div>
         <div className="absolute bottom-32 left-20 w-3 h-3 bg-stone-700 rounded-full opacity-50 nature-pulse" style={{animationDelay: '2s'}}></div>
@@ -33,7 +33,7 @@ export default function HomePage() {
           </div>
         </div>
         
-        {/* Scroll indicator */}
+        {/* Wskaźnik przewijania */}
         <div className="absolute bottom-8 left-1/2 transform -translate-x-1/2 text-stone-600 animate-bounce">
           <svg className="w-6 h-6" fill="currentColor" viewBox="0 0 20 20">
             <path fillRule="evenodd" d="M15.707 4.293a1 1 0 010 1.414l-5 5a1 1 0 01-1.414 0l-5-5a1 1 0 011.414-1.414L10 8.586l4.293-4.293a1 1 0 011.414 0zm0 6a1 1 0 010 1.414l-5 5a1 1 0 01-1.414 0l-5-5a1 1 0 111.414-1.414L10 14.586l4.293-4.293a1 1 0 011.414 0z" clipRule="evenodd"></path>
@@ -41,7 +41,7 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* Opis Ośrodka Section */}
+      {/* Sekcja opisu ośrodka */}
       <section className="py-20 px-4 relative">
         <div className="container mx-auto text-center max-w-5xl">
           <h2 className="text-4xl md:text-5xl font-display text-stone-800 mb-8 heading-forest">
@@ -90,7 +90,7 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* Features Section */}
+      {/* Sekcja wyróżników */}
       <section className="py-20 section-forest">
         <div className="container mx-auto px-4">
           <h2 className="text-4xl md:text-5xl font-display text-stone-800 text-center mb-16 heading-forest">

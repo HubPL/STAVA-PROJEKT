@@ -1,16 +1,15 @@
-// LoaderSmoke.js
-// Animowany loader: domek z kominem i unoszącym się dymem
+
 
 export default function LoaderSmoke() {
   return (
     <div className="flex flex-col items-center justify-center min-h-[40vh]">
       <svg width="120" height="100" viewBox="0 0 120 100" fill="none" xmlns="http://www.w3.org/2000/svg">
-        {/* Domek */}
+        {/* Budynek */}
         <rect x="35" y="55" width="50" height="30" rx="4" fill="#A0522D" stroke="#7B3F00" strokeWidth="2" />
         <polygon points="60,35 30,55 90,55" fill="#A9B18F" stroke="#3A5A40" strokeWidth="2" />
-        {/* Komin */}
+        
         <rect x="75" y="40" width="8" height="15" rx="2" fill="#7B3F00" stroke="#3A5A40" strokeWidth="1" />
-        {/* Dym - animowany */}
+        
         <g>
           <ellipse className="animate-dym1" cx="79" cy="35" rx="5" ry="7" fill="#ccc" fillOpacity="0.7" />
           <ellipse className="animate-dym2" cx="79" cy="25" rx="4" ry="6" fill="#eee" fillOpacity="0.5" />

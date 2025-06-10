@@ -5,9 +5,7 @@ export async function POST(request) {
   try {
     const { rezerwacjaData, newStatus } = await request.json();
     
-    console.log('📧 Wysyłanie emaila o zmianie statusu:', newStatus);
-    
-    // Walidacja danych
+    // Walidacja wymaganych danych
     if (!rezerwacjaData.email || !newStatus) {
       return NextResponse.json(
         { error: 'Brak wymaganych danych (email, newStatus)' },
@@ -15,7 +13,7 @@ export async function POST(request) {
       );
     }
     
-    // Wyślij email o zmianie statusu
+    // Wysyłanie emaila o zmianie statusu
     const result = await sendStatusUpdateEmail(rezerwacjaData, newStatus);
     
     return NextResponse.json({
@@ -25,7 +23,7 @@ export async function POST(request) {
     });
     
   } catch (error) {
-    console.error('❌ Błąd w API send-status-email:', error);
+    console.error('Błąd w API send-status-email:', error);
     return NextResponse.json(
       { 
         success: false, 

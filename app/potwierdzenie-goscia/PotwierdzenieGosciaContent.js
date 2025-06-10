@@ -40,17 +40,17 @@ export default function PotwierdzenieGosciaContent() {
   const formatDate = (date) => {
     if (!date) return 'Brak daty';
     
-    // Jeśli date jest Firestore Timestamp
+    // Jeśli data jest znacznikiem czasowym
     if (date.toDate && typeof date.toDate === 'function') {
       return date.toDate().toLocaleDateString('pl-PL');
     }
     
-    // Jeśli date jest już obiektem Date
+    // Jeśli data jest już obiektem daty
     if (date instanceof Date) {
       return date.toLocaleDateString('pl-PL');
     }
     
-    // Jeśli date jest stringiem
+    // Jeśli data jest tekstem
     if (typeof date === 'string') {
       return new Date(date).toLocaleDateString('pl-PL');
     }
@@ -150,7 +150,7 @@ export default function PotwierdzenieGosciaContent() {
         </div>
 
         <div className="max-w-4xl mx-auto">
-          {/* Status Box */}
+          {/* Pole statusu */}
           <div className={`${status.bgColor} ${status.borderColor} border-2 rounded-2xl p-8 mb-8 text-center`}>
             <div className="text-6xl mb-4">{status.icon}</div>
             <h2 className={`text-2xl font-display ${status.color} mb-4`}>
@@ -161,7 +161,7 @@ export default function PotwierdzenieGosciaContent() {
             </p>
           </div>
 
-          {/* Szczegóły rezerwacji */}
+                      {/* Szczegóły rezerwacji */}
           <div className="card-forest p-8 mb-8">
             <h3 className="text-2xl font-display text-stone-800 mb-6 heading-forest">
               📋 Szczegóły Twojej rezerwacji
@@ -204,7 +204,7 @@ export default function PotwierdzenieGosciaContent() {
             </div>
           </div>
 
-          {/* Co dalej */}
+          {/* Dalsze kroki */}
           <div className="section-forest p-8 rounded-2xl mb-8">
             <h3 className="text-2xl font-display text-stone-800 mb-6 heading-forest">
               📞 Co dalej?
@@ -250,7 +250,7 @@ export default function PotwierdzenieGosciaContent() {
             )}
           </div>
 
-          {/* Kontakt */}
+          {/* Informacje kontaktowe */}
           <div className="card-forest p-8 text-center">
             <h3 className="text-2xl font-display text-stone-800 mb-4">
               Masz pytania?
@@ -274,7 +274,7 @@ export default function PotwierdzenieGosciaContent() {
             </div>
           </div>
 
-          {/* Powrót */}
+          {/* Powrót do strony głównej */}
           <div className="text-center mt-8">
             <Link href="/" className="btn-forest">
               🏠 Powrót na stronę główną

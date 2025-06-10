@@ -10,7 +10,7 @@ function GalleryContent() {
   const [selectedCategory, setSelectedCategory] = useState('all');
   const [lightboxImage, setLightboxImage] = useState(null);
   const [loading, setLoading] = useState(true);
-  // Firebase Storage: Gallery images loaded dynamically
+
   const [galleryImages, setGalleryImages] = useState({
     domki: [],
     okolica: [],
@@ -22,9 +22,9 @@ function GalleryContent() {
       try {
         setLoading(true);
         
-        // Firebase Storage: Load images from different categories
+
         const [domkiData, okolicaImages, osrodekImages] = await Promise.all([
-          // Load domki data and their main images
+
           getAllDomki().then(async (domki) => {
             const domkiWithImages = await Promise.all(
               domki.map(async (domek) => {
@@ -46,7 +46,7 @@ function GalleryContent() {
             return domkiWithImages.filter(img => img && img.src);
           }),
           
-          // Firebase Storage: Load okolica images (1.jpg, 2.jpg, etc.)
+
           Promise.all(
             Array.from({ length: 15 }, (_, i) => 
               getStorageUrl(`galeria/okolica/${i + 1}.jpg`).catch(() => null)
@@ -60,7 +60,7 @@ function GalleryContent() {
             } : null).filter(Boolean)
           ),
           
-          // Firebase Storage: Load osrodek images (1.jpg, 2.jpg, etc.)
+
           Promise.all(
             Array.from({ length: 15 }, (_, i) => 
               getStorageUrl(`galeria/osrodek/${i + 1}.jpg`).catch(() => null)
@@ -123,7 +123,7 @@ function GalleryContent() {
 
   return (
     <>
-      {/* Filter Buttons */}
+      {/* Przyciski filtrów */}
       <div className="flex flex-wrap justify-center gap-4 mb-12">
         {categories.map(category => (
           <button 
@@ -148,7 +148,7 @@ function GalleryContent() {
         ))}
       </div>
 
-      {/* Image Grid */}
+      {/* Siatka zdjęć */}
       {filteredImages.length > 0 ? (
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
           {filteredImages.map((image, index) => (
@@ -168,10 +168,10 @@ function GalleryContent() {
                   className="image-forest group-hover:scale-110 transition-all duration-500"
                 />
                 
-                {/* Overlay */}
+
                 <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
                 
-                {/* Hover Content */}
+
                 <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all duration-300 transform group-hover:scale-100 scale-95">
                   <div className="text-center text-white p-4">
                     <div className="w-12 h-12 bg-white/20 rounded-full flex items-center justify-center mb-3 mx-auto backdrop-blur-sm">
@@ -181,7 +181,7 @@ function GalleryContent() {
                   </div>
                 </div>
 
-                {/* Category Badge */}
+
                 <div className="absolute top-3 left-3 bg-amber-800/90 text-white px-2 py-1 rounded-full text-xs font-semibold backdrop-blur-sm">
                   {categories.find(cat => cat.key === image.category)?.icon} {categories.find(cat => cat.key === image.category)?.name}
                 </div>
@@ -193,11 +193,11 @@ function GalleryContent() {
         <div className="text-center py-20">
           <div className="text-6xl mb-6">📸</div>
           <h3 className="text-2xl font-display text-stone-800 mb-4">Brak zdjęć w tej kategorii</h3>
-          <p className="text-stone-700 font-body">Dodaj zdjęcia do odpowiedniego folderu w Firebase Storage.</p>
+          <p className="text-stone-700 font-body">Wkrótce dodamy więcej zdjęć w tej kategorii.</p>
         </div>
       )}
 
-      {/* Lightbox Modal */}
+      {/* Modal podglądu */}
       {lightboxImage && (
         <div 
           className="fixed inset-0 bg-black/80 backdrop-blur-md flex justify-center items-center z-[100] p-4 cursor-pointer"
@@ -207,7 +207,7 @@ function GalleryContent() {
             className="relative bg-white rounded-2xl shadow-2xl max-w-[90vw] max-h-[90vh] flex flex-col overflow-hidden cursor-default"
             onClick={(e) => e.stopPropagation()}
           >
-            {/* Header */}
+            {/* Nagłówek */}
             <div className="p-4 bg-gradient-to-r from-amber-800 to-stone-700 text-white">
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-2">
@@ -224,7 +224,7 @@ function GalleryContent() {
               </div>
             </div>
 
-            {/* Image */}
+            {/* Zdjęcie */}
             <div className="relative flex-1 min-h-0">
               <Image 
                 src={lightboxImage.src} 
@@ -242,7 +242,7 @@ function GalleryContent() {
               />
             </div>
 
-            {/* Footer */}
+            {/* Stopka */}
             <div className="p-4 bg-gray-50 border-t">
               <p className="text-center text-stone-800 font-body text-sm">{lightboxImage.title || lightboxImage.alt}</p>
             </div>
@@ -256,7 +256,7 @@ function GalleryContent() {
 export default function GaleriaPage() {
   return (
     <div className="min-h-screen">
-      {/* Hero Header */}
+      {/* Nagłówek */}
       <section className="section-forest py-20 texture-forest relative overflow-hidden">
         <div className="absolute top-16 left-16 w-8 h-8 bg-amber-700 rounded-full opacity-30 nature-pulse"></div>
         <div className="absolute top-32 right-12 w-6 h-6 bg-orange-800 rounded-full opacity-40 nature-pulse" style={{animationDelay: '1s'}}></div>
@@ -276,12 +276,12 @@ export default function GaleriaPage() {
         </div>
       </section>
 
-      {/* Gallery Content */}
+              {/* Treść galerii */}
       <section className="py-16 px-4">
         <div className="container mx-auto max-w-7xl">
           <GalleryContent />
           
-          {/* Call to Action */}
+          {/* Wezwanie do działania */}
           <div className="text-center mt-16 p-8 card-forest max-w-2xl mx-auto">
             <h3 className="text-2xl font-display text-stone-800 mb-4">Chcesz zobaczyć więcej?</h3>
             <p className="text-stone-700 font-body mb-6">

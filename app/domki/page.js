@@ -15,25 +15,23 @@ export default function DomkiPage() {
     const fetchDomki = async () => {
       try {
         setLoading(true);
-        const data = await getAllDomki();
+        const domkiData = await getAllDomki();
         
-        // Firebase Storage: Load main images for each domek from storage path
         const domkiWithImages = await Promise.all(
-          data.map(async (domek) => {
-            try {
-              // Firebase Storage: Get main image from domki/{domekId}/main.jpg
-              const mainImageUrl = await getStorageUrl(`domki/${domek.id}/main.jpg`);
-              return {
-                ...domek,
-                zdjecieGlowneURL: mainImageUrl || null
-              };
-            } catch (error) {
-              console.error(`Error loading main image for domek ${domek.id}:`, error);
-              return {
-                ...domek,
-                zdjecieGlowneURL: null
-              };
+          domkiData.map(async (domek) => {
+            if (domek.zdjecieGlowne) {
+              try {
+                const imageUrl = await getStorageUrl(domek.zdjecieGlowne);
+                return {
+                  ...domek,
+                  zdjecieGlowneURL: imageUrl
+                };
+              } catch (error) {
+                console.error(`Błąd ładowania zdjęcia dla domku ${domek.id}:`, error);
+                return domek;
+              }
             }
+            return domek;
           })
         );
         
@@ -85,7 +83,7 @@ export default function DomkiPage() {
 
   return (
     <div className="min-h-screen">
-      {/* Hero Header */}
+      {/* Nagłówek */}
       <section className="section-forest py-20 texture-forest relative overflow-hidden">
         <div className="absolute top-10 left-10 w-6 h-6 bg-amber-700 rounded-full opacity-30 nature-pulse"></div>
         <div className="absolute top-32 right-16 w-4 h-4 bg-orange-800 rounded-full opacity-40 nature-pulse" style={{animationDelay: '1.5s'}}></div>
@@ -105,7 +103,7 @@ export default function DomkiPage() {
         </div>
       </section>
 
-      {/* Domki Grid */}
+      {/* Siatka domków */}
       <section className="py-16 px-4">
         <div className="container mx-auto">
           {domki.length === 0 ? (
@@ -132,7 +130,7 @@ export default function DomkiPage() {
                     className="card-forest overflow-hidden group"
                     style={{animationDelay: `${index * 0.1}s`}}
                   >
-                    {/* Image Container */}
+                    {/* Kontener zdjęcia */}
                     <div className="relative h-64 overflow-hidden">
                       {domek.zdjecieGlowneURL ? (
                         <Image 
@@ -144,7 +142,6 @@ export default function DomkiPage() {
                           className="image-forest group-hover:scale-110 transition-all duration-500"
                         />
                       ) : (
-                        // Firebase Storage: Placeholder when image not available
                         <div className="w-full h-full bg-gradient-to-br from-stone-200 to-stone-300 flex items-center justify-center">
                           <div className="text-center text-stone-500">
                             <div className="text-4xl mb-2">🏡</div>
@@ -153,21 +150,21 @@ export default function DomkiPage() {
                         </div>
                       )}
                       
-                      {/* Price badge */}
+                      {/* Znaczek ceny */}
                       <div className="absolute top-4 left-4 bg-amber-800 text-white px-3 py-1 rounded-full text-sm font-semibold shadow-lg">
                         {domek.cenaZaDobe} PLN/noc
                       </div>
                       
-                      {/* Capacity badge */}
+                      {/* Znaczek pojemności */}
                       <div className="absolute top-4 right-4 bg-white/90 text-stone-800 px-3 py-1 rounded-full text-sm font-semibold shadow-lg">
                         👥 {domek.iloscOsob} osób
                       </div>
                       
-                      {/* Gradient overlay */}
+
                       <div className="absolute inset-0 bg-gradient-to-t from-black/20 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
                     </div>
 
-                    {/* Content */}
+                    {/* Treść */}
                     <div className="p-6 space-y-4">
                       <div>
                         <h2 className="text-2xl font-primary font-semibold text-stone-800 mb-2 group-hover:text-amber-800 transition-colors">
@@ -178,7 +175,7 @@ export default function DomkiPage() {
                         </p>
                       </div>
                       
-                      {/* Features */}
+                      {/* Wyposażenie */}
                       <div className="flex flex-wrap gap-2">
                         <div className="flex items-center gap-1 text-xs bg-stone-100 text-stone-700 px-2 py-1 rounded-full">
                           📐 {domek.powierzchnia} m²
@@ -195,7 +192,7 @@ export default function DomkiPage() {
                         )}
                       </div>
 
-                      {/* Action Buttons */}
+                      {/* Przyciski akcji */}
                       <div className="flex gap-3 pt-4 border-t border-stone-200">
                         <Link 
                           href={`/domek/${domek.id}`} 
@@ -212,13 +209,13 @@ export default function DomkiPage() {
                       </div>
                     </div>
 
-                    {/* Hover effect overlay */}
+
                     <div className="absolute inset-0 border-2 border-amber-700 rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none"></div>
                   </div>
                 ))}
               </div>
               
-              {/* Call to Action */}
+              {/* Wezwanie do działania */}
               <div className="text-center mt-16 p-8 card-forest max-w-2xl mx-auto">
                 <h3 className="text-2xl font-display text-stone-800 mb-4">Nie znalazłeś idealnego domku?</h3>
                 <p className="text-stone-700 font-body mb-6">

@@ -11,7 +11,7 @@ export default function DomekSzczegolyPage({ params }) {
   const [domek, setDomek] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  // Firebase Storage: URLs for images loaded dynamically
+
   const [mainImageUrl, setMainImageUrl] = useState(null);
   const [galleryImages, setGalleryImages] = useState([]);
 
@@ -23,7 +23,7 @@ export default function DomekSzczegolyPage({ params }) {
         if (data) {
           setDomek(data);
           
-          // Firebase Storage: Load main image from domki/{domekId}/main.jpg
+
           try {
             const mainImg = await getStorageUrl(`domki/${data.id}/main.jpg`);
             setMainImageUrl(mainImg);
@@ -31,9 +31,9 @@ export default function DomekSzczegolyPage({ params }) {
             console.error(`Error loading main image for domek ${data.id}:`, error);
           }
 
-          // Firebase Storage: Load gallery images from domki/{domekId}/ (numbered 1.jpg, 2.jpg, etc.)
+
           const galleryPromises = [];
-          for (let i = 1; i <= 10; i++) { // Try to load up to 10 gallery images
+                      for (let i = 1; i <= 10; i++) {
             galleryPromises.push(
               getStorageUrl(`domki/${data.id}/${i}.jpg`).catch(() => null)
             );
@@ -95,7 +95,7 @@ export default function DomekSzczegolyPage({ params }) {
 
   return (
     <div className="min-h-screen">
-      {/* Hero Section with Main Image */}
+      {/* Sekcja główna ze zdjęciem */}
       <section className="relative h-[60vh] overflow-hidden">
         {mainImageUrl ? (
           <Image 
@@ -108,7 +108,7 @@ export default function DomekSzczegolyPage({ params }) {
             className="image-forest"
           />
         ) : (
-          // Firebase Storage: Placeholder when main image not available
+
           <div className="w-full h-full bg-gradient-to-br from-stone-200 to-stone-400 flex items-center justify-center">
             <div className="text-center text-stone-600">
               <div className="text-8xl mb-4">🏡</div>
@@ -117,10 +117,10 @@ export default function DomekSzczegolyPage({ params }) {
           </div>
         )}
         
-        {/* Overlay */}
+
         <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent"></div>
         
-        {/* Content overlay */}
+        {/* Nakładka z treścią */}
         <div className="absolute bottom-0 left-0 right-0 p-8 text-white">
           <div className="container mx-auto">
             <h1 className="text-4xl md:text-6xl font-display mb-4 heading-forest">{domek.nazwa}</h1>
@@ -139,12 +139,12 @@ export default function DomekSzczegolyPage({ params }) {
         </div>
       </section>
 
-      {/* Details Section */}
+      {/* Sekcja szczegółów */}
       <section className="py-16 px-4">
         <div className="container mx-auto max-w-6xl">
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-12">
             
-            {/* Description */}
+            {/* Opis */}
             <div className="lg:col-span-2 space-y-8">
               <div className="card-forest p-8">
                 <h2 className="text-3xl font-display text-stone-800 mb-6 heading-forest">Opis Domku</h2>
@@ -153,7 +153,7 @@ export default function DomekSzczegolyPage({ params }) {
                 </p>
               </div>
 
-              {/* Gallery Section */}
+              {/* Sekcja galerii */}
               <div className="card-forest p-8">
                 <h2 className="text-3xl font-display text-stone-800 mb-6 heading-forest">Galeria Zdjęć</h2>
                 {galleryImages && galleryImages.length > 0 ? (
@@ -181,9 +181,9 @@ export default function DomekSzczegolyPage({ params }) {
               </div>
             </div>
 
-            {/* Sidebar */}
+            {/* Panel boczny */}
             <div className="space-y-6">
-              {/* Basic Info */}
+                              {/* Podstawowe informacje */}
               <div className="card-forest p-6 sticky top-24">
                 <h3 className="text-xl font-display text-stone-800 mb-4">Podstawowe informacje</h3>
                 <div className="space-y-3 text-stone-700 font-body">
@@ -217,7 +217,7 @@ export default function DomekSzczegolyPage({ params }) {
                 </Link>
               </div>
 
-              {/* Equipment */}
+                              {/* Wyposażenie */}
               {domek.wyposazenie && domek.wyposazenie.length > 0 && (
                 <div className="card-forest p-6">
                   <h3 className="text-xl font-display text-stone-800 mb-4">Wyposażenie</h3>
@@ -232,7 +232,7 @@ export default function DomekSzczegolyPage({ params }) {
                 </div>
               )}
 
-              {/* Amenities */}
+                              {/* Udogodnienia */}
               {domek.udogodnienia && domek.udogodnienia.length > 0 && (
                 <div className="card-forest p-6">
                   <h3 className="text-xl font-display text-stone-800 mb-4">Udogodnienia</h3>
@@ -254,7 +254,4 @@ export default function DomekSzczegolyPage({ params }) {
   );
 }
 
-// Opcjonalnie: Generowanie statycznych ścieżek, jeśli ID domków są znane w czasie budowy
-// export async function generateStaticParams() {
-//   return Object.keys(placeholderCabinData).map((id) => ({ id }));
-// } 
+ 

@@ -4,9 +4,9 @@ import { rateLimit, getClientIP } from '@/lib/rate-limit';
 
 export async function POST(request) {
   try {
-    // Rate limiting
+    // Ograniczenie żądań - 3 żądania na 10 minut
     const clientIP = getClientIP(request);
-    if (!rateLimit(clientIP, 3, 10 * 60 * 1000)) { // 3 requesty na 10 minut
+    if (!rateLimit(clientIP, 3, 10 * 60 * 1000)) {
       return NextResponse.json(
         { error: 'Za dużo żądań. Spróbuj ponownie za kilka minut.' },
         { status: 429 }
@@ -15,9 +15,7 @@ export async function POST(request) {
 
     const rezerwacjaData = await request.json();
     
-    console.log('📧 Wysyłanie emaili dla rezerwacji:', rezerwacjaData.tokenPotwierdzenia);
-    
-    // Walidacja danych
+    // Walidacja wymaganych danych
     if (!rezerwacjaData.email || !rezerwacjaData.tokenPotwierdzenia) {
       return NextResponse.json(
         { error: 'Brak wymaganych danych (email, token)' },
@@ -27,29 +25,25 @@ export async function POST(request) {
     
     const results = {};
     
+    // Wysyłanie emaila do gościa
     try {
-      // Wyślij email do gościa
-      console.log('📤 Wysyłanie emaila do gościa...');
       const guestEmailResult = await sendConfirmationEmailToGuest(rezerwacjaData);
       results.guestEmail = guestEmailResult;
-      console.log('✅ Email do gościa wysłany');
     } catch (error) {
-      console.error('❌ Błąd wysyłania emaila do gościa:', error);
+      console.error('Błąd wysyłania emaila do gościa:', error);
       results.guestEmailError = error.message;
     }
     
+    // Wysyłanie emaila do administratora
     try {
-      // Wyślij email do administratora
-      console.log('📤 Wysyłanie emaila do administratora...');
       const adminEmailResult = await sendNewReservationEmailToAdmin(rezerwacjaData);
       results.adminEmail = adminEmailResult;
-      console.log('✅ Email do administratora wysłany');
     } catch (error) {
-      console.error('❌ Błąd wysyłania emaila do administratora:', error);
+      console.error('Błąd wysyłania emaila do administratora:', error);
       results.adminEmailError = error.message;
     }
     
-    // Sprawdź czy przynajmniej jeden email się udał
+    // Sprawdzenie rezultatów
     const hasSuccess = results.guestEmail || results.adminEmail;
     const hasErrors = results.guestEmailError || results.adminEmailError;
     
@@ -72,7 +66,7 @@ export async function POST(request) {
     }
     
   } catch (error) {
-    console.error('❌ Błąd w API send-emails:', error);
+    console.error('Błąd w API send-emails:', error);
     return NextResponse.json(
       { 
         success: false, 

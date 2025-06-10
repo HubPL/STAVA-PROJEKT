@@ -5,7 +5,7 @@ import { useState, useEffect } from 'react';
 export default function CookieConsent() {
   const [showBanner, setShowBanner] = useState(false);
   const [preferences, setPreferences] = useState({
-    necessary: true, // Zawsze true
+    necessary: true,
     analytics: false,
     marketing: false
   });
@@ -18,7 +18,6 @@ export default function CookieConsent() {
       const saved = JSON.parse(consent);
       setPreferences(saved);
       
-      // Inicjalizuj analytics tylko jeśli użytkownik wyraził zgodę
       if (saved.analytics) {
         initAnalytics();
       }
@@ -52,12 +51,7 @@ export default function CookieConsent() {
   };
 
   const initAnalytics = () => {
-    // Tutaj będzie inicjalizacja Google Analytics lub Vercel Analytics
-    if (typeof window !== 'undefined' && window.gtag) {
-      window.gtag('consent', 'update', {
-        'analytics_storage': 'granted'
-      });
-    }
+    console.log('Vercel Analytics active');
   };
 
   if (!showBanner) return null;

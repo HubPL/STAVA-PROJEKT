@@ -35,7 +35,7 @@ export default function KontaktPage() {
       </h1>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-12 items-start">
-        {/* Contact Form */}
+        {/* Formularz kontaktowy */}
         <div className="bg-white p-8 shadow-md rounded-lg border border-gray-200">
           <h2 className="text-2xl font-semibold text-gray-700 mb-6">Napisz do Nas</h2>
           {isSubmitted && (
@@ -69,7 +69,7 @@ export default function KontaktPage() {
           </form>
         </div>
 
-        {/* Contact Info & Map */}
+        {/* Informacje kontaktowe i mapa */}
         <div className="space-y-8">
           <div className="bg-white p-8 shadow-md rounded-lg border border-gray-200">
             <h2 className="text-2xl font-semibold text-gray-700 mb-6">Dane Kontaktowe</h2>

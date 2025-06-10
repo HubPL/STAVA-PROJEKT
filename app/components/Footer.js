@@ -5,24 +5,24 @@ const Footer = () => {
 
   return (
     <footer className="relative mt-20 bg-gradient-to-br from-stone-800 via-amber-900 to-stone-900 text-white overflow-hidden">
-      {/* Background texture */}
+
       <div className="absolute inset-0 opacity-10" style={{
         backgroundImage: "url('/images/patch-texture.png')",
         backgroundRepeat: 'repeat',
         backgroundSize: 'auto'
       }}></div>
       
-      {/* Animated background elements */}
+
       <div className="absolute top-10 left-10 w-32 h-32 bg-amber-700/10 rounded-full blur-3xl nature-pulse"></div>
       <div className="absolute bottom-20 right-20 w-40 h-40 bg-orange-800/10 rounded-full blur-3xl nature-pulse" style={{animationDelay: '2s'}}></div>
       <div className="absolute top-1/2 left-1/3 w-24 h-24 bg-stone-600/10 rounded-full blur-2xl nature-pulse" style={{animationDelay: '1s'}}></div>
 
       <div className="relative z-10">
-        {/* Main Footer Content */}
+        {/* Główna treść stopki */}
         <div className="container mx-auto px-4 py-12">
           <div className="grid grid-cols-1 md:grid-cols-4 gap-8 text-center md:text-left">
             
-            {/* Brand Section */}
+            {/* Sekcja marki */}
             <div className="md:col-span-2 space-y-4">
               <div className="flex items-center justify-center md:justify-start gap-3 group">
                 <span className="text-4xl group-hover:scale-110 transition-transform duration-300">🌲</span>
@@ -38,7 +38,7 @@ const Footer = () => {
               </div>
             </div>
             
-            {/* Navigation Links */}
+            {/* Linki nawigacyjne */}
             <div className="space-y-4">
               <h3 className="text-xl font-primary font-semibold text-amber-100 mb-4">Nawigacja</h3>
               <nav className="space-y-2">
@@ -61,7 +61,7 @@ const Footer = () => {
               </nav>
             </div>
             
-            {/* Contact & Social */}
+            {/* Kontakt i social media */}
             <div className="space-y-4">
               <h3 className="text-xl font-primary font-semibold text-amber-100 mb-4">Kontakt</h3>
               <div className="space-y-3">
@@ -73,7 +73,7 @@ const Footer = () => {
                   <span className="group-hover:translate-x-1 transition-transform duration-300">kontakt@stavakiszewa.pl</span>
                 </a>
                 
-                {/* Social Media */}
+                {/* Media społecznościowe */}
                 <div className="pt-4">
                   <p className="text-stone-300 text-xs font-body mb-3">Śledź nas:</p>
                   <div className="flex justify-center md:justify-start space-x-4">
@@ -96,7 +96,7 @@ const Footer = () => {
           </div>
         </div>
 
-        {/* Bottom Copyright */}
+        {/* Stopka z prawami autorskimi */}
         <div className="border-t border-stone-600/30 py-6">
           <div className="container mx-auto px-4">
             <div className="flex flex-col md:flex-row items-center justify-between text-center md:text-left space-y-4 md:space-y-0">

@@ -144,7 +144,7 @@ function ReservationFormContent() {
 
   return (
     <div className="max-w-4xl mx-auto">
-      {/* Domek Info Header */}
+              {/* Nagłówek informacji o domku */}
       <div className="card-forest p-6 mb-8">
         <div className="flex flex-col md:flex-row gap-6">
           <div className="md:w-1/3">
@@ -177,7 +177,7 @@ function ReservationFormContent() {
         </div>
       </div>
 
-      {/* Reservation Form */}
+              {/* Formularz rezerwacji */}
       <form onSubmit={handleSubmit} className="card-forest p-8">
         <h3 className="text-2xl font-display text-stone-800 mb-6 heading-forest">
           Formularz Rezerwacji

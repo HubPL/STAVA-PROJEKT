@@ -12,46 +12,35 @@ const DateRangePicker = ({ domekId, onDateChange, cenaZaDobe, refreshTrigger }) 
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
 
-  // Pobierz zablokowane daty dla domku
+  // Pobiera zablokowane daty dla domku
   useEffect(() => {
     const fetchBlockedDates = async () => {
       if (!domekId) return;
       
       try {
         setLoading(true);
-        console.log('🗓️ Ładowanie kalendarza dla domku:', domekId);
         
         const now = new Date();
         const futureDate = new Date();
-        futureDate.setFullYear(now.getFullYear() + 1); // Sprawdź rok do przodu
-        
-        console.log('📅 Sprawdzanie rezerwacji od:', now, 'do:', futureDate);
+        futureDate.setFullYear(now.getFullYear() + 1);
         
         const rezerwacje = await getRezerwacjeForDomek(domekId, now, futureDate);
         
-        console.log('📋 Pobrane rezerwacje:', rezerwacje);
-        
-        // Stwórz listę zablokowanych dat
         const blocked = [];
         rezerwacje.forEach(rez => {
-          console.log('🚫 Blokowanie dat dla rezerwacji:', rez.id, rez.startDate, 'do', rez.endDate);
-          
           const current = new Date(rez.startDate);
           const end = new Date(rez.endDate);
           
-          // Blokuj wszystkie dni w przedziale (włącznie z datami granicznymi)
           while (current <= end) {
             blocked.push(new Date(current));
-            console.log('❌ Zablokowano datę:', current.toDateString());
             current.setDate(current.getDate() + 1);
           }
         });
         
-        console.log('🎯 Wszystkie zablokowane daty:', blocked.map(d => d.toDateString()));
         setBlockedDates(blocked);
         
       } catch (err) {
-        console.error('❌ Błąd podczas pobierania zablokowanych dat:', err);
+        console.error('Błąd podczas pobierania zablokowanych dat:', err);
         setError('Nie udało się załadować dostępności kalendarza');
       } finally {
         setLoading(false);
@@ -61,14 +50,18 @@ const DateRangePicker = ({ domekId, onDateChange, cenaZaDobe, refreshTrigger }) 
     fetchBlockedDates();
   }, [domekId, refreshTrigger]);
 
-  // Sprawdź czy data jest zablokowana
+  /**
+   * Sprawdza czy data jest zablokowana
+   */
   const isDateBlocked = (date) => {
     return blockedDates.some(blockedDate => 
       blockedDate.toDateString() === date.toDateString()
     );
   };
 
-  // Oblicz liczbę nocy i cenę
+  /**
+   * Oblicza liczbę nocy i cenę całkowitą
+   */
   const calculateStay = (start, end) => {
     if (!start || !end) return { nights: 0, totalPrice: 0 };
     
@@ -79,7 +72,9 @@ const DateRangePicker = ({ domekId, onDateChange, cenaZaDobe, refreshTrigger }) 
     return { nights, totalPrice };
   };
 
-  // Obsługa zmiany dat
+  /**
+   * Obsługuje zmianę wybranych dat
+   */
   const handleDateChange = (dates) => {
     const [start, end] = dates;
     setStartDate(start);
@@ -88,14 +83,12 @@ const DateRangePicker = ({ domekId, onDateChange, cenaZaDobe, refreshTrigger }) 
     if (start && end) {
       const { nights, totalPrice } = calculateStay(start, end);
       
-      // Walidacja minimum 3 noce
       if (nights < 3) {
         setError('Minimalny czas rezerwacji to 3 noce');
         onDateChange(null);
         return;
       }
       
-      // Sprawdź czy w przedziale nie ma zablokowanych dat
       const current = new Date(start);
       let hasBlockedDate = false;
       
@@ -123,6 +116,41 @@ const DateRangePicker = ({ domekId, onDateChange, cenaZaDobe, refreshTrigger }) 
     } else {
       onDateChange(null);
     }
+  };
+
+  /**
+   * Odświeża dostępność kalendarza
+   */
+  const refreshCalendar = () => {
+    setLoading(true);
+    setBlockedDates([]);
+    
+    setTimeout(async () => {
+      try {
+        const now = new Date();
+        const futureDate = new Date();
+        futureDate.setFullYear(now.getFullYear() + 1);
+        
+        const rezerwacje = await getRezerwacjeForDomek(domekId, now, futureDate);
+        
+        const blocked = [];
+        rezerwacje.forEach(rez => {
+          const current = new Date(rez.startDate);
+          const end = new Date(rez.endDate);
+          
+          while (current <= end) {
+            blocked.push(new Date(current));
+            current.setDate(current.getDate() + 1);
+          }
+        });
+        
+        setBlockedDates(blocked);
+      } catch (err) {
+        console.error('Błąd podczas odświeżania kalendarza:', err);
+      } finally {
+        setLoading(false);
+      }
+    }, 100);
   };
 
   if (loading) {
@@ -179,45 +207,11 @@ const DateRangePicker = ({ domekId, onDateChange, cenaZaDobe, refreshTrigger }) 
           <p>• Ceny mogą się różnić w zależności od sezonu</p>
         </div>
         <button
-          onClick={() => {
-            console.log('🔄 Ręczne odświeżanie kalendarza');
-            setLoading(true);
-            // Trigger useEffect by changing a dependency
-            setBlockedDates([]);
-            setTimeout(() => {
-              const fetchBlockedDates = async () => {
-                try {
-                  const now = new Date();
-                  const futureDate = new Date();
-                  futureDate.setFullYear(now.getFullYear() + 1);
-                  
-                  const rezerwacje = await getRezerwacjeForDomek(domekId, now, futureDate);
-                  
-                  const blocked = [];
-                  rezerwacje.forEach(rez => {
-                    const current = new Date(rez.startDate);
-                    const end = new Date(rez.endDate);
-                    
-                    while (current <= end) {
-                      blocked.push(new Date(current));
-                      current.setDate(current.getDate() + 1);
-                    }
-                  });
-                  
-                  setBlockedDates(blocked);
-                } catch (err) {
-                  console.error('❌ Błąd podczas odświeżania:', err);
-                } finally {
-                  setLoading(false);
-                }
-              };
-              fetchBlockedDates();
-            }, 100);
-          }}
+          onClick={refreshCalendar}
           className="text-xs bg-stone-200 hover:bg-stone-300 text-stone-700 px-3 py-1 rounded-lg transition-colors duration-200"
           disabled={loading}
         >
-          {loading ? '🔄' : '↻'} Odśwież
+          {loading ? 'Odświeżanie...' : 'Odśwież'}
         </button>
       </div>
     </div>

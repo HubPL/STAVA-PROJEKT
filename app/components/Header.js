@@ -36,7 +36,7 @@ const Header = () => {
     >
       <div className="container mx-auto flex justify-between items-center px-4 py-3">
         
-        {/* Logo Section */}
+        {/* Sekcja logo */}
         <div className="flex items-center">
           <Link href="/" className="flex items-center group" onClick={() => setIsMobileMenuOpen(false)}>
             <div className="relative">
@@ -48,13 +48,13 @@ const Header = () => {
                 priority
                 className="h-16 w-auto sm:h-20 transition-all duration-300 group-hover:scale-110 group-hover:rotate-3"
               />
-              {/* Glow effect za logo */}
+
               <div className="absolute inset-0 bg-green-400/20 rounded-full blur-xl opacity-0 group-hover:opacity-100 transition-opacity duration-300 -z-10"></div>
             </div>
           </Link>
         </div>
 
-        {/* Centralized STAVA Text Logo */}
+        {/* Logo tekstowe STAVA */}
         <div className="absolute left-1/2 transform -translate-x-1/2 hidden lg:block">
           <Link href="/" className="group" onClick={() => setIsMobileMenuOpen(false)}>
             <Image
@@ -68,7 +68,7 @@ const Header = () => {
           </Link>
         </div>
 
-        {/* Desktop Navigation */}
+        {/* Nawigacja desktop */}
         <nav className="hidden lg:flex items-center space-x-2">
           {navLinks.map((link) => (
             <Link 
@@ -80,13 +80,13 @@ const Header = () => {
                 <span className="text-lg group-hover:scale-125 transition-transform duration-300">{link.icon}</span>
                 {link.label}
               </span>
-              {/* Hover underline */}
+
               <div className="absolute bottom-0 left-1/2 w-0 h-0.5 bg-gradient-to-r from-green-300 to-green-100 group-hover:w-full group-hover:left-0 transition-all duration-300"></div>
             </Link>
           ))}
         </nav>
 
-        {/* Mobile Menu Button */}
+        {/* Przycisk menu mobilnego */}
         <button 
           className="lg:hidden p-2 rounded-xl hover:bg-green-700/30 transition-colors duration-300"
           onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
@@ -111,7 +111,7 @@ const Header = () => {
         </button>
       </div>
 
-      {/* Mobile Menu */}
+      {/* Menu mobilne */}
       <div 
         className={`lg:hidden overflow-hidden transition-all duration-500 ease-out ${
           isMobileMenuOpen ? 'max-h-96 opacity-100' : 'max-h-0 opacity-0'
