@@ -82,9 +82,13 @@ export default function KontaktPage() {
           </div>
           
           <div className="bg-white p-2 shadow-md rounded-lg h-80 md:h-96 border border-gray-200">
-            <div className="w-full h-full bg-gray-100 flex flex-col items-center justify-center text-gray-500 rounded-md text-center p-4">
-              <p className="font-medium">[ Placeholder dla Mapy Google Maps ]</p>
-              <p className="text-xs mt-2">(iframe z Google Maps zostanie tu osadzony)</p>
+            <div className="w-full h-full bg-gradient-to-br from-stone-200 to-stone-300 flex flex-col items-center justify-center text-stone-600 rounded-md text-center p-4 relative overflow-hidden">
+              <div className="absolute inset-0 bg-[url('https://firebasestorage.googleapis.com/v0/b/stava-62c2a.firebasestorage.app/o/global%2Fmapa-stara-kiszewa.jpg?alt=media')] bg-cover bg-center opacity-60"></div>
+              <div className="relative z-10 bg-white/90 backdrop-blur-sm p-4 rounded-lg">
+                <div className="text-3xl mb-2">📍</div>
+                <p className="font-medium text-stone-800">Stara Kiszewa</p>
+                <p className="text-sm text-stone-600">Pomorskie, Polska</p>
+              </div>
             </div>
           </div>
         </div>

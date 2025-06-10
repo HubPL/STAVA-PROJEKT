@@ -149,7 +149,7 @@ function ReservationFormContent() {
         <div className="flex flex-col md:flex-row gap-6">
           <div className="md:w-1/3">
             <img 
-              src={domek.zdjecieGlowneURL || 'https://via.placeholder.com/400x300/e7e5e4/365314?text=🏡+Domek'} 
+              src={domek.zdjecieGlowneURL || 'https://firebasestorage.googleapis.com/v0/b/stava-62c2a.firebasestorage.app/o/global%2Fdomek-placeholder.jpg?alt=media'} 
               alt={`Zdjęcie domku ${domek.nazwa}`}
               className="w-full h-48 object-cover rounded-xl image-forest"
             />
