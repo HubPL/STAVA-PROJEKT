@@ -19,19 +19,19 @@ export default function DomkiPage() {
         
         const domkiWithImages = await Promise.all(
           domkiData.map(async (domek) => {
-            if (domek.zdjecieGlowne) {
-              try {
-                const imageUrl = await getStorageUrl(domek.zdjecieGlowne);
-                return {
-                  ...domek,
-                  zdjecieGlowneURL: imageUrl
-                };
-              } catch (error) {
-                console.error(`Błąd ładowania zdjęcia dla domku ${domek.id}:`, error);
-                return domek;
-              }
+            try {
+              const mainImagePath = `domki/${domek.id}/main.jpg`;
+              const imageUrl = await getStorageUrl(mainImagePath);
+              return {
+                ...domek,
+                zdjecieGlowneURL: imageUrl
+              };
+            } catch (error) {
+              return {
+                ...domek,
+                zdjecieGlowneURL: 'https://firebasestorage.googleapis.com/v0/b/stava-62c2a.firebasestorage.app/o/global%2Fdomek-placeholder.jpg?alt=media'
+              };
             }
-            return domek;
           })
         );
         
@@ -132,23 +132,14 @@ export default function DomkiPage() {
                   >
                     {/* Kontener zdjęcia */}
                     <div className="relative h-64 overflow-hidden">
-                      {domek.zdjecieGlowneURL ? (
-                        <Image 
-                          src={domek.zdjecieGlowneURL} 
-                          alt={`Zdjęcie domku ${domek.nazwa}`} 
-                          fill 
-                          style={{ objectFit: 'cover' }} 
-                          sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-                          className="image-forest group-hover:scale-110 transition-all duration-500"
-                        />
-                      ) : (
-                        <div className="w-full h-full bg-gradient-to-br from-stone-200 to-stone-300 flex items-center justify-center">
-                          <div className="text-center text-stone-500">
-                            <div className="text-4xl mb-2">🏡</div>
-                            <p className="text-sm">Brak zdjęcia</p>
-                          </div>
-                        </div>
-                      )}
+                      <Image 
+                        src={domek.zdjecieGlowneURL} 
+                        alt={`Zdjęcie domku ${domek.nazwa}`} 
+                        fill 
+                        style={{ objectFit: 'cover' }} 
+                        sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                        className="image-forest group-hover:scale-110 transition-all duration-500"
+                      />
                       
                       {/* Znaczek ceny */}
                       <div className="absolute top-4 left-4 bg-amber-800 text-white px-3 py-1 rounded-full text-sm font-semibold shadow-lg">
@@ -215,7 +206,7 @@ export default function DomkiPage() {
                 ))}
               </div>
               
-              {/* Wezwanie do działania */}
+
               <div className="text-center mt-16 p-8 card-forest max-w-2xl mx-auto">
                 <h3 className="text-2xl font-display text-stone-800 mb-4">Nie znalazłeś idealnego domku?</h3>
                 <p className="text-stone-700 font-body mb-6">
