@@ -4,6 +4,7 @@ import { useSearchParams } from 'next/navigation';
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { getDomekById, createRezerwacja, generateConfirmationToken } from '@/lib/firestore';
+import { getStorageUrl } from '@/lib/storage';
 import DateRangePicker from '@/app/components/DateRangePicker';
 import { Suspense } from 'react';
 
@@ -29,7 +30,21 @@ function ReservationFormContent() {
         setLoading(true);
         const domekData = await getDomekById(domekId);
         if (domekData) {
-          setDomek(domekData);
+          // Ładujemy główne zdjęcie domku
+          try {
+            const mainImagePath = `domki/${domekData.id}/main.jpg`;
+            const imageUrl = await getStorageUrl(mainImagePath);
+            setDomek({
+              ...domekData,
+              zdjecieGlowneURL: imageUrl
+            });
+          } catch (imageError) {
+            // Jeśli nie ma main.jpg, używamy fallback
+            setDomek({
+              ...domekData,
+              zdjecieGlowneURL: 'https://firebasestorage.googleapis.com/v0/b/stava-62c2a.firebasestorage.app/o/global%2Fdomek-placeholder.jpg?alt=media'
+            });
+          }
         } else {
           setError('Domek o podanym ID nie istnieje.');
         }
@@ -149,7 +164,7 @@ function ReservationFormContent() {
         <div className="flex flex-col md:flex-row gap-6">
           <div className="md:w-1/3">
             <img 
-              src={domek.zdjecieGlowneURL || 'https://firebasestorage.googleapis.com/v0/b/stava-62c2a.firebasestorage.app/o/global%2Fdomek-placeholder.jpg?alt=media'} 
+              src={domek.zdjecieGlowneURL} 
               alt={`Zdjęcie domku ${domek.nazwa}`}
               className="w-full h-48 object-cover rounded-xl image-forest"
             />

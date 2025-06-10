@@ -97,25 +97,15 @@ export default function DomekSzczegolyPage({ params }) {
     <div className="min-h-screen">
       {/* Sekcja główna ze zdjęciem */}
       <section className="relative h-[60vh] overflow-hidden">
-        {mainImageUrl ? (
-          <Image 
-            src={mainImageUrl} 
-            alt={`Główne zdjęcie domku ${domek.nazwa}`} 
-            fill
-            sizes="100vw"
-            style={{ objectFit: 'cover' }} 
-            priority
-            className="image-forest"
-          />
-        ) : (
-
-          <div className="w-full h-full bg-gradient-to-br from-stone-200 to-stone-400 flex items-center justify-center">
-            <div className="text-center text-stone-600">
-              <div className="text-8xl mb-4">🏡</div>
-              <p className="text-xl">Główne zdjęcie domku</p>
-            </div>
-          </div>
-        )}
+        <Image 
+          src={mainImageUrl || 'https://firebasestorage.googleapis.com/v0/b/stava-62c2a.firebasestorage.app/o/global%2Fdomek-placeholder.jpg?alt=media'} 
+          alt={`Główne zdjęcie domku ${domek.nazwa}`} 
+          fill
+          sizes="100vw"
+          style={{ objectFit: 'cover' }} 
+          priority
+          className="image-forest"
+        />
         
 
         <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent"></div>
