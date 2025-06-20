@@ -1,225 +1,461 @@
 'use client';
 
-import Link from 'next/link';
 import Image from 'next/image';
+import Link from 'next/link';
+import Head from 'next/head';
 import { useState, useEffect } from 'react';
-import { getAllDomki } from '@/lib/firestore';
+import { getConfig } from '@/lib/firestore';
+import { DOMEK_INFO, getAktualnaCena, kalkulujCeneZOsobami } from '@/lib/domek-config';
 import { getStorageUrl } from '@/lib/storage';
+import { DOMEK_IMAGES, getDomekImages } from '@/lib/image-paths';
+import OptimizedImage from '../components/OptimizedImage';
+import DynamicImage from '../components/DynamicImage';
+import Lightbox from '../components/Lightbox';
+import useLightbox from '../hooks/useLightbox';
+import { FiUsers, FiHome, FiMaximize, FiCheckCircle, FiCalendar, FiDollarSign } from 'react-icons/fi'; // Ikony
 
-export default function DomkiPage() {
-  const [domki, setDomki] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
+// Funkcja do pobierania zdjęć z folderu
+async function getImagesFromPath(path) {
+    const storage = getStorage();
+    const folderRef = ref(storage, path);
+    try {
+        const imageRefs = await listAll(folderRef);
+        return Promise.all(imageRefs.items.map(item => getDownloadURL(item)));
+    } catch (error) {
+                        // Fallback to default images
+        return [];
+    }
+}
 
-  useEffect(() => {
-    const fetchDomki = async () => {
-      try {
-        setLoading(true);
-        const domkiData = await getAllDomki();
-        
-        const domkiWithImages = await Promise.all(
-          domkiData.map(async (domek) => {
-            try {
-              const mainImagePath = `domki/${domek.id}/main.jpg`;
-              const imageUrl = await getStorageUrl(mainImagePath);
-              return {
-                ...domek,
-                zdjecieGlowneURL: imageUrl
-              };
-            } catch (error) {
-              return {
-                ...domek,
-                zdjecieGlowneURL: 'https://firebasestorage.googleapis.com/v0/b/stava-62c2a.firebasestorage.app/o/global%2Fdomek-placeholder.jpg?alt=media'
-              };
-            }
-          })
+// Funkcja do formatowania daty
+const formatDate = (dateString) => {
+    const date = new Date(dateString);
+    return date.toLocaleDateString('pl-PL', {
+        day: '2-digit',
+        month: '2-digit',
+        year: 'numeric'
+    });
+};
+
+// Komponent tabeli cen sezonowych
+const TabelaCenSezonowych = ({ config }) => {
+    if (!config?.ceny?.sezonowe || config.ceny.sezonowe.length === 0) {
+        return (
+            <div className="text-center text-gray-500">
+                <p>Aktualnie obowiązuje jedna cena przez cały rok.</p>
+            </div>
         );
-        
-        setDomki(domkiWithImages);
-      } catch (err) {
-        console.error('Błąd podczas pobierania domków:', err);
-        setError('Nie udało się załadować domków. Spróbuj ponownie później.');
-      } finally {
-        setLoading(false);
-      }
+    }
+
+    // Pobierz cenę podstawową z bazy danych
+    const cenaPostawowa = config.ceny.podstawowa || config.cena_podstawowa;
+
+    // Jeśli nie ma ceny w bazie, pokaż komunikat
+    if (!cenaPostawowa) {
+        return (
+            <div className="text-center text-gray-500">
+                <p>Brak informacji o cenach. Skontaktuj się z nami po aktualne ceny.</p>
+            </div>
+        );
+    }
+
+    return (
+        <div className="overflow-x-auto">
+            <table className="w-full border-collapse">
+                <thead>
+                    <tr className="border-b-2 border-brand-800">
+                        <th className="text-left py-3 font-lumios text-lg">Sezon</th>
+                        <th className="text-left py-3 font-lumios text-lg">Okres</th>
+                        <th className="text-right py-3 font-lumios text-lg">Różnica cenowa</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {config.ceny.sezonowe.map((sezon, index) => {
+                        const roznica = sezon.cena - cenaPostawowa;
+                        const roznicaText = roznica > 0 ? `+${roznica} zł` : `${roznica} zł`;
+                        const roznicaColor = roznica > 0 ? 'text-orange-600' : roznica < 0 ? 'text-green-600' : 'text-gray-600';
+                        
+                        return (
+                            <tr key={index} className="border-b border-brand-200 hover:bg-brand-50 transition-colors">
+                                <td className="py-4 font-medium">{sezon.nazwa}</td>
+                                <td className="py-4 text-gray-600">
+                                    {formatDate(sezon.od)} - {formatDate(sezon.do)}
+                                </td>
+                                <td className={`py-4 text-right font-semibold ${roznicaColor}`}>
+                                    {roznicaText}
+                                </td>
+                            </tr>
+                        );
+                    })}
+                </tbody>
+            </table>
+            <div className="mt-4 p-4 bg-brand-50 rounded-lg">
+                <p className="text-sm text-gray-600">
+                    <FiDollarSign className="inline mr-2" />
+                    Cena podstawowa: <strong>{cenaPostawowa} zł za dobę</strong>
+                </p>
+                <p className="text-xs text-gray-500 mt-1">
+                    * Ceny mogą się różnić w zależności od sezonu i dostępności
+                </p>
+            </div>
+        </div>
+    );
+};
+
+export default function OfertaPage() {
+    const [config, setConfig] = useState(null);
+    const [loading, setLoading] = useState(true);
+    const [images, setImages] = useState([]);
+
+    // Przygotuj obrazy domków
+    const prepareImages = async () => {
+        const domekPaths = getDomekImages();
+        const imagePromises = domekPaths.map(async (path, index) => {
+            try {
+                const url = await getStorageUrl(path);
+                const isExterior = path.includes('ext-');
+                return {
+                    id: `domek-${index + 1}`,
+                    src: url,
+                    alt: isExterior ? `Domek STAVA - widok zewnętrzny ${index + 1}` : `Domek STAVA - wnętrze ${index + 1}`,
+                    title: isExterior ? `Exterior ${index + 1}` : `Interior ${index + 1}`,
+                    category: isExterior ? 'exterior' : 'interior',
+                };
+            } catch (error) {
+                console.warn(`Nie można załadować obrazu: ${path}`);
+                return null;
+            }
+        });
+
+        const loadedImages = await Promise.all(imagePromises);
+        return loadedImages.filter(img => img !== null);
     };
 
-    fetchDomki();
-  }, []);
-
-  if (loading) {
-    return (
-      <div className="min-h-screen section-forest flex flex-col items-center justify-center px-4">
-        <div className="text-center">
-          <div className="loading-forest mb-6"></div>
-          <h1 className="text-4xl md:text-5xl font-display text-stone-800 mb-4 heading-forest">
-            Ładujemy Nasze Domki
-          </h1>
-          <p className="text-stone-700 font-body text-lg">Przygotowujemy dla Ciebie najlepsze opcje...</p>
-        </div>
-      </div>
-    );
-  }
-
-  if (error) {
-    return (
-      <div className="min-h-screen section-forest flex flex-col items-center justify-center px-4">
-        <div className="text-center max-w-md">
-          <div className="text-6xl mb-6">😔</div>
-          <h1 className="text-4xl md:text-5xl font-display text-stone-800 mb-4 heading-forest">
-            Ups! Coś poszło nie tak
-          </h1>
-          <p className="text-red-600 font-body mb-6">{error}</p>
-          <button 
-            onClick={() => window.location.reload()} 
-            className="btn-forest"
-          >
-            🔄 Spróbuj ponownie
-          </button>
-        </div>
-      </div>
-    );
-  }
-
-  return (
-    <div className="min-h-screen">
-      {/* Nagłówek */}
-      <section className="section-forest py-20 texture-forest relative overflow-hidden">
-        <div className="absolute top-10 left-10 w-6 h-6 bg-amber-700 rounded-full opacity-30 nature-pulse"></div>
-        <div className="absolute top-32 right-16 w-4 h-4 bg-orange-800 rounded-full opacity-40 nature-pulse" style={{animationDelay: '1.5s'}}></div>
-        <div className="absolute bottom-20 left-1/4 w-5 h-5 bg-stone-700 rounded-full opacity-35 nature-pulse" style={{animationDelay: '0.5s'}}></div>
+    useEffect(() => {
+        const fetchData = async () => {
+            try {
+                setLoading(true);
+                
+                // Pobierz konfigurację i obrazy równolegle
+                const [configData, preparedImages] = await Promise.all([
+                    getConfig(),
+                    prepareImages()
+                ]);
+                
+                setConfig(configData);
+                setImages(preparedImages);
+                
+            } catch (err) {
+                console.error('Błąd podczas pobierania danych:', err);
+            } finally {
+                setLoading(false);
+            }
+        };
         
-        <div className="container mx-auto text-center px-4 relative z-10">
-          <h1 className="text-5xl md:text-7xl font-display text-stone-800 mb-6 heading-forest">
-            Nasze <span className="text-amber-800">Domki</span>
-          </h1>
-          <p className="text-xl md:text-2xl font-primary text-stone-700 mb-8 max-w-3xl mx-auto">
-            Wybierz swój idelany zakątek w sercu natury
-          </p>
-          <div className="flex items-center justify-center gap-2 text-stone-600">
-            <span className="text-2xl">🏡</span>
-            <span className="font-body text-lg">Każdy domek to wyjątkowe doświadczenie</span>
-          </div>
-        </div>
-      </section>
+        fetchData();
+    }, []);
 
-      {/* Siatka domków */}
-      <section className="py-16 px-4">
-        <div className="container mx-auto">
-          {domki.length === 0 ? (
-            <div className="text-center py-20">
-              <div className="text-6xl mb-6">🏚️</div>
-              <h2 className="text-3xl font-display text-stone-800 mb-4">Brak dostępnych domków</h2>
-              <p className="text-stone-700 font-body mb-6">Dodaj domki w panelu administracyjnym Firestore.</p>
-              <Link href="/" className="btn-forest-outline">
-                🏠 Powrót do strony głównej
-              </Link>
+    // Lightbox hook
+    const lightbox = useLightbox(images);
+
+    if (loading) {
+        return (
+            <div className="min-h-screen bg-[#e3e0d8] flex items-center justify-center font-serif text-[#3a3a3a]">
+                <div className="text-center">
+                    <div className="w-12 h-12 border-2 border-[#3a3a3a] border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
+                    <p className="text-xl tracking-widest">Ładowanie oferty...</p>
+                </div>
             </div>
-          ) : (
-            <>
-              <div className="text-center mb-12">
-                <p className="text-lg font-body text-stone-700">
-                  Znaleźliśmy <span className="font-bold text-stone-800">{domki.length}</span> {domki.length === 1 ? 'domek' : 'domków'} dla Ciebie
-                </p>
-              </div>
-              
-              <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-8 max-w-7xl mx-auto">
-                {domki.map((domek, index) => (
-                  <div 
-                    key={domek.id} 
-                    className="card-forest overflow-hidden group"
-                    style={{animationDelay: `${index * 0.1}s`}}
-                  >
-                    {/* Kontener zdjęcia */}
-                    <div className="relative h-64 overflow-hidden">
-                      <Image 
-                        src={domek.zdjecieGlowneURL} 
-                        alt={`Zdjęcie domku ${domek.nazwa}`} 
-                        fill 
-                        style={{ objectFit: 'cover' }} 
-                        sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-                        className="image-forest group-hover:scale-110 transition-all duration-500"
-                      />
-                      
-                      {/* Znaczek ceny */}
-                      <div className="absolute top-4 left-4 bg-amber-800 text-white px-3 py-1 rounded-full text-sm font-semibold shadow-lg">
-                        {domek.cenaZaDobe} PLN/noc
-                      </div>
-                      
-                      {/* Znaczek pojemności */}
-                      <div className="absolute top-4 right-4 bg-white/90 text-stone-800 px-3 py-1 rounded-full text-sm font-semibold shadow-lg">
-                        👥 {domek.iloscOsob} osób
-                      </div>
-                      
+        );
+    }
 
-                      <div className="absolute inset-0 bg-gradient-to-t from-black/20 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
-                    </div>
+    const aktualnaCena = config ? getAktualnaCena(config) : 380;
 
-                    {/* Treść */}
-                    <div className="p-6 space-y-4">
-                      <div>
-                        <h2 className="text-2xl font-primary font-semibold text-stone-800 mb-2 group-hover:text-amber-800 transition-colors">
-                          {domek.nazwa}
-                        </h2>
-                        <p className="text-stone-700 font-body text-sm leading-relaxed line-clamp-3">
-                          {domek.opisKrotki}
-                        </p>
-                      </div>
-                      
-                      {/* Wyposażenie */}
-                      <div className="flex flex-wrap gap-2">
-                        <div className="flex items-center gap-1 text-xs bg-stone-100 text-stone-700 px-2 py-1 rounded-full">
-                          📐 {domek.powierzchnia} m²
+    return (
+        <>
+            <Head>
+                <title>Komfortowe Domki Letniskowe | STAVA Stara Kiszewa</title>
+                <meta name="description" content="Luksusowe domki letniskowe w sercu lasu kaszubskiego. 67m², 2 sypialnie, sauna, balia, 3 tarasy. Rezerwuj pobyt w naturze na Kaszubach. Od 350 PLN/doba." />
+                <meta name="keywords" content="domki letniskowe Stara Kiszewa, domki na Kaszubach, domki w lesie, sauna, balia, wypoczynek w naturze, noclegi Kaszuby" />
+                <meta property="og:title" content="Komfortowe Domki Letniskowe w Lesie | STAVA" />
+                <meta property="og:description" content="67m² domek z sauną, balią i 3 tarasami w sercu lasu kaszubskiego. Idealne miejsce na wypoczynek z dala od zgiełku." />
+                <meta property="og:image" content="https://firebasestorage.googleapis.com/v0/b/stava-62c2a.firebasestorage.app/o/domek%2Fext-1.jpg?alt=media" />
+                <meta property="og:url" content="https://stavakiszewa.pl/domki" />
+                <meta name="twitter:card" content="summary_large_image" />
+                <link rel="canonical" href="https://stavakiszewa.pl/domki" />
+            </Head>
+            <div className="bg-[#e3e0d8] font-serif text-[#3a3a3a] pt-32">
+            {/* 1. GALERIA ZDJĘĆ */}
+            <section className="container mx-auto px-4 pt-10 pb-16">
+                {images.length > 0 ? (
+                    <div className="space-y-6">
+                        {/* Główne zdjęcie */}
+                        <div 
+                            className="rounded-lg overflow-hidden group cursor-pointer relative aspect-[16/9] mx-auto max-w-4xl"
+                            onClick={() => lightbox.openLightbox(0)}
+                        >
+                            <OptimizedImage 
+                                src={images[0]?.src} 
+                                alt={images[0]?.alt}
+                                width={1200}
+                                height={675}
+                                className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+                                priority
+                            />
+                            {/* Overlay z informacją o liczbie zdjęć */}
+                            <div className="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-all duration-300 flex items-center justify-center">
+                                <div className="absolute bottom-4 right-4 bg-black/50 backdrop-blur-sm text-white px-3 py-2 rounded-lg text-sm">
+                                    {images.length} {images.length === 1 ? 'zdjęcie' : images.length <= 4 ? 'zdjęcia' : 'zdjęć'}
+                                </div>
+                            </div>
                         </div>
-                        {domek.wyposazenie && domek.wyposazenie.slice(0, 2).map((item, idx) => (
-                          <div key={idx} className="text-xs bg-amber-50 text-amber-800 px-2 py-1 rounded-full">
-                            {item}
-                          </div>
-                        ))}
-                        {domek.wyposazenie && domek.wyposazenie.length > 2 && (
-                          <div className="text-xs bg-gray-100 text-gray-600 px-2 py-1 rounded-full">
-                            +{domek.wyposazenie.length - 2} więcej
-                          </div>
+                        
+                        {/* Małe thumbnails */}
+                        {images.length > 1 && (
+                            <div className="max-w-4xl mx-auto">
+                                <div className="flex gap-3 overflow-x-auto pb-2">
+                                    {images.slice(1).map((image, index) => (
+                                        <div key={image.id} className="flex-shrink-0 w-20 h-20">
+                                            <DynamicImage
+                                                src={image.src}
+                                                alt={image.alt}
+                                                fixedAspectRatio="aspect-square"
+                                                onClick={() => lightbox.openLightbox(index + 1)}
+                                                className="transition-all duration-300 hover:scale-105 w-full h-full"
+                                            />
+                                        </div>
+                                    ))}
+                                </div>
+                            </div>
                         )}
-                      </div>
+                    </div>
+                ) : (
+                    <div className="h-[60vh] bg-gray-200 rounded-lg flex items-center justify-center">
+                        <p className="text-xl text-gray-500">Ładowanie zdjęć domków...</p>
+                    </div>
+                )}
+            </section>
+            
+            {/* 2. MAIN CONTENT */}
+            <section className="container mx-auto">
+                <div className="grid grid-cols-1 lg:grid-cols-3 gap-16">
+                    {/* Left Column */}
+                    <div className="lg:col-span-2 space-y-12">
+                        <div>
+                            <h1 className="text-4xl md:text-5xl tracking-wider mb-4 font-lumios">{DOMEK_INFO.nazwa}</h1>
+                            <p className="text-lg leading-relaxed tracking-wide whitespace-pre-line">{DOMEK_INFO.opis}</p>
+                        </div>
 
-                      {/* Przyciski akcji */}
-                      <div className="flex gap-3 pt-4 border-t border-stone-200">
-                        <Link 
-                          href={`/domek/${domek.id}`} 
-                          className="flex-1 text-center btn-forest-outline text-sm py-2 px-4"
-                        >
-                          🔍 Szczegóły
-                        </Link>
-                        <Link 
-                          href={`/rezerwacja?domek=${domek.id}`} 
-                          className="flex-1 text-center btn-forest text-sm py-2 px-4"
-                        >
-                          📅 Rezerwuj
-                        </Link>
-                      </div>
+                        {/* Układ przestrzenny */}
+                        <div>
+                            <h2 className="text-3xl tracking-wider mb-8 font-lumios">Układ przestrzenny</h2>
+                            <div className="bg-[#f8f6f3] p-6 rounded-lg">
+                                <p className="text-lg mb-4">{DOMEK_INFO.uklad.opis}</p>
+                                <div className="grid md:grid-cols-2 gap-6 mt-6">
+                                    <div>
+                                        <h3 className="font-semibold text-xl mb-3">Parter:</h3>
+                                        <ul className="space-y-2">
+                                            <li>• <strong>Salon z jadalnią:</strong> {DOMEK_INFO.uklad.szczegoly.parter.salon}</li>
+                                            <li>• <strong>Kuchnia:</strong> {DOMEK_INFO.uklad.szczegoly.parter.kuchnia}</li>
+                                            <li>• <strong>Łazienka:</strong> {DOMEK_INFO.uklad.szczegoly.parter.lazienka}</li>
+                                        </ul>
+                                    </div>
+                                    <div>
+                                        <h3 className="font-semibold text-xl mb-3">Piętro:</h3>
+                                        <ul className="space-y-2">
+                                            <li>• <strong>Sypialnia 1:</strong> {DOMEK_INFO.uklad.szczegoly.pietro.sypialnia1}</li>
+                                            <li>• <strong>Sypialnia 2:</strong> {DOMEK_INFO.uklad.szczegoly.pietro.sypialnia2}</li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        {/* Udogodnienia */}
+                        <div>
+                             <h2 className="text-3xl tracking-wider mb-8 font-lumios">Co na Ciebie czeka?</h2>
+                             <div className="grid grid-cols-2 md:grid-cols-3 gap-x-6 gap-y-6">
+                                {DOMEK_INFO.udogodnienia.map((item, index) => (
+                                    <div key={index} className="flex items-center gap-3">
+                                        <FiCheckCircle className="text-xl text-green-700/70 flex-shrink-0" />
+                                        <span className="tracking-wide">{item}</span>
+                                    </div>
+                                ))}
+                            </div>
+                        </div>
+
+                        {/* Tarasy i przestrzeń zewnętrzna */}
+                        <div>
+                            <h2 className="text-3xl tracking-wider mb-8 font-lumios">Tarasy i przestrzeń zewnętrzna</h2>
+                            <div className="grid md:grid-cols-3 gap-6">
+                                <div className="bg-[#f8f6f3] p-5 rounded-lg">
+                                    <h3 className="font-semibold text-lg mb-2">Taras główny</h3>
+                                    <p>{DOMEK_INFO.tarasy.taras1}</p>
+                                </div>
+                                <div className="bg-[#f8f6f3] p-5 rounded-lg">
+                                    <h3 className="font-semibold text-lg mb-2">Taras intymny</h3>
+                                    <p>{DOMEK_INFO.tarasy.taras2}</p>
+                                </div>
+                                <div className="bg-[#f8f6f3] p-5 rounded-lg">
+                                    <h3 className="font-semibold text-lg mb-2">Leśna wyspa SPA</h3>
+                                    <p>{DOMEK_INFO.tarasy.taras3}</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        {/* Wyposażenie */}
+                        <div>
+                             <h2 className="text-3xl tracking-wider mb-8 font-lumios">Wyposażenie domku</h2>
+                             <div className="grid grid-cols-2 md:grid-cols-3 gap-x-6 gap-y-4">
+                                {DOMEK_INFO.wyposazenie.map((item, index) => (
+                                    <div key={index} className="flex items-center gap-3">
+                                        <span className="w-2 h-2 bg-[#3a3a3a]/30 rounded-full flex-shrink-0"></span>
+                                        <span className="tracking-wide">{item}</span>
+                                    </div>
+                                ))}
+                            </div>
+                        </div>
+
+                        {/* Ceny sezonowe */}
+                        {(config?.ceny?.podstawowa || config?.cena_podstawowa) && (
+                            <div id="tabela-cen">
+                                <h2 className="text-3xl tracking-wider mb-8 font-lumios">Cennik sezonowy</h2>
+                                <div className="bg-white p-6 rounded-lg border border-brand-200 shadow-sm">
+                                    <div className="flex items-center gap-2 mb-4">
+                                        <FiCalendar className="text-brand-600" />
+                                        <p className="text-brand-600">
+                                            Ceny mogą różnić się w zależności od sezonu. Sprawdź aktualne ceny:
+                                        </p>
+                                    </div>
+                                    <TabelaCenSezonowych config={config} />
+                                </div>
+                            </div>
+                        )}
+
+                        {/* Dodatkowe informacje */}
+                        <div>
+                             <h2 className="text-3xl tracking-wider mb-8 font-lumios">Informacje praktyczne</h2>
+                             <div className="space-y-4 text-lg">
+                                <div className="flex justify-between py-3 border-b border-[#3a3a3a]/10">
+                                    <span>Zameldowanie:</span>
+                                    <span className="font-medium">{DOMEK_INFO.dodatkoweInfo.zameldowanie}</span>
+                                </div>
+                                <div className="flex justify-between py-3 border-b border-[#3a3a3a]/10">
+                                    <span>Wymeldowanie:</span>
+                                    <span className="font-medium">{DOMEK_INFO.dodatkoweInfo.wymeldowanie}</span>
+                                </div>
+                                <div className="py-3 border-b border-[#3a3a3a]/10">
+                                    <span className="font-medium">Liczba osób:</span>
+                                    <p className="mt-1 text-base">{DOMEK_INFO.dodatkoweInfo.maxOsob}</p>
+                                </div>
+                                <div className="py-3 border-b border-[#3a3a3a]/10">
+                                    <span className="font-medium">Zwierzęta:</span>
+                                    <p className="mt-1 text-base">{DOMEK_INFO.dodatkoweInfo.zwierzeta}</p>
+                                </div>
+                                <div className="py-3 border-b border-[#3a3a3a]/10">
+                                    <span className="font-medium">Palenie:</span>
+                                    <p className="mt-1 text-base">{DOMEK_INFO.dodatkoweInfo.palenie}</p>
+                                </div>
+                                <div className="py-3 border-b border-[#3a3a3a]/10">
+                                    <span className="font-medium">Klimatyzacja:</span>
+                                    <p className="mt-1 text-base">{DOMEK_INFO.dodatkoweInfo.klimatyzacja}</p>
+                                </div>
+                                <div className="py-3 border-b border-[#3a3a3a]/10">
+                                    <span className="font-medium">Ogrzewanie:</span>
+                                    <p className="mt-1 text-base">{DOMEK_INFO.dodatkoweInfo.ogrzewanie}</p>
+                                </div>
+                             </div>
+                        </div>
                     </div>
 
+                    {/* Right Column (Sticky) */}
+                    <div className="lg:sticky top-28 h-fit">
+                        <div className="border border-[#3a3a3a]/20 rounded-sm p-8">
+                            <div className="flex justify-between items-baseline mb-6">
+                                <span className="text-lg">Aktualna cena za dobę od</span>
+                                <span className="text-3xl font-semibold">
+                                    {aktualnaCena ? `${aktualnaCena} PLN` : 'Zapytaj o cenę'}
+                                </span>
+                            </div>
+                            
+                            {/* Cennik według liczby osób */}
+                            {aktualnaCena && config?.ceny?.cena_za_dodatkowa_osoba !== undefined && (
+                                <div className="mb-6 p-4 bg-blue-50 border border-blue-200 rounded-lg">
+                                    <h4 className="font-semibold text-blue-900 mb-3">Cennik według liczby osób:</h4>
+                                    <div className="space-y-2 text-sm">
+                                        {[...Array(config?.max_osob || 6)].map((_, index) => {
+                                            const liczbOsob = index + 1;
+                                            const obliczenia = kalkulujCeneZOsobami(config, liczbOsob, 1);
+                                            if (obliczenia) {
+                                                return (
+                                                    <div key={liczbOsob} className="flex justify-between">
+                                                        <span className="text-blue-800">
+                                                            {liczbOsob} {liczbOsob === 1 ? 'osoba' : liczbOsob <= 4 ? 'osoby' : 'osób'}:
+                                                        </span>
+                                                        <span className="font-medium text-blue-900">
+                                                            {obliczenia.cenaZaDobe} PLN
+                                                        </span>
+                                                    </div>
+                                                );
+                                            }
+                                            return null;
+                                        })}
+                                    </div>
+                                    <p className="text-xs text-blue-700 mt-2">
+                                        Cena bazowa dla {config?.bazowa_liczba_osob || 4} osób, 
+                                        +{config?.ceny?.cena_za_dodatkowa_osoba || 0} PLN za każdą dodatkową osobę
+                                    </p>
+                                </div>
+                            )}
+                            
+                            {aktualnaCena && config?.ceny?.sezonowe && config.ceny.sezonowe.length > 0 && (
+                                <div className="mb-6 p-3 bg-amber-50 border border-amber-200 rounded-lg">
+                                    <p className="text-sm text-amber-800">
+                                        <FiCalendar className="inline mr-1" />
+                                        Ceny różnią się w zależności od <a href="#tabela-cen" className="underline hover:text-amber-900 transition-colors">sezonu</a>
+                                    </p>
+                                </div>
+                            )}
+                            <div className="space-y-4 text-lg mb-8">
+                                <div className="flex items-center gap-3">
+                                    <FiUsers />
+                                    <span>Do {config?.max_osob || 6} osób</span>
+                                </div>
+                                <div className="flex items-center gap-3">
+                                    <FiMaximize/>
+                                    <span>{DOMEK_INFO.uklad.powierzchnia}</span>
+                                </div>
+                                <div className="flex items-center gap-3">
+                                    <FiHome/>
+                                    <span>{DOMEK_INFO.uklad.pietra} piętra</span>
+                                </div>
+                            </div>
+                            <Link 
+                              href="/rezerwacja" 
+                              className="w-full block text-center px-8 py-4 bg-[#3a3a3a] text-[#e3e0d8] font-montserrat font-bold text-lg uppercase tracking-widest hover:bg-opacity-90 transition-all duration-300 transform-gpu hover:scale-105"
+                            >
+                              {aktualnaCena ? 'Zarezerwuj' : 'Zapytaj o dostępność'}
+                            </Link>
+                            {aktualnaCena && (
+                                <p className="text-sm text-center mt-4 text-[#3a3a3a]/60">
+                                    Minimalny pobyt: {config?.min_nocy || 2} noce
+                                </p>
+                            )}
+                        </div>
+                    </div>
+                </div>
+            </section>
 
-                    <div className="absolute inset-0 border-2 border-amber-700 rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none"></div>
-                  </div>
-                ))}
-              </div>
-              
-
-              <div className="text-center mt-16 p-8 card-forest max-w-2xl mx-auto">
-                <h3 className="text-2xl font-display text-stone-800 mb-4">Nie znalazłeś idealnego domku?</h3>
-                <p className="text-stone-700 font-body mb-6">
-                  Skontaktuj się z nami, a pomożemy Ci wybrać najlepszą opcję dla Twojego pobytu.
-                </p>
-                <Link href="/kontakt" className="btn-forest">
-                  💬 Skontaktuj się z nami
-                </Link>
-              </div>
-            </>
-          )}
+            {/* Lightbox */}
+            {lightbox.isOpen && (
+                <Lightbox
+                    images={images}
+                    selectedIndex={lightbox.selectedIndex}
+                    onClose={lightbox.closeLightbox}
+                    onNavigate={lightbox.navigateToIndex}
+                />
+            )}
         </div>
-      </section>
-    </div>
-  );
+        </>
+    );
 } 

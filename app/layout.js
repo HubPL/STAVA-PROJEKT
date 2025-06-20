@@ -1,8 +1,11 @@
 import Header from '@/app/components/Header';
 import Footer from '@/app/components/Footer';
 import CookieConsent from '@/app/components/CookieConsent';
+import AnnouncementBar from '@/app/components/AnnouncementBar';
+import { LanguageProvider } from '@/lib/i18n';
 import { Analytics } from '@vercel/analytics/react';
 import { SpeedInsights } from '@vercel/speed-insights/next';
+import 'flag-icons/css/flag-icons.min.css';
 import './globals.css';
 
 export const metadata = {
@@ -65,55 +68,90 @@ export default function RootLayout({ children }) {
       <head>
         <link rel="icon" href="https://firebasestorage.googleapis.com/v0/b/stava-62c2a.firebasestorage.app/o/global%2Ffavicon.ico?alt=media" type="image/x-icon" />
         
+        {/* Preconnect dla szybszego ładowania */}
+        <link rel="preconnect" href="https://firebasestorage.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://www.google.com" />
+        
+        {/* Canonical URL */}
+        <link rel="canonical" href="https://stavakiszewa.pl" />
+        
+        {/* Hreflang dla wielojęzyczności */}
+        <link rel="alternate" href="https://stavakiszewa.pl" hreflang="pl" />
+        <link rel="alternate" href="https://stavakiszewa.pl/en" hreflang="en" />
+        <link rel="alternate" href="https://stavakiszewa.pl" hreflang="x-default" />
+        
         {/* Dane strukturalne */}
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{
             __html: JSON.stringify({
               "@context": "https://schema.org",
-              "@type": "TouristAttraction",
-              "name": "STAVA - Domki letniskowe",
-              "description": "Ośrodek domków letniskowych w Starej Kiszewie. Komfortowe domki otoczone naturą na Kaszubach.",
+              "@type": ["LodgingBusiness", "LocalBusiness"],
+              "name": "STAVA - Domki letniskowe w Kiszewie",
+              "description": "Luksusowe domki letniskowe w sercu lasu kaszubskiego. Idealne miejsce na wypoczynek z dala od miejskiego zgiełku.",
               "url": "https://stavakiszewa.pl",
+              "telephone": "+48886627447",
+              "email": "kontakt@stavakiszewa.pl",
               "address": {
                 "@type": "PostalAddress",
+                "streetAddress": "ul. Wygonińska 38",
                 "addressLocality": "Stara Kiszewa",
-                "addressRegion": "Kaszuby",
+                "addressRegion": "Pomorskie",
+                "postalCode": "83-430",
                 "addressCountry": "PL"
               },
+              "areaServed": [
+                "Stara Kiszewa",
+                "Kaszuby", 
+                "Pomorskie",
+                "Gdańsk",
+                "Słupsk"
+              ],
               "geo": {
                 "@type": "GeoCoordinates",
-                "latitude": "54.2181",
-                "longitude": "18.1915"
+                "latitude": 54.00445998012229,
+                "longitude": 18.15842831586208
               },
-              "telephone": "+48123456789",
-              "email": "kontakt@stavakiszewa.pl",
-              "priceRange": "$$",
+              "image": [
+                "https://firebasestorage.googleapis.com/v0/b/stava-62c2a.firebasestorage.app/o/hero%2Fhero.jpg?alt=media",
+                "https://firebasestorage.googleapis.com/v0/b/stava-62c2a.firebasestorage.app/o/galeria%2Fgaleria-1.jpg?alt=media"
+              ],
               "amenityFeature": [
-                {
-                  "@type": "LocationFeatureSpecification",
-                  "name": "Domki letniskowe",
-                  "value": "Komfortowe domki drewniane"
-                },
-                {
-                  "@type": "LocationFeatureSpecification", 
-                  "name": "Lokalizacja",
-                  "value": "Las nad jeziorem"
-                }
-              ]
+                {"@type": "LocationFeatureSpecification", "name": "Sauna"},
+                {"@type": "LocationFeatureSpecification", "name": "Balia"},
+                {"@type": "LocationFeatureSpecification", "name": "Parking"},
+                {"@type": "LocationFeatureSpecification", "name": "WiFi"},
+                {"@type": "LocationFeatureSpecification", "name": "Ogród"},
+                {"@type": "LocationFeatureSpecification", "name": "Grill"}
+              ],
+              "priceRange": "$$",
+              "paymentAccepted": ["Cash", "Bank Transfer"],
+              "starRating": {
+                "@type": "Rating",
+                "ratingValue": "4.8",
+                "bestRating": "5"
+              },
+              "numberOfRooms": 3,
+              "petsAllowed": true,
+              "checkinTime": "15:00",
+              "checkoutTime": "11:00"
             })
           }}
         />
       </head>
-      <body className="font-body bg-gradient-to-br from-stone-50 to-stone-100">
-        <Header />
-        <main className="w-full">
-          {children}
-        </main>
-        <Footer />
-        <CookieConsent />
-        <Analytics />
-        <SpeedInsights />
+      <body className="font-inter bg-white">
+        <LanguageProvider>
+          <AnnouncementBar />
+          <Header />
+          <main className="min-h-screen">
+            {children}
+          </main>
+          <Footer />
+          <CookieConsent />
+          <Analytics />
+          <SpeedInsights />
+        </LanguageProvider>
       </body>
     </html>
   );

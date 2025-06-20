@@ -60,13 +60,13 @@ export default function PotwierdzenieGosciaContent() {
 
   if (loading) {
     return (
-      <div className="min-h-screen section-forest flex flex-col items-center justify-center px-4">
+      <div className="min-h-screen bg-brand-200 flex flex-col items-center justify-center px-4">
         <div className="text-center">
-          <div className="loading-forest mb-6"></div>
-          <h1 className="text-4xl md:text-5xl font-display text-stone-800 mb-4 heading-forest">
+          <div className="w-16 h-16 border-4 border-brand-300 border-t-brand-600 rounded-full animate-spin mx-auto mb-6"></div>
+          <h1 className="text-4xl md:text-5xl font-lumios text-brand-800 mb-4">
             Ładowanie...
           </h1>
-          <p className="text-stone-700 font-body text-lg">
+          <p className="text-brand-600 font-inter text-lg">
             Pobieramy szczegóły Twojej rezerwacji...
           </p>
         </div>
@@ -76,15 +76,19 @@ export default function PotwierdzenieGosciaContent() {
 
   if (error) {
     return (
-      <div className="min-h-screen section-forest flex flex-col items-center justify-center px-4">
+      <div className="min-h-screen bg-brand-200 flex flex-col items-center justify-center px-4">
         <div className="text-center max-w-md">
-          <div className="text-6xl mb-6">😔</div>
-          <h1 className="text-4xl md:text-5xl font-display text-stone-800 mb-4 heading-forest">
+          <div className="w-24 h-24 bg-brand-100 rounded-full flex items-center justify-center mx-auto mb-6">
+            <svg className="w-12 h-12 text-brand-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+            </svg>
+          </div>
+          <h1 className="text-4xl md:text-5xl font-lumios text-brand-800 mb-4">
             Ups! Coś poszło nie tak
           </h1>
-          <p className="text-red-600 font-body mb-6">{error}</p>
-          <Link href="/" className="btn-forest-outline">
-            🏠 Powrót na stronę główną
+          <p className="text-red-600 font-inter mb-6">{error}</p>
+          <Link href="/" className="inline-flex items-center px-6 py-3 bg-brand-700 hover:bg-brand-800 text-white font-montserrat font-semibold rounded-xl shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-300">
+            Powrót na stronę główną
           </Link>
         </div>
       </div>
@@ -93,15 +97,19 @@ export default function PotwierdzenieGosciaContent() {
 
   if (!reservation) {
     return (
-      <div className="min-h-screen section-forest flex flex-col items-center justify-center px-4">
+      <div className="min-h-screen bg-brand-200 flex flex-col items-center justify-center px-4">
         <div className="text-center">
-          <div className="text-6xl mb-6">🔍</div>
-          <h1 className="text-4xl md:text-5xl font-display text-stone-800 mb-4 heading-forest">
+          <div className="w-24 h-24 bg-brand-100 rounded-full flex items-center justify-center mx-auto mb-6">
+            <svg className="w-12 h-12 text-brand-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+            </svg>
+          </div>
+          <h1 className="text-4xl md:text-5xl font-lumios text-brand-800 mb-4">
             Nie znaleziono rezerwacji
           </h1>
-          <p className="text-stone-700 font-body mb-6">Sprawdź link lub skontaktuj się z nami.</p>
-          <Link href="/" className="btn-forest-outline">
-            🏠 Powrót na stronę główną
+          <p className="text-brand-600 font-inter mb-6">Sprawdź link lub skontaktuj się z nami.</p>
+          <Link href="/" className="inline-flex items-center px-6 py-3 bg-brand-700 hover:bg-brand-800 text-white font-montserrat font-semibold rounded-xl shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-300">
+            Powrót na stronę główną
           </Link>
         </div>
       </div>
@@ -110,7 +118,11 @@ export default function PotwierdzenieGosciaContent() {
 
   const statusInfo = {
     oczekujaca: {
-      icon: '⏳',
+      icon: (
+        <svg className="w-16 h-16 text-amber-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+        </svg>
+      ),
       title: 'Rezerwacja oczekuje na potwierdzenie',
       message: 'Twoja rezerwacja została przyjęta i oczekuje na potwierdzenie przez nasz zespół.',
       color: 'text-amber-800',
@@ -118,7 +130,11 @@ export default function PotwierdzenieGosciaContent() {
       borderColor: 'border-amber-200'
     },
     potwierdzona: {
-      icon: '✅',
+      icon: (
+        <svg className="w-16 h-16 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+        </svg>
+      ),
       title: 'Rezerwacja potwierdzona!',
       message: 'Świetnie! Twoja rezerwacja została potwierdzona.',
       color: 'text-green-800',
@@ -126,7 +142,11 @@ export default function PotwierdzenieGosciaContent() {
       borderColor: 'border-green-200'
     },
     odrzucona: {
-      icon: '❌',
+      icon: (
+        <svg className="w-16 h-16 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z" />
+        </svg>
+      ),
       title: 'Rezerwacja odrzucona',
       message: 'Niestety, nie możemy potwierdzić Twojej rezerwacji na wybrany termin.',
       color: 'text-red-800',
@@ -141,10 +161,10 @@ export default function PotwierdzenieGosciaContent() {
     <div className="min-h-screen py-12 px-4">
       <div className="container mx-auto">
         <div className="text-center mb-12">
-          <h1 className="text-4xl md:text-5xl font-display text-stone-800 mb-6 heading-forest">
-            Dziękujemy za <span className="text-amber-800">Rezerwację!</span>
+          <h1 className="text-4xl md:text-5xl font-lumios text-brand-800 mb-6">
+            Dziękujemy za <span className="text-brand-700">Rezerwację!</span>
           </h1>
-          <p className="text-xl font-primary text-stone-700 max-w-2xl mx-auto">
+          <p className="text-xl font-inter text-brand-600 max-w-2xl mx-auto">
             Oto potwierdzenie Twojej rezerwacji w STAVA
           </p>
         </div>
@@ -152,51 +172,51 @@ export default function PotwierdzenieGosciaContent() {
         <div className="max-w-4xl mx-auto">
           {/* Pole statusu */}
           <div className={`${status.bgColor} ${status.borderColor} border-2 rounded-2xl p-8 mb-8 text-center`}>
-            <div className="text-6xl mb-4">{status.icon}</div>
-            <h2 className={`text-2xl font-display ${status.color} mb-4`}>
+            <div className="flex justify-center mb-4">{status.icon}</div>
+            <h2 className={`text-2xl font-lumios ${status.color} mb-4`}>
               {status.title}
             </h2>
-            <p className={`text-lg font-body ${status.color}`}>
+            <p className={`text-lg font-inter ${status.color}`}>
               {status.message}
             </p>
           </div>
 
-                      {/* Szczegóły rezerwacji */}
-          <div className="card-forest p-8 mb-8">
-            <h3 className="text-2xl font-display text-stone-800 mb-6 heading-forest">
-              📋 Szczegóły Twojej rezerwacji
+          {/* Szczegóły rezerwacji */}
+          <div className="bg-white shadow-xl rounded-3xl border border-brand-300 p-8 mb-8">
+            <h3 className="text-2xl font-lumios text-brand-800 mb-6">
+              Szczegóły Twojej rezerwacji
             </h3>
             
             <div className="grid md:grid-cols-2 gap-8">
               <div className="space-y-4">
-                <h4 className="text-lg font-primary font-semibold text-stone-800 border-b border-stone-200 pb-2">
-                  🏡 Informacje o domku
+                <h4 className="text-lg font-lumios font-semibold text-brand-800 border-b border-brand-200 pb-2">
+                  Informacje o pobycie
                 </h4>
-                <div className="space-y-2 text-stone-700">
-                  <p><span className="font-medium">Domek:</span> {reservation.domekNazwa}</p>
+                <div className="space-y-2 text-brand-600">
+                  {reservation.domekNazwa && <p><span className="font-medium">Przydzielony domek:</span> {reservation.domekNazwa}</p>}
                   <p><span className="font-medium">Liczba osób:</span> {reservation.liczbOsob}</p>
                   <p><span className="font-medium">Termin:</span> {formatDate(reservation.startDate)} - {formatDate(reservation.endDate)}</p>
                   {reservation.iloscNocy && (
                     <p><span className="font-medium">Liczba nocy:</span> {reservation.iloscNocy}</p>
                   )}
                   {reservation.cenaCałkowita && (
-                    <p><span className="font-medium">Cena całkowita:</span> <span className="text-amber-800 font-bold">{reservation.cenaCałkowita} PLN</span></p>
+                    <p><span className="font-medium">Cena całkowita:</span> <span className="text-brand-800 font-bold">{reservation.cenaCałkowita} PLN</span></p>
                   )}
                 </div>
               </div>
 
               <div className="space-y-4">
-                <h4 className="text-lg font-primary font-semibold text-stone-800 border-b border-stone-200 pb-2">
-                  👤 Twoje dane
+                <h4 className="text-lg font-lumios font-semibold text-brand-800 border-b border-brand-200 pb-2">
+                  Twoje dane
                 </h4>
-                <div className="space-y-2 text-stone-700">
+                <div className="space-y-2 text-brand-600">
                   <p><span className="font-medium">Imię i nazwisko:</span> {reservation.imie} {reservation.nazwisko}</p>
                   <p><span className="font-medium">Email:</span> {reservation.email}</p>
                   <p><span className="font-medium">Telefon:</span> {reservation.telefon}</p>
                   {reservation.uwagi && (
                     <div>
                       <span className="font-medium">Uwagi:</span>
-                      <p className="mt-1 p-3 bg-stone-50 rounded-lg text-sm">{reservation.uwagi}</p>
+                      <p className="mt-1 p-3 bg-brand-50 rounded-lg text-sm">{reservation.uwagi}</p>
                     </div>
                   )}
                 </div>
@@ -204,80 +224,38 @@ export default function PotwierdzenieGosciaContent() {
             </div>
           </div>
 
-          {/* Dalsze kroki */}
-          <div className="section-forest p-8 rounded-2xl mb-8">
-            <h3 className="text-2xl font-display text-stone-800 mb-6 heading-forest">
-              📞 Co dalej?
-            </h3>
-            
-            {reservation.status === 'oczekujaca' && (
-              <div className="space-y-4 text-stone-700">
-                <p className="text-lg">
-                  <strong>📧 Email potwierdzenia</strong> został wysłany na Twój adres email.
-                </p>
-                <p>
-                  Skontaktujemy się z Tobą w ciągu <strong>24 godzin</strong>, aby potwierdzić dostępność i przekazać dalsze instrukcje dotyczące płatności i przyjazdu.
-                </p>
-                <p>
-                  Jeśli masz pilne pytania, śmiało się z nami skontaktuj!
-                </p>
-              </div>
-            )}
-            
-            {reservation.status === 'potwierdzona' && (
-              <div className="space-y-4 text-stone-700">
-                <p className="text-lg text-green-800">
-                  <strong>🎉 Gratulacje!</strong> Twoja rezerwacja została potwierdzona.
-                </p>
-                <p>
-                  Skontaktujemy się z Tobą wkrótce, aby omówić szczegóły przyjazdu, płatności i przekazać wszystkie potrzebne informacje.
-                </p>
-                <p>
-                  Przygotuj się na wspaniały wypoczynek w naturze! 🌲
-                </p>
-              </div>
-            )}
-            
-            {reservation.status === 'odrzucona' && (
-              <div className="space-y-4 text-stone-700">
-                <p className="text-lg text-red-800">
-                  <strong>😔 Przykro nam</strong>, ale nie możemy potwierdzić Twojej rezerwacji na wybrany termin.
-                </p>
-                <p>
-                  Jeśli jesteś zainteresowany innymi terminami, śmiało się z nami skontaktuj. Chętnie pomożemy znaleźć idealny termin dla Twojego pobytu.
-                </p>
-              </div>
-            )}
-          </div>
-
-          {/* Informacje kontaktowe */}
-          <div className="card-forest p-8 text-center">
-            <h3 className="text-2xl font-display text-stone-800 mb-4">
-              Masz pytania?
-            </h3>
-            <p className="text-stone-700 mb-6">
-              Jesteśmy tutaj, aby pomóc! Skontaktuj się z nami w dowolny sposób.
-            </p>
-            <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <a 
-                href="mailto:kontakt@stavakiszewa.pl" 
-                className="btn-forest-outline"
-              >
-                📧 kontakt@stavakiszewa.pl
-              </a>
-              <a 
-                href="tel:+48123456789" 
-                className="btn-forest-outline"
-              >
-                📞 +48 123 456 789
-              </a>
+          {/* Informacje dodatkowe */}
+          <div className="bg-brand-50 rounded-2xl p-6 mb-8 border border-brand-200">
+            <h4 className="text-lg font-lumios font-semibold text-brand-800 mb-4">Ważne informacje</h4>
+            <div className="space-y-3 text-brand-600 font-inter">
+              <p>
+                <strong>Numer rezerwacji:</strong> {reservation.tokenPotwierdzenia ? reservation.tokenPotwierdzenia.substring(0, 8).toUpperCase() : 'Brak'}
+              </p>
+              <p>
+                ✅ <strong>Email z potwierdzeniem</strong> został wysłany na adres: <span className="font-medium">{reservation.email}</span>
+              </p>
+              <p>
+                📞 W razie pytań skontaktuj się z nami telefonicznie lub przez formularz kontaktowy.
+              </p>
+              <p>
+                🚗 Szczegóły dotyczące dojazdu i check-in otrzymasz w osobnym emailu przed przyjazdem.
+              </p>
             </div>
           </div>
 
-          {/* Powrót do strony głównej */}
-          <div className="text-center mt-8">
-            <Link href="/" className="btn-forest">
-              🏠 Powrót na stronę główną
+          {/* Linki akcji */}
+          <div className="flex flex-col sm:flex-row gap-4 justify-center">
+            <Link 
+              href="/" 
+              className="inline-flex items-center justify-center px-6 py-3 bg-brand-700 hover:bg-brand-800 text-white font-montserrat font-semibold rounded-xl shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-300"
+            >
+              Wróć na stronę główną
+            </Link>
+            <Link 
+              href="/#kontakt" 
+              className="inline-flex items-center justify-center px-6 py-3 bg-white border-2 border-brand-300 text-brand-700 hover:bg-brand-100 font-montserrat font-semibold rounded-xl shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-300"
+            >
+              Skontaktuj się z nami
             </Link>
           </div>
         </div>
@@ -285,3 +263,4 @@ export default function PotwierdzenieGosciaContent() {
     </div>
   );
 } 
+

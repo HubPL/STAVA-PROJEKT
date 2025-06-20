@@ -4,20 +4,23 @@ import PotwierdzenieGosciaContent from './PotwierdzenieGosciaContent';
 
 export default function PotwierdzenieGosciaPage() {
   return (
-    <Suspense fallback={
-      <div className="min-h-screen section-forest flex flex-col items-center justify-center px-4">
-        <div className="text-center">
-          <div className="loading-forest mb-6"></div>
-          <h1 className="text-4xl md:text-5xl font-display text-stone-800 mb-4 heading-forest">
-            Ładowanie...
-          </h1>
-          <p className="text-stone-700 font-body text-lg">
-            Pobieramy szczegóły Twojej rezerwacji...
-          </p>
+    <div className="min-h-screen bg-brand-200">
+      <div className="h-32"></div>
+      <Suspense fallback={
+        <div className="min-h-screen bg-brand-200 flex flex-col items-center justify-center px-4">
+          <div className="text-center">
+            <div className="w-16 h-16 border-4 border-brand-300 border-t-brand-600 rounded-full animate-spin mx-auto mb-6"></div>
+            <h1 className="text-4xl md:text-5xl font-lumios text-brand-800 mb-4">
+              Ładowanie...
+            </h1>
+            <p className="text-brand-600 font-inter text-lg">
+              Pobieramy szczegóły Twojej rezerwacji...
+            </p>
+          </div>
         </div>
-      </div>
-    }>
-      <PotwierdzenieGosciaContent />
-    </Suspense>
+      }>
+        <PotwierdzenieGosciaContent />
+      </Suspense>
+    </div>
   );
 } 
