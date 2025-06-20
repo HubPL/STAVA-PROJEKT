@@ -470,7 +470,7 @@ const ReservationPage = () => {
 
                 {/* Informacje prawne */}
                 <p className="text-xs text-center text-gray-500">
-                  Klikając "Potwierdź rezerwację" akceptujesz{' '}
+                  Klikając &quot;Potwierdź rezerwację&quot; akceptujesz{' '}
                   <Link href="/regulamin" className="underline hover:text-gray-700">
                     Regulamin
                   </Link>{' '}

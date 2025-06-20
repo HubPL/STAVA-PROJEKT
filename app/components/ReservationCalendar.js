@@ -217,7 +217,7 @@ const ReservationCalendar = ({ onDatesChange, liczbOsob = 4 }) => {
       
       // Oblicz cenę (useEffect zajmie się resztą)
     }
-  }, [startDate, endDate, getDayAvailability, isRangeAvailable, config]);
+  }, [startDate, endDate, getDayAvailability, isRangeAvailable, config, onDatesChange]);
 
   // Generowanie dni miesiąca
   const monthDays = useMemo(() => {
