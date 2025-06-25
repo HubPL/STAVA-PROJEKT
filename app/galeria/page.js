@@ -85,7 +85,6 @@ export default function GaleriaPage() {
       <div className="bg-[#fdf2d0] font-serif text-[#3c3333]">
       <PageHero 
         titleKey="gallery.title"
-        subtitleKey="gallery.subtitle"
       />
       
       {/* Gallery Content */}

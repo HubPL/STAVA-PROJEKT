@@ -234,6 +234,16 @@ export default function OfertaPage() {
                         <p className="text-xl text-gray-500">Ładowanie zdjęć domków...</p>
                     </div>
                 )}
+                
+                {/* Przycisk Zarezerwuj pod zdjęciami */}
+                <div className="text-center mt-8">
+                    <Link 
+                      href="/rezerwacja" 
+                      className="inline-block px-12 py-4 bg-[#3c3333] text-[#fdf2d0] font-montserrat font-bold text-xl uppercase tracking-widest hover:bg-opacity-90 transition-all duration-300 transform-gpu hover:scale-105"
+                    >
+                      Zarezerwuj
+                    </Link>
+                </div>
             </section>
             
             {/* 2. MAIN CONTENT */}
@@ -269,38 +279,6 @@ export default function OfertaPage() {
                                 </div>
                             </div>
                         </div>
-                        </div>
-
-                        {/* Udogodnienia */}
-                        <div>
-                             <h2 className="text-3xl tracking-wider mb-8 font-lumios">Co na Ciebie czeka?</h2>
-                             <div className="grid grid-cols-2 md:grid-cols-3 gap-x-6 gap-y-6">
-                                {DOMEK_INFO.udogodnienia.map((item, index) => (
-                                    <div key={index} className="flex items-center gap-3">
-                                        <FiCheckCircle className="text-xl text-green-700/70 flex-shrink-0" />
-                                        <span className="tracking-wide">{item}</span>
-                                    </div>
-                                ))}
-                            </div>
-                        </div>
-
-                        {/* Tarasy i przestrzeń zewnętrzna */}
-                        <div>
-                            <h2 className="text-3xl tracking-wider mb-8 font-lumios">Tarasy i przestrzeń zewnętrzna</h2>
-                            <div className="grid md:grid-cols-3 gap-6">
-                                <div className="bg-[#ffffff] p-5 rounded-lg shadow-sm border border-gray-100">
-                                    <h3 className="font-semibold text-lg mb-2">Taras główny</h3>
-                                    <p>{DOMEK_INFO.tarasy.taras1}</p>
-                                </div>
-                                <div className="bg-[#ffffff] p-5 rounded-lg shadow-sm border border-gray-100">
-                                    <h3 className="font-semibold text-lg mb-2">Taras intymny</h3>
-                                    <p>{DOMEK_INFO.tarasy.taras2}</p>
-                                </div>
-                                <div className="bg-[#ffffff] p-5 rounded-lg shadow-sm border border-gray-100">
-                                    <h3 className="font-semibold text-lg mb-2">Leśna wyspa SPA</h3>
-                                    <p>{DOMEK_INFO.tarasy.taras3}</p>
-                                </div>
-                            </div>
                         </div>
 
                         {/* Wyposażenie */}
@@ -377,36 +355,6 @@ export default function OfertaPage() {
                                     {aktualnaCena ? `${aktualnaCena} PLN` : 'Zapytaj o cenę'}
                                 </span>
                             </div>
-                            
-                            {/* Cennik według liczby osób */}
-                            {aktualnaCena && config?.ceny?.cena_za_dodatkowa_osoba !== undefined && (
-                                <div className="mb-6 p-4 bg-blue-50 border border-blue-200 rounded-lg">
-                                    <h4 className="font-semibold text-blue-900 mb-3">Cennik według liczby osób:</h4>
-                                    <div className="space-y-2 text-sm">
-                                        {[...Array(config?.max_osob || 6)].map((_, index) => {
-                                            const liczbOsob = index + 1;
-                                            const obliczenia = kalkulujCeneZOsobami(config, liczbOsob, 1);
-                                            if (obliczenia) {
-                                                return (
-                                                    <div key={liczbOsob} className="flex justify-between">
-                                                        <span className="text-blue-800">
-                                                            {liczbOsob} {liczbOsob === 1 ? 'osoba' : liczbOsob <= 4 ? 'osoby' : 'osób'}:
-                                                        </span>
-                                                        <span className="font-medium text-blue-900">
-                                                            {obliczenia.cenaZaDobe} PLN
-                                                        </span>
-                                                    </div>
-                                                );
-                                            }
-                                            return null;
-                                        })}
-                                    </div>
-                                    <p className="text-xs text-blue-700 mt-2">
-                                        Cena bazowa dla {config?.bazowa_liczba_osob || 4} osób, 
-                                        +{config?.ceny?.cena_za_dodatkowa_osoba || 0} PLN za każdą dodatkową osobę
-                                    </p>
-                                </div>
-                            )}
                             
                             {aktualnaCena && config?.ceny?.sezonowe && config.ceny.sezonowe.length > 0 && (
                                 <div className="mb-6 p-3 bg-amber-50 border border-amber-200 rounded-lg">
