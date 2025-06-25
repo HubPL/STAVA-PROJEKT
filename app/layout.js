@@ -10,11 +10,11 @@ import './globals.css';
 
 export const metadata = {
   title: {
-    default: "STAVA - Domki letniskowe w Kiszewie | Wypoczynek na Kaszubach",
+    default: "STAVA - Domek wypoczynkowy w Kiszewie | Wypoczynek na Kaszubach",
     template: "%s | STAVA Kiszewa"
   },
-  description: "Ośrodek domków letniskowych STAVA w Starej Kiszewie. Komfortowe domki otoczone naturą na Kaszubach. Rezerwuj online - wypoczynek w lesie nad jeziorem.",
-  keywords: ["domki letniskowe", "Stara Kiszewa", "wypoczynek", "Kaszuby", "nocleg", "STAVA", "domki nad jeziorem", "las", "natura", "odpoczynek"],
+  description: "Ośrodek wypoczynkowy STAVA w Starej Kiszewie. Komfortowy domek wypoczynkowy otoczony naturą na Kaszubach. Rezerwuj online - wypoczynek w lesie nad jeziorami.",
+  keywords: ["domek wypoczynkowy", "Stara Kiszewa", "wypoczynek", "Kaszuby", "nocleg", "STAVA", "domek w lesie", "las", "natura", "odpoczynek", "jezior"],
   authors: [{ name: "STAVA" }],
   creator: "STAVA",
   publisher: "STAVA",
@@ -25,8 +25,8 @@ export const metadata = {
   },
   metadataBase: new URL("https://stavakiszewa.pl"),
   openGraph: {
-    title: "STAVA - Domki letniskowe w Kiszewie",
-    description: "Ośrodek domków letniskowych STAVA w Starej Kiszewie. Komfortowe domki otoczone naturą na Kaszubach.",
+    title: "STAVA - Domek wypoczynkowy w Kiszewie",
+    description: "Ośrodek wypoczynkowy STAVA w Starej Kiszewie. Komfortowy domek wypoczynkowy otoczony naturą na Kaszubach.",
     url: "https://stavakiszewa.pl",
     siteName: "STAVA Kiszewa",
     images: [
@@ -34,7 +34,7 @@ export const metadata = {
         url: "https://firebasestorage.googleapis.com/v0/b/stava-62c2a.firebasestorage.app/o/seo%2Fog-image.jpg?alt=media",
         width: 1200,
         height: 630,
-        alt: "STAVA - Domki letniskowe w Kiszewie",
+        alt: "STAVA - Domek wypoczynkowy w Kiszewie",
       },
     ],
     locale: "pl_PL",
@@ -42,8 +42,8 @@ export const metadata = {
   },
   twitter: {
     card: "summary_large_image",
-    title: "STAVA - Domki letniskowe w Kiszewie",
-    description: "Komfortowe domki otoczone naturą na Kaszubach. Rezerwuj online!",
+    title: "STAVA - Domek wypoczynkowy w Kiszewie",
+    description: "Komfortowy domek wypoczynkowy otoczony naturą na Kaszubach. Rezerwuj online!",
     images: ["https://firebasestorage.googleapis.com/v0/b/stava-62c2a.firebasestorage.app/o/seo%2Fog-image.jpg?alt=media"],
   },
   robots: {
@@ -88,8 +88,8 @@ export default function RootLayout({ children }) {
             __html: JSON.stringify({
               "@context": "https://schema.org",
               "@type": ["LodgingBusiness", "LocalBusiness"],
-              "name": "STAVA - Domki letniskowe w Kiszewie",
-              "description": "Luksusowe domki letniskowe w sercu lasu kaszubskiego. Idealne miejsce na wypoczynek z dala od miejskiego zgiełku.",
+              "name": "STAVA - Domek wypoczynkowy w Kiszewie",
+              "description": "Komfortowy domek wypoczynkowy w sercu lasu kaszubskiego. Idealne miejsce na wypoczynek z dala od miejskiego zgiełku.",
               "url": "https://stavakiszewa.pl",
               "telephone": "+48886627447",
               "email": "kontakt@stavakiszewa.pl",
@@ -118,12 +118,12 @@ export default function RootLayout({ children }) {
                 "https://firebasestorage.googleapis.com/v0/b/stava-62c2a.firebasestorage.app/o/galeria%2Fgaleria-1.jpg?alt=media"
               ],
               "amenityFeature": [
-                {"@type": "LocationFeatureSpecification", "name": "Sauna"},
-                {"@type": "LocationFeatureSpecification", "name": "Balia"},
                 {"@type": "LocationFeatureSpecification", "name": "Parking"},
                 {"@type": "LocationFeatureSpecification", "name": "WiFi"},
                 {"@type": "LocationFeatureSpecification", "name": "Ogród"},
-                {"@type": "LocationFeatureSpecification", "name": "Grill"}
+                {"@type": "LocationFeatureSpecification", "name": "Grill"},
+                {"@type": "LocationFeatureSpecification", "name": "Klimatyzacja"},
+                {"@type": "LocationFeatureSpecification", "name": "Kominek"}
               ],
               "priceRange": "$$",
               "paymentAccepted": ["Cash", "Bank Transfer"],

@@ -14,10 +14,10 @@ export default function AboutPage() {
   return (
     <>
       <Head>
-        <title>O nas - Historia STAVA | Domki Letniskowe Stara Kiszewa</title>
-        <meta name="description" content="Poznaj historię STAVA - od 1999 roku tworzymy miejsce wypoczynku w sercu lasu kaszubskiego. Nasze domki letniskowe w Starej Kiszewie to 25 lat doświadczenia w turystyce." />
-        <meta name="keywords" content="historia STAVA, o nas domki Kiszewa, właściciele STAVA, ośrodek od 1999, Kaszuby historia, domki letniskowe właściciele" />
-        <meta property="og:title" content="O nas - 25 lat Doświadczenia | STAVA Domki Kaszuby" />
+        <title>O nas - Historia STAVA | Domek Wypoczynkowy Stara Kiszewa</title>
+        <meta name="description" content="Poznaj historię STAVA - od 1999 roku tworzymy miejsce wypoczynku w sercu lasu kaszubskiego. Nasz domek wypoczynkowy w Starej Kiszewie to 25 lat doświadczenia w turystyce." />
+        <meta name="keywords" content="historia STAVA, o nas domek Kiszewa, właściciele STAVA, ośrodek od 1999, Kaszuby historia, domek wypoczynkowy właściciele" />
+        <meta property="og:title" content="O nas - 25 lat Doświadczenia | STAVA Domek Kaszuby" />
         <meta property="og:description" content="Od 1999 roku tworzymy wyjątkowe miejsce wypoczynku w lesie kaszubskim. Poznaj naszą historię i filozofię gościnności." />
         <meta property="og:image" content="https://firebasestorage.googleapis.com/v0/b/stava-62c2a.firebasestorage.app/o/hero%2Fhero-onas1.jpg?alt=media" />
         <meta property="og:url" content="https://stavakiszewa.pl/o-nas" />
@@ -31,7 +31,7 @@ export default function AboutPage() {
       />
 
       {/* 2. MAIN CONTENT SECTION */}
-      <section className="py-20 md:py-32 px-4">
+      <section className="py-20 md:py-32 px-6 sm:px-8 lg:px-4">
         <div className="container mx-auto">
           <div className="grid lg:grid-cols-2 gap-12 lg:gap-20 items-center">
             
@@ -103,7 +103,7 @@ export default function AboutPage() {
       </section>
 
        {/* 3. CTA SECTION */}
-      <section className="py-20 px-4 bg-white/50">
+      <section className="py-20 px-6 sm:px-8 lg:px-4 bg-white/50">
         <div className="container mx-auto text-center">
             <div>
                 <h2 className="text-3xl md:text-4xl font-semibold tracking-widest uppercase mb-6 font-lumios">{t('about.ready_to_rest')}</h2>

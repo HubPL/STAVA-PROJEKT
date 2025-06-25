@@ -36,7 +36,7 @@ const AnnouncementBar = () => {
   }, []);
 
   return (
-    <div className="fixed top-0 left-0 right-0 bg-black text-white py-2 px-4 text-center z-[60]">
+    <div className="fixed top-0 left-0 right-0 bg-black text-white py-2 px-6 sm:px-8 lg:px-4 text-center z-[60]">
       <div className="container mx-auto flex flex-col sm:flex-row items-center justify-center gap-2 sm:gap-4 text-sm">
         <span className="font-medium">
           ⚠️ Strona w budowie - start za:

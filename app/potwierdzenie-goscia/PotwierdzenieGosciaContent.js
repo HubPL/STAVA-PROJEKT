@@ -60,15 +60,10 @@ export default function PotwierdzenieGosciaContent() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-[#fdf2d0] flex flex-col items-center justify-center px-4">
+      <div className="min-h-screen bg-[#fdf2d0] flex flex-col items-center justify-center px-6 sm:px-8 lg:px-4">
         <div className="text-center">
-          <div className="w-16 h-16 border-4 border-[#3c3333]/20 border-t-[#3c3333] rounded-full animate-spin mx-auto mb-6"></div>
-          <h1 className="text-4xl md:text-5xl font-lumios text-[#3c3333] mb-4">
-            Ładowanie...
-          </h1>
-          <p className="text-[#3c3333] font-inter text-lg">
-            Pobieramy szczegóły Twojej rezerwacji...
-          </p>
+          <div className="w-12 h-12 border-2 border-[#3c3333] border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
+          <p className="text-xl tracking-widest">Sprawdzam potwierdzenie...</p>
         </div>
       </div>
     );
@@ -76,19 +71,17 @@ export default function PotwierdzenieGosciaContent() {
 
   if (error) {
     return (
-      <div className="min-h-screen bg-[#fdf2d0] flex flex-col items-center justify-center px-4">
+      <div className="min-h-screen bg-[#fdf2d0] flex flex-col items-center justify-center px-6 sm:px-8 lg:px-4">
         <div className="text-center max-w-md">
-          <div className="w-24 h-24 bg-[#ffffff] rounded-full flex items-center justify-center mx-auto mb-6">
-            <svg className="w-12 h-12 text-[#3c3333]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+          <div className="w-16 h-16 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-6">
+            <svg className="w-8 h-8 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
             </svg>
           </div>
-          <h1 className="text-4xl md:text-5xl font-lumios text-[#3c3333] mb-4">
-            Ups! Coś poszło nie tak
-          </h1>
-          <p className="text-red-600 font-inter mb-6">{error}</p>
-          <Link href="/" className="inline-flex items-center px-6 py-3 bg-[#3c3333] hover:bg-[#3c3333]/90 text-white font-montserrat font-semibold rounded-xl shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-300">
-            Powrót na stronę główną
+          <h1 className="text-2xl font-semibold tracking-widest uppercase mb-4 font-lumios">Ups! Coś poszło nie tak</h1>
+          <p className="text-lg tracking-wider mb-8">{error}</p>
+          <Link href="/" className="inline-block px-8 py-3 bg-[#3c3333] text-[#fdf2d0] rounded-lg hover:bg-opacity-90 transition-colors font-montserrat font-semibold">
+            Wróć na stronę główną
           </Link>
         </div>
       </div>
@@ -158,14 +151,14 @@ export default function PotwierdzenieGosciaContent() {
   const status = statusInfo[reservation.status] || statusInfo.oczekujaca;
 
   return (
-    <div className="min-h-screen py-12 px-4">
-      <div className="container mx-auto">
+    <div className="min-h-screen py-12 px-6 sm:px-8 lg:px-4">
+      <div className="container mx-auto max-w-4xl">
         <div className="text-center mb-12">
-          <h1 className="text-4xl md:text-5xl font-lumios text-[#3c3333] mb-6">
-            Dziękujemy za <span className="text-[#3c3333]">Rezerwację!</span>
+          <h1 className="text-3xl md:text-4xl font-semibold tracking-widest uppercase mb-6 font-lumios">
+            Potwierdź swoją rezerwację
           </h1>
-          <p className="text-xl font-inter text-[#3c3333] max-w-2xl mx-auto">
-            Oto potwierdzenie Twojej rezerwacji w STAVA
+          <p className="text-lg tracking-wider">
+            Kliknij przycisk poniżej, aby potwierdzić swoją rezerwację w STAVA.
           </p>
         </div>
 
@@ -187,41 +180,114 @@ export default function PotwierdzenieGosciaContent() {
               Szczegóły Twojej rezerwacji
             </h3>
             
-            <div className="grid md:grid-cols-2 gap-8">
-              <div className="space-y-4">
-                <h4 className="text-lg font-lumios font-semibold text-[#3c3333] border-b border-[#3c3333]/20 pb-2">
-                  Informacje o pobycie
-                </h4>
-                <div className="space-y-2 text-[#3c3333]">
-                  {reservation.domekNazwa && <p><span className="font-medium">Przydzielony domek:</span> {reservation.domekNazwa}</p>}
-                  <p><span className="font-medium">Liczba osób:</span> {reservation.liczbOsob}</p>
-                  <p><span className="font-medium">Termin:</span> {formatDate(reservation.startDate)} - {formatDate(reservation.endDate)}</p>
-                  {reservation.iloscNocy && (
-                    <p><span className="font-medium">Liczba nocy:</span> {reservation.iloscNocy}</p>
-                  )}
-                  {reservation.cenaCałkowita && (
-                    <p><span className="font-medium">Cena całkowita:</span> <span className="text-[#3c3333] font-bold">{reservation.cenaCałkowita} PLN</span></p>
-                  )}
-                </div>
-              </div>
-
-              <div className="space-y-4">
-                <h4 className="text-lg font-lumios font-semibold text-[#3c3333] border-b border-[#3c3333]/20 pb-2">
-                  Twoje dane
-                </h4>
-                <div className="space-y-2 text-[#3c3333]">
-                  <p><span className="font-medium">Imię i nazwisko:</span> {reservation.imie} {reservation.nazwisko}</p>
-                  <p><span className="font-medium">Email:</span> {reservation.email}</p>
-                  <p><span className="font-medium">Telefon:</span> {reservation.telefon}</p>
-                  {reservation.uwagi && (
+            {/* Sprawdź czy ma nową strukturę z selectedDomki */}
+            {reservation.selectedDomki && Array.isArray(reservation.selectedDomki) ? (
+              // Nowa struktura - wiele domków
+              <div className="space-y-8">
+                {/* Podsumowanie ogólne */}
+                <div className="bg-[#fdf2d0]/30 rounded-xl p-6 border border-[#3c3333]/20">
+                  <h4 className="text-lg font-lumios font-semibold text-[#3c3333] mb-4">
+                    Podsumowanie rezerwacji
+                  </h4>
+                  <div className="grid md:grid-cols-3 gap-4 text-[#3c3333]">
                     <div>
-                      <span className="font-medium">Uwagi:</span>
-                      <p className="mt-1 p-3 bg-[#fdf2d0]/30 rounded-lg text-sm">{reservation.uwagi}</p>
+                      <span className="font-medium">Liczba domków:</span> {reservation.selectedDomki.length}
                     </div>
-                  )}
+                    <div>
+                      <span className="font-medium">Łączna liczba osób:</span> {reservation.liczbOsob}
+                    </div>
+                    <div>
+                      <span className="font-medium">Łączna cena:</span> <span className="font-bold">{reservation.cenaCałkowita} PLN</span>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Lista domków */}
+                <div className="space-y-6">
+                  <h4 className="text-lg font-lumios font-semibold text-[#3c3333] border-b border-[#3c3333]/20 pb-2">
+                    Szczegóły domków
+                  </h4>
+                  {reservation.selectedDomki.map((domek, index) => (
+                    <div key={index} className="bg-gray-50 rounded-xl p-6 border border-gray-200">
+                      <h5 className="text-lg font-semibold text-[#3c3333] mb-4">
+                        🏠 Domek {domek.domekId.replace('D', '')}
+                      </h5>
+                      <div className="grid md:grid-cols-2 gap-4 text-[#3c3333]">
+                        <div className="space-y-2">
+                          <p><span className="font-medium">Liczba osób:</span> {domek.liczbOsob}</p>
+                          <p><span className="font-medium">Liczba nocy:</span> {domek.iloscNocy}</p>
+                          <p><span className="font-medium">Cena za domek:</span> <span className="font-bold">{domek.cenaCałkowita || domek.cenaCalkowitaDomku} PLN</span></p>
+                        </div>
+                        <div className="space-y-2">
+                          <p><span className="font-medium">Przyjazd:</span> {formatDate(domek.startDate)}</p>
+                          <p><span className="font-medium">Wyjazd:</span> {formatDate(domek.endDate)}</p>
+                          {reservation.status === 'potwierdzona' && (
+                            <p><span className="font-medium">Status:</span> <span className="text-green-600 font-bold">Potwierdzony</span></p>
+                          )}
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+
+                {/* Dane gościa */}
+                <div className="grid md:grid-cols-1 gap-8">
+                  <div className="space-y-4">
+                    <h4 className="text-lg font-lumios font-semibold text-[#3c3333] border-b border-[#3c3333]/20 pb-2">
+                      Twoje dane
+                    </h4>
+                    <div className="space-y-2 text-[#3c3333]">
+                      <p><span className="font-medium">Imię i nazwisko:</span> {reservation.imie} {reservation.nazwisko}</p>
+                      <p><span className="font-medium">Email:</span> {reservation.email}</p>
+                      <p><span className="font-medium">Telefon:</span> {reservation.telefon}</p>
+                      {reservation.uwagi && (
+                        <div>
+                          <span className="font-medium">Uwagi:</span>
+                          <p className="mt-1 p-3 bg-[#fdf2d0]/30 rounded-lg text-sm">{reservation.uwagi}</p>
+                        </div>
+                      )}
+                    </div>
+                  </div>
                 </div>
               </div>
-            </div>
+            ) : (
+              // Stara struktura - jeden domek (dla kompatybilności)
+              <div className="grid md:grid-cols-2 gap-8">
+                <div className="space-y-4">
+                  <h4 className="text-lg font-lumios font-semibold text-[#3c3333] border-b border-[#3c3333]/20 pb-2">
+                    Informacje o pobycie
+                  </h4>
+                  <div className="space-y-2 text-[#3c3333]">
+                    {reservation.domekNazwa && <p><span className="font-medium">Przydzielony domek:</span> {reservation.domekNazwa}</p>}
+                    <p><span className="font-medium">Liczba osób:</span> {reservation.liczbOsob}</p>
+                    <p><span className="font-medium">Termin:</span> {formatDate(reservation.startDate)} - {formatDate(reservation.endDate)}</p>
+                    {reservation.iloscNocy && (
+                      <p><span className="font-medium">Liczba nocy:</span> {reservation.iloscNocy}</p>
+                    )}
+                    {reservation.cenaCałkowita && (
+                      <p><span className="font-medium">Cena całkowita:</span> <span className="text-[#3c3333] font-bold">{reservation.cenaCałkowita} PLN</span></p>
+                    )}
+                  </div>
+                </div>
+
+                <div className="space-y-4">
+                  <h4 className="text-lg font-lumios font-semibold text-[#3c3333] border-b border-[#3c3333]/20 pb-2">
+                    Twoje dane
+                  </h4>
+                  <div className="space-y-2 text-[#3c3333]">
+                    <p><span className="font-medium">Imię i nazwisko:</span> {reservation.imie} {reservation.nazwisko}</p>
+                    <p><span className="font-medium">Email:</span> {reservation.email}</p>
+                    <p><span className="font-medium">Telefon:</span> {reservation.telefon}</p>
+                    {reservation.uwagi && (
+                      <div>
+                        <span className="font-medium">Uwagi:</span>
+                        <p className="mt-1 p-3 bg-[#fdf2d0]/30 rounded-lg text-sm">{reservation.uwagi}</p>
+                      </div>
+                    )}
+                  </div>
+                </div>
+              </div>
+            )}
           </div>
 
           {/* Informacje dodatkowe */}

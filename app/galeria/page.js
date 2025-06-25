@@ -72,11 +72,11 @@ export default function GaleriaPage() {
   return (
     <>
       <Head>
-        <title>Galeria Zdjęć Domków | STAVA Stara Kiszewa</title>
-        <meta name="description" content="Zobacz galerię zdjęć naszych luksusowych domków letniskowych w lesie kaszubskim. Wnętrza, tarasy, sauna, balia i piękne otoczenie natury w Starej Kiszewie." />
-        <meta name="keywords" content="galeria domków letniskowych, zdjęcia STAVA, domki Stara Kiszewa, wnętrza domków, sauna balia zdjęcia, Kaszuby galeria" />
-        <meta property="og:title" content="Galeria Zdjęć Domków STAVA | Piękne Wnętrza i Natura" />
-        <meta property="og:description" content="Odkryj wnętrza i otoczenie naszych domków letniskowych. Luksusowe wyposażenie, sauna, balia i przepiękne tereny leśne." />
+        <title>Galeria Zdjęć Domku | STAVA Stara Kiszewa</title>
+        <meta name="description" content="Zobacz galerię zdjęć naszego komfortowego domku wypoczynkowego w lesie kaszubskim. Wnętrza, tarasy i piękne otoczenie natury w Starej Kiszewie." />
+        <meta name="keywords" content="galeria domku wypoczynkowego, zdjęcia STAVA, domek Stara Kiszewa, wnętrza domku, tarasy zdjęcia, Kaszuby galeria" />
+        <meta property="og:title" content="Galeria Zdjęć Domku STAVA | Piękne Wnętrza i Natura" />
+        <meta property="og:description" content="Odkryj wnętrza i otoczenie naszego domku wypoczynkowego. Komfortowe wyposażenie i przepiękne tereny leśne." />
         <meta property="og:image" content="https://firebasestorage.googleapis.com/v0/b/stava-62c2a.firebasestorage.app/o/galeria%2Fgaleria-1.jpg?alt=media" />
         <meta property="og:url" content="https://stavakiszewa.pl/galeria" />
         <meta name="twitter:card" content="summary_large_image" />
@@ -88,7 +88,7 @@ export default function GaleriaPage() {
       />
       
       {/* Gallery Content */}
-      <section className="container mx-auto px-4 py-16">
+      <section className="container mx-auto px-6 sm:px-8 lg:px-4 py-16">
         {/* Galeria */}
         {images.length === 0 ? (
           <div className="text-center py-20">

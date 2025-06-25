@@ -6,10 +6,10 @@ export default function EnglishTermsPage() {
 
 export const metadata = {
   title: "Terms & Conditions - STAVA Kiszewa",
-  description: "Read the terms and conditions for booking and staying at STAVA summer cottages resort in Stara Kiszewa.",
+  description: "Read the terms and conditions for booking and staying at STAVA recreation cottage resort in Stara Kiszewa.",
   openGraph: {
     title: "Terms & Conditions - STAVA Kiszewa",
-    description: "Terms and conditions for STAVA summer cottages resort in Stara Kiszewa.",
+    description: "Terms and conditions for STAVA recreation cottage resort in Stara Kiszewa.",
     locale: "en_US",
   },
 }; 

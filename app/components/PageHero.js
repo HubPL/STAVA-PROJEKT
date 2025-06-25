@@ -13,7 +13,7 @@ const PageHero = ({ titleKey, subtitleKey, title, subtitle }) => {
   const displaySubtitle = subtitleKey ? t(subtitleKey) : subtitle;
   
   return (
-    <section className="relative h-[40vh] min-h-[280px] text-white flex items-center justify-center">
+    <section className="relative h-[40vh] min-h-[280px] text-white flex items-center justify-center mt-32">
       <Image
         src={getImageUrl(HERO_IMAGES.hero2)}
         alt="Tło strony"
@@ -22,7 +22,7 @@ const PageHero = ({ titleKey, subtitleKey, title, subtitle }) => {
         priority
       />
       <div className="absolute inset-0 bg-black/50 z-10"></div>
-      <div className="relative z-20 text-center px-4">
+      <div className="relative z-20 text-center px-6 sm:px-8 lg:px-4">
         <motion.div
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}

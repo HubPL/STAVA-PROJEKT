@@ -5,12 +5,12 @@ export default function EnglishHomePage() {
 }
 
 export const metadata = {
-  title: "STAVA - Summer Cottages in Kiszewa | Kashubian Retreat",
-  description: "STAVA summer cottages resort in Stara Kiszewa. Comfortable cottages surrounded by nature in Kashubia. Book online - forest lake retreat.",
-  keywords: ["summer cottages", "Stara Kiszewa", "vacation", "Kashubia", "accommodation", "STAVA", "lakeside cottages", "forest", "nature", "retreat"],
+  title: "STAVA - Recreation Cottage in Kiszewa | Kashubian Retreat",
+  description: "STAVA recreation cottage resort in Stara Kiszewa. Comfortable recreation cottage surrounded by nature in Kashubia. Book online - forest lakes retreat.",
+  keywords: ["recreation cottage", "Stara Kiszewa", "vacation", "Kashubia", "accommodation", "STAVA", "forest cottage", "nature", "retreat", "lakes"],
   openGraph: {
-    title: "STAVA - Summer Cottages in Kiszewa",
-    description: "STAVA summer cottages resort in Stara Kiszewa. Comfortable cottages surrounded by nature in Kashubia.",
+    title: "STAVA - Recreation Cottage in Kiszewa",
+    description: "STAVA recreation cottage resort in Stara Kiszewa. Comfortable recreation cottage surrounded by nature in Kashubia.",
     locale: "en_US",
   },
 }; 

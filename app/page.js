@@ -84,7 +84,7 @@ export default function HomePage() {
         </div>
         <div className="absolute inset-0 bg-black/40 z-10"></div>
         
-        <div className="absolute z-20 bottom-16 left-1/2 -translate-x-1/2 text-center w-full px-4">
+        <div className="absolute z-20 bottom-16 left-1/2 -translate-x-1/2 text-center w-full px-6 sm:px-8 lg:px-4">
             <div className="inline-block transition-all duration-500 hover:scale-105">
                 <Link 
                   href={`${basePath}/rezerwacja`}
@@ -99,13 +99,13 @@ export default function HomePage() {
             </a>
         </div>
 
-        <div className="absolute bottom-24 left-8 z-30">
+        <div className="absolute bottom-24 left-6 sm:left-8 z-30">
             <div className="bg-[#fdf2d0]/90 backdrop-blur-sm rounded-full p-2 hover:scale-110 transition-transform">
                 <LanguageSwitcher />
             </div>
         </div>
         
-        <div className="absolute bottom-24 right-8 z-30">
+        <div className="absolute bottom-24 right-6 sm:right-8 z-30">
             <div className="bg-[#fdf2d0]/90 backdrop-blur-sm rounded-full p-3 flex items-center space-x-4">
                 <a href="https://www.facebook.com/people/STAVA/61576052219084/" target="_blank" rel="noopener noreferrer" className="text-[#3c3333] hover:text-black transition-all hover:scale-125 transform-gpu"><FaFacebookF size={20}/></a>
                 <a href="https://www.instagram.com/stavakiszewa?igsh=djdqZnJhYXVydzg5" target="_blank" rel="noopener noreferrer" className="text-[#3c3333] hover:text-black transition-all hover:scale-125 transform-gpu"><FaInstagram size={20}/></a>
@@ -116,7 +116,7 @@ export default function HomePage() {
 
       {/* 2. SEKCJA O NAS */}
       <AnimateOnScroll>
-        <section id="o-nas" className="relative py-12 px-4 bg-[#fdf2d0] -mt-16 rounded-t-3xl z-20">
+        <section id="o-nas" className="relative py-12 px-6 sm:px-8 lg:px-4 bg-[#fdf2d0] -mt-16 rounded-t-3xl z-20">
           <div className="container mx-auto max-w-4xl text-center">
             <div className="mb-12">
               <div className="flex items-center justify-center mb-4">
@@ -164,7 +164,7 @@ export default function HomePage() {
 
       {/* 3. SEKCJA GALERII */}
       <AnimateOnScroll>
-        <section className="py-12 px-4 bg-[#fdf2d0]">
+        <section className="py-12 px-6 sm:px-8 lg:px-4 bg-[#fdf2d0]">
             <div className="container mx-auto">
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-4xl mx-auto">
                     {galleryImages.map((img, index) => (
@@ -191,7 +191,7 @@ export default function HomePage() {
 
       {/* 4. SEKCJA KONTAKT */}
       <AnimateOnScroll>
-        <section id="kontakt" className="relative py-24 px-4">
+        <section id="kontakt" className="relative py-24 px-6 sm:px-8 lg:px-4">
             <div className="absolute inset-0 z-0">
                 <Image
                     src={getImageUrl(HERO_IMAGES.about2)}

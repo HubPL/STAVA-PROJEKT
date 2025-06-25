@@ -2,6 +2,7 @@ import { NextResponse } from 'next/server';
 import { sendStatusUpdateEmail } from '@/lib/email';
 import { verifyOrigin } from '@/lib/auth-middleware';
 import { rateLimit, getClientIP } from '@/lib/rate-limit';
+import { getRezerwacjaById } from '@/lib/firestore';
 
 export async function POST(request) {
   try {
@@ -24,12 +25,36 @@ export async function POST(request) {
 
 
 
-    const { rezerwacjaData, newStatus } = await request.json();
+    const requestBody = await request.json();
+    let rezerwacjaData, newStatus;
+    
+    // Obsłuż różne formaty żądania
+    if (requestBody.rezerwacjaData && requestBody.newStatus) {
+      // Stary format - bezpośrednio dane rezerwacji
+      rezerwacjaData = requestBody.rezerwacjaData;
+      newStatus = requestBody.newStatus;
+    } else if (requestBody.rezerwacjaId && requestBody.status) {
+      // Nowy format - ID rezerwacji z panelu administracyjnego
+      const rezerwacja = await getRezerwacjaById(requestBody.rezerwacjaId);
+      if (!rezerwacja) {
+        return NextResponse.json(
+          { error: 'Nie znaleziono rezerwacji o podanym ID' },
+          { status: 404 }
+        );
+      }
+      rezerwacjaData = rezerwacja;
+      newStatus = requestBody.status;
+    } else {
+      return NextResponse.json(
+        { error: 'Nieprawidłowy format żądania. Wymagane: (rezerwacjaData + newStatus) lub (rezerwacjaId + status)' },
+        { status: 400 }
+      );
+    }
     
     // Walidacja wymaganych danych
     if (!rezerwacjaData.email || !newStatus) {
       return NextResponse.json(
-        { error: 'Brak wymaganych danych (email, newStatus)' },
+        { error: 'Brak wymaganych danych w rezerwacji (email)' },
         { status: 400 }
       );
     }
@@ -43,12 +68,25 @@ export async function POST(request) {
       );
     }
 
+    console.log('Wysyłanie emaila o statusie:', {
+      email: rezerwacjaData.email,
+      status: newStatus,
+      imie: rezerwacjaData.imie,
+      nazwisko: rezerwacjaData.nazwisko
+    });
+
     // Wysyłanie emaila o zmianie statusu
     const result = await sendStatusUpdateEmail(rezerwacjaData, newStatus);
     
+    console.log('Email o statusie wysłany pomyślnie:', {
+      email: rezerwacjaData.email,
+      status: newStatus,
+      emailResult: result
+    });
+
     return NextResponse.json({
       success: true,
-      message: `Email o statusie "${newStatus}" został wysłany`,
+      message: `Email o statusie "${newStatus}" został wysłany do ${rezerwacjaData.email}`,
       result
     });
     

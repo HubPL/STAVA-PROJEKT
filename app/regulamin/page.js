@@ -12,9 +12,9 @@ export default function RegulaminPage() {
         <>
             <Head>
                 <title>Regulamin w Trakcie Tworzenia | STAVA Stara Kiszewa</title>
-                <meta name="description" content="Regulamin ośrodka domków letniskowych STAVA w trakcie opracowania. Skontaktuj się z nami w sprawie pytań dotyczących pobytu w Starej Kiszewie." />
-                <meta name="keywords" content="regulamin STAVA, zasady pobytu domki, regulamin Stara Kiszewa, warunki pobytu Kaszuby" />
-                <meta property="og:title" content="Regulamin STAVA | Domki Letniskowe" />
+                <meta name="description" content="Regulamin ośrodka wypoczynkowego STAVA w trakcie opracowania. Skontaktuj się z nami w sprawie pytań dotyczących pobytu w Starej Kiszewie." />
+                <meta name="keywords" content="regulamin STAVA, zasady pobytu domek, regulamin Stara Kiszewa, warunki pobytu Kaszuby" />
+                <meta property="og:title" content="Regulamin STAVA | Domek Wypoczynkowy" />
                 <meta property="og:description" content="Pracujemy nad regulaminem ośrodka. W międzyczasie chętnie odpowiemy na pytania o zasady pobytu." />
                 <meta property="og:url" content="https://stavakiszewa.pl/regulamin" />
                 <meta name="robots" content="index, follow" />
@@ -27,7 +27,7 @@ export default function RegulaminPage() {
             />
             
             {/* 2. MAIN CONTENT */}
-            <main className="container mx-auto px-4 py-16 sm:py-24">
+            <main className="container mx-auto px-6 sm:px-8 lg:px-4 py-16 sm:py-24">
                 <article className="max-w-4xl mx-auto">
 
                     <div className="text-center py-20">

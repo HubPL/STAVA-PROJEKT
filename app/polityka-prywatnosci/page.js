@@ -34,8 +34,8 @@ export default function PolitykaPrywatnosciPage() {
         <>
             <Head>
                 <title>Polityka Prywatności RODO | STAVA Stara Kiszewa</title>
-                <meta name="description" content="Polityka prywatności STAVA zgodna z RODO. Dowiedz się jak chronimy Twoje dane osobowe podczas rezerwacji domków letniskowych w Starej Kiszewie." />
-                <meta name="keywords" content="polityka prywatności STAVA, RODO domki, ochrona danych STAVA, prywatność rezerwacja, dane osobowe Kiszewa" />
+                <meta name="description" content="Polityka prywatności STAVA zgodna z RODO. Dowiedz się jak chronimy Twoje dane osobowe podczas rezerwacji domku wypoczynkowego w Starej Kiszewie." />
+                <meta name="keywords" content="polityka prywatności STAVA, RODO domek, ochrona danych STAVA, prywatność rezerwacja, dane osobowe Kiszewa" />
                 <meta property="og:title" content="Polityka Prywatności RODO | STAVA" />
                 <meta property="og:description" content="Sprawdź jak chronimy Twoje dane osobowe zgodnie z RODO. Transparentna polityka prywatności dla gości STAVA." />
                 <meta property="og:url" content="https://stavakiszewa.pl/polityka-prywatnosci" />
@@ -49,7 +49,7 @@ export default function PolitykaPrywatnosciPage() {
             />
             
             {/* 2. MAIN CONTENT */}
-            <main className="container mx-auto px-4 py-16 sm:py-24">
+            <main className="container mx-auto px-6 sm:px-8 lg:px-4 py-16 sm:py-24">
                 <article className="max-w-4xl mx-auto">
 
                     <InfoBox title="Ważne informacje" type="important">

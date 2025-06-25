@@ -1,8 +1,8 @@
 export default function manifest() {
   return {
-    name: 'STAVA - Domki letniskowe w Kiszewie',
+    name: 'STAVA - Domek wypoczynkowy w Kiszewie',
     short_name: 'STAVA',
-    description: 'Ośrodek domków letniskowych w Starej Kiszewie. Rezerwuj komfortowe domki otoczone naturą.',
+    description: 'Ośrodek wypoczynkowy w Starej Kiszewie. Rezerwuj komfortowy domek wypoczynkowy otoczony naturą.',
     start_url: '/',
     display: 'browser',
     background_color: '#ffffff',

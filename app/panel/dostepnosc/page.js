@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { onAuthChange } from '@/lib/auth';
-import { getAllDomki, getNiedostepnosci, setDomekNiedostepny, usunNiedostepnosc } from '@/lib/firestore';
+import { getAllDomki, getNiedostepnosci, setDomekNiedostepny, usunNiedostepnosc, checkRezerwacjeConflict } from '@/lib/firestore';
 
 export default function DostepnoscPanel() {
   const [user, setUser] = useState(null);
@@ -13,6 +13,11 @@ export default function DostepnoscPanel() {
   const [formLoading, setFormLoading] = useState(false);
   const [message, setMessage] = useState({ type: '', text: '' });
   const [confirmDialog, setConfirmDialog] = useState({ show: false, id: null });
+  const [conflictDialog, setConflictDialog] = useState({ 
+    show: false, 
+    conflicts: [], 
+    formData: null 
+  });
   
   const [formData, setFormData] = useState({
     domek_id: '',
@@ -62,13 +67,40 @@ export default function DostepnoscPanel() {
       setMessage({ type: 'error', text: 'Proszę wypełnić wszystkie wymagane pola (domek, data od, data do).' });
       return;
     }
+    
     setFormLoading(true);
     try {
+      // Sprawdź czy są potwierdzone rezerwacje w tym terminie
+      const conflicts = await checkRezerwacjeConflict(formData.domek_id, formData.od, formData.do);
+      
+      if (conflicts.length > 0) {
+        // Pokaż dialog z ostrzeżeniem
+        setConflictDialog({
+          show: true,
+          conflicts,
+          formData: { ...formData }
+        });
+        setFormLoading(false);
+        return;
+      }
+      
+      // Brak konfliktów - dodaj blokadę
+      await proceedWithBlocking(formData);
+      
+    } catch (error) {
+      console.error("Błąd sprawdzania konfliktów:", error);
+      setMessage({ type: 'error', text: 'Wystąpił błąd podczas sprawdzania konfliktów. Sprawdź konsolę.' });
+      setFormLoading(false);
+    }
+  };
+
+  const proceedWithBlocking = async (dataToBlock) => {
+    try {
       await setDomekNiedostepny({
-        domekId: formData.domek_id,
-        startDate: formData.od,
-        endDate: formData.do,
-        powod: formData.powod
+        domekId: dataToBlock.domek_id,
+        startDate: dataToBlock.od,
+        endDate: dataToBlock.do,
+        powod: dataToBlock.powod
       });
       setMessage({ type: 'success', text: 'Pomyślnie dodano okres niedostępności!' });
       setFormData(prev => ({ // Resetuj daty, zostaw domek
@@ -84,6 +116,17 @@ export default function DostepnoscPanel() {
     } finally {
       setFormLoading(false);
     }
+  };
+
+  const handleForceBlock = async () => {
+    setConflictDialog({ show: false, conflicts: [], formData: null });
+    setFormLoading(true);
+    await proceedWithBlocking(conflictDialog.formData);
+  };
+
+  const handleCancelBlock = () => {
+    setConflictDialog({ show: false, conflicts: [], formData: null });
+    setFormLoading(false);
   };
 
   const handleRemoveNiedostepnosc = async (id) => {
@@ -152,7 +195,7 @@ export default function DostepnoscPanel() {
           </div>
         )}
 
-        {/* Dialog potwierdzenia */}
+        {/* Dialog potwierdzenia usunięcia */}
         {confirmDialog.show && (
           <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
             <div className="bg-white p-6 rounded-lg shadow-xl max-w-md">
@@ -169,6 +212,57 @@ export default function DostepnoscPanel() {
                   className="px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded-lg"
                 >
                   Usuń
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* Dialog ostrzeżenia o konfliktach rezerwacji */}
+        {conflictDialog.show && (
+          <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+            <div className="bg-white p-6 rounded-lg shadow-xl max-w-2xl max-h-[80vh] overflow-y-auto">
+              <div className="mb-4">
+                <h3 className="text-xl font-bold text-red-600 mb-2">⚠️ Ostrzeżenie!</h3>
+                <p className="text-gray-700 mb-4">
+                  W wybranym terminie ({new Date(conflictDialog.formData?.od).toLocaleDateString('pl-PL')} - {new Date(conflictDialog.formData?.do).toLocaleDateString('pl-PL')}) 
+                  dla domku {getDomekName(conflictDialog.formData?.domek_id)} istnieją już potwierdzone rezerwacje:
+                </p>
+                
+                <div className="bg-red-50 border border-red-200 rounded-lg p-4 mb-4">
+                  {conflictDialog.conflicts.map((conflict, index) => (
+                    <div key={index} className="mb-3 last:mb-0">
+                      <div className="font-semibold text-red-800">
+                        {conflict.imieNazwisko || 'Brak danych gościa'}
+                      </div>
+                      <div className="text-sm text-red-700">
+                        📧 {conflict.email}<br/>
+                        📞 {conflict.telefon}<br/>
+                        📅 {conflict.startDate.toLocaleDateString('pl-PL')} - {conflict.endDate.toLocaleDateString('pl-PL')}
+                      </div>
+                    </div>
+                  ))}
+                </div>
+                
+                <p className="text-gray-700 text-sm">
+                  Zablokowanie tego terminu może spowodować problemy z istniejącymi rezerwacjami. 
+                  Czy na pewno chcesz kontynuować?
+                </p>
+              </div>
+              
+              <div className="flex gap-4 justify-end">
+                <button
+                  onClick={handleCancelBlock}
+                  className="px-6 py-2 bg-gray-300 hover:bg-gray-400 rounded-lg"
+                >
+                  Anuluj
+                </button>
+                <button
+                  onClick={handleForceBlock}
+                  className="px-6 py-2 bg-red-600 hover:bg-red-700 text-white rounded-lg"
+                  disabled={formLoading}
+                >
+                  {formLoading ? 'Blokowanie...' : 'Zablokuj mimo to'}
                 </button>
               </div>
             </div>

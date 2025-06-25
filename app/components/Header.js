@@ -74,7 +74,7 @@ const Header = () => {
         }`}
       ></div>
 
-      <div className="relative container mx-auto grid grid-cols-3 items-center px-4 py-0">
+{/*  */}      <div className="relative container mx-auto grid grid-cols-3 items-center px-6 sm:px-8 lg:px-4 py-0">
         
         <nav className="hidden lg:flex items-center space-x-8 justify-start">
           {leftNavLinks.map((link) => (
@@ -158,24 +158,30 @@ const Header = () => {
         }`}
       >
         <div className="bg-[#fdf2d0]/95 backdrop-blur-sm border-t border-[#3c3333]/20 shadow-lg">
-          <nav className="flex flex-col p-4 space-y-2">
-            {[...leftNavLinks, ...rightNavLinks].map((link, index) => (
+          <nav className="flex flex-col p-6 space-y-2">
+            {rightNavLinks.filter(link => link.isCTA).map((link, index) => (
               <Link 
                 key={link.href} 
                 href={link.href} 
-                className={
-                  link.isCTA
-                    ? "group p-4 rounded-xl bg-[#3c3333] text-[#fdf2d0] hover:bg-[#3c3333]/90 transition-all duration-300 transform hover:scale-105 text-center"
-                    : "group p-4 rounded-xl hover:bg-[#fdf2d0]/80 transition-all duration-300 transform hover:scale-105"
-                }
+                className="group p-4 rounded-xl bg-[#3c3333] text-[#fdf2d0] hover:bg-[#3c3333]/90 transition-all duration-300 transform hover:scale-105 text-center"
                 onClick={() => setIsMobileMenuOpen(false)}
                 style={{animationDelay: `${index * 0.1}s`}}
               >
-                <span className={
-                  link.isCTA
-                    ? "font-montserrat font-bold text-[#fdf2d0] uppercase tracking-wider"
-                    : "font-montserrat font-medium text-[#3c3333] group-hover:text-[#3c3333]/90 uppercase tracking-wider"
-                }>
+                <span className="font-montserrat font-bold text-[#fdf2d0] uppercase tracking-wider">
+                  {link.label}
+                </span>
+              </Link>
+            ))}
+            
+            {[...leftNavLinks, ...rightNavLinks.filter(link => !link.isCTA)].map((link, index) => (
+              <Link 
+                key={link.href} 
+                href={link.href} 
+                className="group p-4 rounded-xl hover:bg-[#fdf2d0]/80 transition-all duration-300 transform hover:scale-105"
+                onClick={() => setIsMobileMenuOpen(false)}
+                style={{animationDelay: `${(index + 1) * 0.1}s`}}
+              >
+                <span className="font-montserrat font-medium text-[#3c3333] group-hover:text-[#3c3333]/90 uppercase tracking-wider">
                   {link.label}
                 </span>
               </Link>

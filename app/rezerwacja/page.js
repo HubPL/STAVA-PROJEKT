@@ -1,73 +1,61 @@
 'use client';
 
-import { useState, useEffect } from 'react';
-import { useForm } from 'react-hook-form';
-import { yupResolver } from '@hookform/resolvers/yup';
-import * as yup from 'yup';
-import Link from 'next/link';
-import Head from 'next/head';
+import { useState, useEffect, useCallback } from 'react';
+import { useForm, Controller } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { z } from 'zod';
 import { format } from 'date-fns';
 import { pl } from 'date-fns/locale';
-import { FiUser, FiMail, FiPhone, FiUsers, FiMessageSquare, FiCheck, FiCalendar, FiHome } from 'react-icons/fi';
-import ReservationCalendar from '@/app/components/ReservationCalendar';
-import PageHero from '@/app/components/PageHero';
-import { getConfig, createRezerwacja, generateConfirmationToken } from '@/lib/firestore';
+import Link from 'next/link';
+import Head from 'next/head';
+import { FiUser, FiMail, FiPhone, FiUsers, FiMessageSquare, FiCheck, FiHome, FiDollarSign, FiMapPin } from 'react-icons/fi';
+import PageHero from '../components/PageHero';
+import MultiDomekCalendar from '../components/ReservationCalendar';
+import { createRezerwacja, generateConfirmationToken, getConfig } from '@/lib/firestore';
 import { DOMEK_INFO, formatujSzczegolyCeny, kalkulujCeneZOsobami } from '@/lib/domek-config';
 
-// Schema walidacji formularza
-const reservationSchema = yup.object({
-  imie: yup.string()
-    .required('Imię jest wymagane')
-    .min(2, 'Imię musi mieć minimum 2 znaki')
-    .max(50, 'Imię może mieć maksymalnie 50 znaków'),
-  nazwisko: yup.string()
-    .required('Nazwisko jest wymagane')
-    .min(2, 'Nazwisko musi mieć minimum 2 znaki')
-    .max(50, 'Nazwisko może mieć maksymalnie 50 znaków'),
-  email: yup.string()
-    .required('Email jest wymagany')
-    .email('Podaj poprawny adres email'),
-  telefon: yup.string()
-    .required('Telefon jest wymagany')
-    .matches(
-      /^(\+?\d{1,3}[-.\s]?)?\(?\d{1,4}\)?[-.\s]?\d{1,4}[-.\s]?\d{1,9}$/,
-      'Podaj poprawny numer telefonu'
-    ),
-  liczbOsob: yup.number()
-    .required('Liczba osób jest wymagana')
-    .min(1, 'Minimum 1 osoba')
-    .max(8, 'Maksymalnie 8 osób'),
-  uwagi: yup.string()
-    .max(500, 'Uwagi mogą mieć maksymalnie 500 znaków')
+// Schemat walidacji
+const rezerwacjaSchema = z.object({
+  imie: z.string().min(2, 'Imię musi mieć co najmniej 2 znaki'),
+  nazwisko: z.string().min(2, 'Nazwisko musi mieć co najmniej 2 znaki'),
+  email: z.string()
+    .email('Nieprawidłowy adres email')
+    .refine((email) => {
+      // Sprawdź czy email ma poprawny format z domeną
+      const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+      return emailRegex.test(email);
+    }, 'Podaj prawidłowy adres email z domeną'),
+  telefon: z.string()
+    .refine((phone) => {
+      // Usuń wszystkie spacje, myślniki i znaki specjalne
+      const cleaned = phone.replace(/[\s\-\(\)\+]/g, '');
+      
+      // Sprawdź czy to polski numer telefonu
+      // Może zaczynać się od 48 (kod kraju) lub być 9-cyfrowy
+      const polishPhoneRegex = /^(48)?[4-9]\d{8}$/;
+      
+      return polishPhoneRegex.test(cleaned);
+    }, 'Podaj prawidłowy polski numer telefonu (np. +48 123 456 789 lub 123 456 789)'),
+  uwagi: z.string().optional()
 });
 
 const ReservationPage = () => {
+  const [selectedDomki, setSelectedDomki] = useState([]);
+  const [loading, setLoading] = useState(false);
+  const [message, setMessage] = useState({ type: '', text: '' });
   const [config, setConfig] = useState(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
-  const [submitError, setSubmitError] = useState(null);
-  const [selectedDates, setSelectedDates] = useState(null);
-  const [showSummary, setShowSummary] = useState(false);
 
-  const {
-    register,
-    handleSubmit,
-    watch,
-    formState: { errors },
-    reset
-  } = useForm({
-    resolver: yupResolver(reservationSchema),
+  const { register, handleSubmit, control, watch, formState: { errors } } = useForm({
+    resolver: zodResolver(rezerwacjaSchema),
     defaultValues: {
       imie: '',
       nazwisko: '',
       email: '',
       telefon: '',
-      liczbOsob: 2,
       uwagi: ''
     }
   });
 
-  // Obserwowanie wartości formularza dla podsumowania
   const watchedValues = watch();
 
   // Pobieranie konfiguracji
@@ -77,414 +65,397 @@ const ReservationPage = () => {
         const configData = await getConfig();
         setConfig(configData);
       } catch (error) {
-        console.error('Błąd pobierania konfiguracji:', error);
-      } finally {
-        setLoading(false);
+        console.error('Błąd ładowania konfiguracji:', error);
       }
     };
+
     fetchConfig();
   }, []);
 
-  // Aktualizacja podsumowania gdy są wybrane daty i wypełnione podstawowe dane
-  useEffect(() => {
-    if (selectedDates && watchedValues.imie && watchedValues.nazwisko && watchedValues.email) {
-      setShowSummary(true);
-    } else {
-      setShowSummary(false);
-    }
-  }, [selectedDates, watchedValues]);
+  // Obsługa zmiany wyboru domków
+  const handleSelectionChange = useCallback((domkiData) => {
+    setSelectedDomki(domkiData);
+  }, []);
+
+  // Obliczanie łącznej ceny
+  const cenaCałkowita = selectedDomki.reduce((sum, domek) => sum + (domek.cenaCałkowita || 0), 0);
+  const liczbOsobCałkowita = selectedDomki.reduce((sum, domek) => sum + domek.liczbOsob, 0);
 
   // Obsługa wysyłania formularza
   const onSubmit = async (data) => {
-    if (!selectedDates) {
-      setSubmitError('Proszę wybrać termin pobytu');
+    if (selectedDomki.length === 0) {
+      setMessage({ type: 'error', text: 'Musisz wybrać co najmniej jeden domek.' });
       return;
     }
 
-    setSubmitError(null);
-    try {
-      // Przelicz cenę końcową na podstawie aktualnej konfiguracji i danych formularza
-      const obliczenia = kalkulujCeneZOsobami(config, data.liczbOsob, selectedDates.nights, selectedDates.startDate, selectedDates.endDate);
-      const cenaCałkowita = obliczenia ? obliczenia.cenaCałkowita : selectedDates.totalPrice;
+    setLoading(true);
+    setMessage({ type: '', text: '' });
 
+    try {
+      const token = generateConfirmationToken();
+      
+      // Przygotowanie danych rezerwacji
       const rezerwacjaData = {
         ...data,
-        tokenPotwierdzenia: generateConfirmationToken(),
-        startDate: selectedDates.startDate,
-        endDate: selectedDates.endDate,
-        iloscNocy: selectedDates.nights,
-        cenaCałkowita: cenaCałkowita,
-        obliczeniaCeny: obliczenia, // Zapisujemy szczegóły kalkulacji
-        dataUtworzenia: new Date(),
-        status: 'oczekujaca'
+        tokenPotwierdzenia: token
       };
 
-      // Tworzenie rezerwacji w Firestore
-      await createRezerwacja(rezerwacjaData);
+      // Przygotowanie domków z dodatkowymi polami
+      const selectedDomkiWithDetails = selectedDomki.map(domek => ({
+        ...domek,
+        cenaCalkowitaDomku: domek.cenaCałkowita
+      }));
 
-      // Wysyłanie emaili
-      await fetch('/api/send-emails', {
+      // Utworzenie rezerwacji
+      const rezerwacjaId = await createRezerwacja(rezerwacjaData, selectedDomkiWithDetails);
+
+      // Wysłanie emaila potwierdzającego
+      const emailResponse = await fetch('/api/contact', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          ...rezerwacjaData,
-          domekNazwa: DOMEK_INFO.nazwa
-        }),
+          type: 'reservation',
+          formData: {
+            ...data,
+            selectedDomki: selectedDomkiWithDetails,
+            cenaCałkowita,
+            liczbOsob: liczbOsobCałkowita,
+            tokenPotwierdzenia: token
+          }
+        })
       });
 
-      // Przekierowanie do strony potwierdzenia
-      window.location.href = `/potwierdzenie-goscia?token=${rezerwacjaData.tokenPotwierdzenia}`;
+      if (!emailResponse.ok) {
+        throw new Error('Błąd wysyłania emaila');
+      }
+
+      // Przekierowanie na stronę potwierdzenia
+      window.location.href = '/potwierdzenie-goscia';
+
     } catch (error) {
-      console.error('Błąd tworzenia rezerwacji:', error);
-      setSubmitError('Wystąpił błąd podczas tworzenia rezerwacji. Spróbuj ponownie.');
+      console.error('Błąd podczas rezerwacji:', error);
+      setMessage({ 
+        type: 'error', 
+        text: 'Wystąpił błąd podczas przetwarzania rezerwacji. Spróbuj ponownie.' 
+      });
+    } finally {
+      setLoading(false);
     }
   };
-
-  if (loading) {
-    return (
-      <div className="min-h-screen bg-[#fdf2d0] flex items-center justify-center">
-        <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[#3c3333] mx-auto"></div>
-          <p className="mt-4 text-[#3c3333]">Ładowanie formularza rezerwacji...</p>
-        </div>
-      </div>
-    );
-  }
 
   return (
     <>
       <Head>
         <title>Rezerwacja Online Domku | STAVA Stara Kiszewa</title>
-        <meta name="description" content="Zarezerwuj online komfortowy domek letniskowy w sercu lasu kaszubskiego. Sprawdź dostępność, wybierz termin i dokonaj rezerwacji. STAVA Stara Kiszewa - wypoczynek w naturze." />
-        <meta name="keywords" content="rezerwacja domku online, rezerwacja STAVA, domki Stara Kiszewa booking, rezerwacja domku Kaszuby, online booking domki letniskowe" />
+        <meta name="description" content="Zarezerwuj online komfortowy domek wypoczynkowy w sercu lasu kaszubskiego. Sprawdź dostępność, wybierz termin i dokonaj rezerwacji. STAVA Stara Kiszewa - wypoczynek w naturze." />
+        <meta name="keywords" content="rezerwacja domku online, rezerwacja STAVA, domek Stara Kiszewa booking, rezerwacja domku Kaszuby, online booking domek wypoczynkowy" />
         <meta property="og:title" content="Rezerwacja Online Domku STAVA | Łatwo i Szybko" />
-        <meta property="og:description" content="System rezerwacji online dla domków letniskowych STAVA. Sprawdź dostępność w czasie rzeczywistym i zarezerwuj swój wymarzony pobyt." />
+        <meta property="og:description" content="System rezerwacji online dla domku wypoczynkowego STAVA. Sprawdź dostępność w czasie rzeczywistym i zarezerwuj swój wymarzony pobyt." />
         <meta property="og:image" content="https://firebasestorage.googleapis.com/v0/b/stava-62c2a.firebasestorage.app/o/hero%2Fhero.jpg?alt=media" />
         <meta property="og:url" content="https://stavakiszewa.pl/rezerwacja" />
         <meta name="twitter:card" content="summary_large_image" />
         <link rel="canonical" href="https://stavakiszewa.pl/rezerwacja" />
       </Head>
       <div className="min-h-screen bg-[#fdf2d0] font-serif text-[#3c3333]">
-      <PageHero
-        title="Rezerwacja"
-        subtitle="Zarezerwuj swój wymarzony pobyt w domkach STAVA"
-      />
+        <PageHero
+          title="Rezerwacja"
+          subtitle="Zarezerwuj swój wymarzony pobyt w domkach STAVA"
+        />
 
-      <main className="container mx-auto px-4 py-12 md:py-20 max-w-6xl">
-        <div className="grid lg:grid-cols-3 gap-8 lg:gap-12">
-          {/* Lewa kolumna - Kalendarz i Formularz */}
-          <div className="lg:col-span-2 space-y-8">
-            {/* Sekcja 1: Kalendarz */}
-            <section>
-              <div className="flex items-center gap-3 mb-6">
-                <div className="w-10 h-10 bg-[#3c3333] text-[#fdf2d0] rounded-full flex items-center justify-center font-bold">
-                  1
+        <main className="container mx-auto px-6 sm:px-8 lg:px-4 py-12 md:py-20 max-w-7xl">
+          <div className="grid lg:grid-cols-3 gap-8 lg:gap-12">
+            {/* Lewa kolumna - Kalendarze i Formularz */}
+            <div className="lg:col-span-2 space-y-8">
+              {/* Sekcja 1: Kalendarze */}
+              <section>
+                <div className="flex items-center gap-3 mb-6">
+                  <div className="w-10 h-10 bg-[#3c3333] text-[#fdf2d0] rounded-full flex items-center justify-center font-bold">
+                    1
+                  </div>
+                  <h2 className="text-2xl font-bold font-lumios">Wybierz domki i terminy</h2>
                 </div>
-                <h2 className="text-2xl font-bold font-lumios">Wybierz termin pobytu</h2>
-              </div>
-              <ReservationCalendar
-                onDatesChange={setSelectedDates}
-                liczbOsob={watchedValues.liczbOsob || 2}
-              />
-            </section>
+                <MultiDomekCalendar onSelectionChange={handleSelectionChange} />
+              </section>
 
-            {/* Sekcja 2: Formularz */}
-            <section>
-              <div className="flex items-center gap-3 mb-6">
-                <div className="w-10 h-10 bg-[#3c3333] text-[#fdf2d0] rounded-full flex items-center justify-center font-bold">
-                  2
+              {/* Sekcja 2: Formularz */}
+              <section>
+                <div className="flex items-center gap-3 mb-6">
+                  <div className="w-10 h-10 bg-[#3c3333] text-[#fdf2d0] rounded-full flex items-center justify-center font-bold">
+                    2
+                  </div>
+                  <h2 className="text-2xl font-bold font-lumios">Dane kontaktowe</h2>
                 </div>
-                <h2 className="text-2xl font-bold font-lumios">Podaj dane kontaktowe</h2>
-              </div>
 
-              <form onSubmit={handleSubmit(onSubmit)} className="bg-white rounded-xl shadow-lg p-6 md:p-8 space-y-6">
-                {/* Imię i Nazwisko */}
-                <div className="grid md:grid-cols-2 gap-4">
-                  <div>
-                    <label className="block text-sm font-semibold mb-2">Imię</label>
-                    <div className="relative">
-                      <FiUser className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
+                <form onSubmit={handleSubmit(onSubmit)} className="bg-white rounded-xl shadow-lg p-6 space-y-6">
+                  <div className="grid md:grid-cols-2 gap-6">
+                    {/* Imię */}
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-2">
+                        <FiUser className="inline mr-2" />
+                        Imię *
+                      </label>
                       <input
                         {...register('imie')}
                         type="text"
-                        className={`w-full pl-10 pr-4 py-3 border rounded-lg focus:ring-2 focus:ring-[#3c3333] focus:border-transparent transition-colors ${
-                          errors.imie ? 'border-red-500' : 'border-gray-300'
-                        }`}
-                        placeholder="Jan"
+                        className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#3c3333] focus:border-transparent transition-all"
+                        placeholder="Wprowadź swoje imię"
                       />
+                      {errors.imie && <p className="mt-1 text-sm text-red-600">{errors.imie.message}</p>}
                     </div>
-                    {errors.imie && (
-                      <p className="mt-1 text-sm text-red-500">{errors.imie.message}</p>
-                    )}
-                  </div>
 
-                  <div>
-                    <label className="block text-sm font-semibold mb-2">Nazwisko</label>
-                    <div className="relative">
-                      <FiUser className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
+                    {/* Nazwisko */}
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-2">
+                        <FiUser className="inline mr-2" />
+                        Nazwisko *
+                      </label>
                       <input
                         {...register('nazwisko')}
                         type="text"
-                        className={`w-full pl-10 pr-4 py-3 border rounded-lg focus:ring-2 focus:ring-[#3c3333] focus:border-transparent transition-colors ${
-                          errors.nazwisko ? 'border-red-500' : 'border-gray-300'
-                        }`}
-                        placeholder="Kowalski"
+                        className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#3c3333] focus:border-transparent transition-all"
+                        placeholder="Wprowadź swoje nazwisko"
                       />
+                      {errors.nazwisko && <p className="mt-1 text-sm text-red-600">{errors.nazwisko.message}</p>}
                     </div>
-                    {errors.nazwisko && (
-                      <p className="mt-1 text-sm text-red-500">{errors.nazwisko.message}</p>
-                    )}
-                  </div>
-                </div>
 
-                {/* Email */}
-                <div>
-                  <label className="block text-sm font-semibold mb-2">Email</label>
-                  <div className="relative">
-                    <FiMail className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
-                    <input
-                      {...register('email')}
-                      type="email"
-                      className={`w-full pl-10 pr-4 py-3 border rounded-lg focus:ring-2 focus:ring-[#3c3333] focus:border-transparent transition-colors ${
-                        errors.email ? 'border-red-500' : 'border-gray-300'
-                      }`}
-                      placeholder="jan.kowalski@email.com"
-                    />
-                  </div>
-                  {errors.email && (
-                    <p className="mt-1 text-sm text-red-500">{errors.email.message}</p>
-                  )}
-                </div>
+                    {/* Email */}
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-2">
+                        <FiMail className="inline mr-2" />
+                        Email *
+                      </label>
+                      <input
+                        {...register('email')}
+                        type="email"
+                        className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#3c3333] focus:border-transparent transition-all"
+                        placeholder="jan.kowalski@example.com"
+                      />
+                      {errors.email && <p className="mt-1 text-sm text-red-600">{errors.email.message}</p>}
+                    </div>
 
-                {/* Telefon */}
-                <div>
-                  <label className="block text-sm font-semibold mb-2">Telefon</label>
-                  <div className="relative">
-                    <FiPhone className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
-                    <input
-                      {...register('telefon')}
-                      type="tel"
-                      className={`w-full pl-10 pr-4 py-3 border rounded-lg focus:ring-2 focus:ring-[#3c3333] focus:border-transparent transition-colors ${
-                        errors.telefon ? 'border-red-500' : 'border-gray-300'
-                      }`}
-                      placeholder="+48 123 456 789"
-                    />
-                  </div>
-                  {errors.telefon && (
-                    <p className="mt-1 text-sm text-red-500">{errors.telefon.message}</p>
-                  )}
-                </div>
+                    {/* Telefon */}
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-2">
+                        <FiPhone className="inline mr-2" />
+                        Telefon *
+                      </label>
+                      <input
+                        {...register('telefon')}
+                        type="tel"
+                        className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#3c3333] focus:border-transparent transition-all"
+                        placeholder="123 456 789 lub +48 123 456 789"
+                      />
+                      {errors.telefon && <p className="mt-1 text-sm text-red-600">{errors.telefon.message}</p>}
+                    </div>
 
-                {/* Liczba osób */}
-                <div>
-                  <label className="block text-sm font-semibold mb-2">
-                    Liczba osób (max. {config?.max_osob || 6})
-                  </label>
-                  <div className="relative">
-                    <FiUsers className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
-                    <input
-                      {...register('liczbOsob', { valueAsNumber: true })}
-                      type="number"
-                      min="1"
-                      max={config?.max_osob || 6}
-                      className={`w-full pl-10 pr-4 py-3 border rounded-lg focus:ring-2 focus:ring-[#3c3333] focus:border-transparent transition-colors ${
-                        errors.liczbOsob ? 'border-red-500' : 'border-gray-300'
-                      }`}
-                    />
-                  </div>
-                  {errors.liczbOsob && (
-                    <p className="mt-1 text-sm text-red-500">{errors.liczbOsob.message}</p>
-                  )}
-                </div>
 
-                {/* Uwagi */}
-                <div>
-                  <label className="block text-sm font-semibold mb-2">
-                    Dodatkowe uwagi (opcjonalne)
-                  </label>
-                  <div className="relative">
-                    <FiMessageSquare className="absolute left-3 top-3 text-gray-400" />
+                  </div>
+
+                  {/* Uwagi */}
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      Uwagi dodatkowe
+                    </label>
                     <textarea
                       {...register('uwagi')}
-                      rows="4"
-                      className={`w-full pl-10 pr-4 py-3 border rounded-lg focus:ring-2 focus:ring-[#3c3333] focus:border-transparent transition-colors resize-none ${
-                        errors.uwagi ? 'border-red-500' : 'border-gray-300'
-                      }`}
-                      placeholder="Specjalne życzenia, godzina przyjazdu itp."
+                      rows={3}
+                      className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#3c3333] focus:border-transparent transition-all resize-none"
+                      placeholder="Dodatkowe informacje, prośby specjalne..."
                     />
                   </div>
-                  {errors.uwagi && (
-                    <p className="mt-1 text-sm text-red-500">{errors.uwagi.message}</p>
+
+
+
+                  {/* Komunikaty */}
+                  {message.text && (
+                    <div className={`p-4 rounded-lg text-sm ${
+                      message.type === 'error' 
+                        ? 'bg-red-50 text-red-700 border border-red-200' 
+                        : 'bg-green-50 text-green-700 border border-green-200'
+                    }`}>
+                      {message.text}
+                    </div>
                   )}
+                </form>
+              </section>
+            </div>
+
+            {/* Prawa kolumna - Podsumowanie */}
+            <div className="lg:col-span-1">
+              <section className="sticky top-8">
+                <div className="flex items-center gap-3 mb-6">
+                  <div className="w-10 h-10 bg-[#3c3333] text-[#fdf2d0] rounded-full flex items-center justify-center font-bold">
+                    3
+                  </div>
+                  <h2 className="text-2xl font-bold font-lumios">Podsumowanie</h2>
                 </div>
 
-                {/* Komunikat o błędzie */}
-                {submitError && (
-                  <div className="mb-4 p-4 bg-red-50 border border-red-200 rounded-lg text-red-700">
-                    {submitError}
-                  </div>
-                )}
-              </form>
-            </section>
-          </div>
-
-          {/* Prawa kolumna - Podsumowanie */}
-          <div className="lg:col-span-1">
-            <section className="sticky top-8">
-              <div className="flex items-center gap-3 mb-6">
-                <div className="w-10 h-10 bg-[#3c3333] text-[#fdf2d0] rounded-full flex items-center justify-center font-bold">
-                  3
-                </div>
-                <h2 className="text-2xl font-bold font-lumios">Podsumowanie</h2>
-              </div>
-
-              <div className="bg-white rounded-xl shadow-lg p-6 space-y-6">
-                {/* Informacje o domku */}
-                <div className="pb-6 border-b border-gray-200">
-                  <div className="flex items-center gap-2 text-lg font-semibold mb-2">
-                    <FiHome />
-                    <span>{DOMEK_INFO.nazwa}</span>
-                  </div>
-                  <p className="text-sm text-gray-600">
-                    Komfortowy domek dla {config?.max_osob || 6} osób
-                  </p>
-                </div>
-
-                {/* Termin pobytu */}
-                {selectedDates ? (
-                  <div className="pb-6 border-b border-gray-200">
-                    <div className="flex items-center gap-2 text-sm font-semibold mb-3">
-                      <FiCalendar />
-                      <span>Termin pobytu</span>
+                <div className="bg-white rounded-xl shadow-lg p-6 space-y-6">
+                  {selectedDomki.length === 0 ? (
+                    <div className="text-center text-gray-500 py-8">
+                      <FiHome className="mx-auto mb-4 text-4xl" />
+                      <p className="text-lg font-medium mb-2">Wybierz domki</p>
+                      <p className="text-sm">Zaznacz daty w kalendarzach powyżej</p>
                     </div>
-                    <div className="space-y-2 text-sm">
-                      <div className="flex justify-between">
-                        <span className="text-gray-600">Przyjazd:</span>
-                        <span className="font-medium">
-                          {format(selectedDates.startDate, 'dd MMMM yyyy', { locale: pl })}
-                        </span>
-                      </div>
-                      <div className="flex justify-between">
-                        <span className="text-gray-600">Wyjazd:</span>
-                        <span className="font-medium">
-                          {format(selectedDates.endDate, 'dd MMMM yyyy', { locale: pl })}
-                        </span>
-                      </div>
-                      <div className="flex justify-between">
-                        <span className="text-gray-600">Liczba nocy:</span>
-                        <span className="font-medium">{selectedDates.nights}</span>
-                      </div>
-                    </div>
-                  </div>
-                ) : (
-                  <div className="pb-6 border-b border-gray-200 text-center text-gray-500">
-                    <FiCalendar className="mx-auto mb-2 text-2xl" />
-                    <p className="text-sm">Wybierz termin pobytu</p>
-                  </div>
-                )}
-
-                {/* Dane gościa */}
-                {showSummary && (
-                  <div className="pb-6 border-b border-gray-200">
-                    <h4 className="text-sm font-semibold mb-3 font-lumios">Dane rezerwującego</h4>
-                    <div className="space-y-1 text-sm">
-                      <p>{watchedValues.imie} {watchedValues.nazwisko}</p>
-                      <p className="text-gray-600">{watchedValues.email}</p>
-                      <p className="text-gray-600">{watchedValues.telefon}</p>
-                      <p className="text-gray-600">Liczba osób: {watchedValues.liczbOsob}</p>
-                    </div>
-                  </div>
-                )}
-
-                {/* Cena */}
-                {selectedDates && (
-                  <div>
-                    <h4 className="text-sm font-semibold mb-3 font-lumios">Kalkulacja ceny</h4>
-                    
-                    {/* Szczegóły kalkulacji */}
-                    {selectedDates.obliczeniaCeny && formatujSzczegolyCeny(selectedDates.obliczeniaCeny) ? (
-                      <div className="space-y-2 text-sm mb-4">
-                        {formatujSzczegolyCeny(selectedDates.obliczeniaCeny).map((szczegol, index) => (
-                          <div key={index} className={`flex justify-between ${szczegol.typ === 'sezon' ? 'font-medium' : ''}`}>
-                            <span className={szczegol.typ === 'sezon' ? 'text-blue-700' : 'text-gray-600'}>
-                              {szczegol.opis}
-                            </span>
-                            <span className={szczegol.typ === 'sezon' ? 'text-blue-700 font-medium' : ''}>
-                              {szczegol.cena} zł
-                            </span>
+                  ) : (
+                    <>
+                      {/* Lista wybranych domków */}
+                      <div className="space-y-4">
+                        {selectedDomki.map((domek, index) => (
+                          <div key={index} className="border border-gray-200 rounded-lg p-4">
+                            <div className="flex items-center gap-2 text-lg font-semibold mb-3">
+                              <FiHome />
+                              <span>Domek {domek.domekId.replace('D', '')}</span>
+                            </div>
+                            
+                            <div className="space-y-2 text-sm">
+                              <div className="flex justify-between">
+                                <span className="text-gray-600">Przyjazd:</span>
+                                <span className="font-medium">
+                                  {format(domek.startDate, 'dd MMMM yyyy', { locale: pl })}
+                                </span>
+                              </div>
+                              <div className="flex justify-between">
+                                <span className="text-gray-600">Wyjazd:</span>
+                                <span className="font-medium">
+                                  {format(domek.endDate, 'dd MMMM yyyy', { locale: pl })}
+                                </span>
+                              </div>
+                              <div className="flex justify-between">
+                                <span className="text-gray-600">Liczba nocy:</span>
+                                <span className="font-medium">{domek.iloscNocy}</span>
+                              </div>
+                              <div className="flex justify-between">
+                                <span className="text-gray-600">Liczba osób:</span>
+                                <span className="font-medium">{domek.liczbOsob}</span>
+                              </div>
+                              
+                              {/* Szczegóły cenowe */}
+                              {domek.cenaZaDobe && (
+                                <div className="pt-2 border-t border-gray-100">
+                                                                {/* Rozliczenie sezonowe jeśli istnieje */}
+                              {domek.rozliczenieSezonowe && domek.rozliczenieSezonowe.length > 0 ? (
+                                <>
+                                  {domek.rozliczenieSezonowe.map((sezon, idx) => (
+                                    <div key={idx} className="mb-2">
+                                      <div className="text-xs text-gray-600 font-medium">{sezon.nazwa}:</div>
+                                      <div className="flex justify-between text-xs text-gray-500">
+                                        <span>
+                                          {sezon.dni} {sezon.dni === 1 ? 'noc' : 'nocy'} × {sezon.cena} PLN
+                                          {sezon.oplataZaDodatkoweOsoby > 0 && ` + ${domek.dodatkoweOsoby} osób × ${domek.cenaZaDodatkowaOsoba} PLN`}
+                                        </span>
+                                        <span>{sezon.cenaCałkowita} PLN</span>
+                                      </div>
+                                    </div>
+                                  ))}
+                                </>
+                              ) : (
+                                /* Standardowe rozliczenie - tylko jeśli nie ma sezonów */
+                                <>
+                                  {domek.cenaBazowa ? (
+                                    <>
+                                      <div className="flex justify-between text-xs text-gray-500">
+                                        <span>
+                                          Cena bazowa ({domek.bazowaLiczbaOsob || 4} osób):
+                                        </span>
+                                        <span>{domek.cenaBazowa} PLN/noc</span>
+                                      </div>
+                                      {domek.dodatkoweOsoby > 0 && (
+                                        <div className="flex justify-between text-xs text-gray-500">
+                                          <span>
+                                            +{domek.dodatkoweOsoby} {domek.dodatkoweOsoby === 1 ? 'osoba' : 'osoby'} × {domek.cenaZaDodatkowaOsoba} PLN/noc:
+                                          </span>
+                                          <span>+{domek.cenaZaDodatkowaOsoba * domek.dodatkoweOsoby} PLN/noc</span>
+                                        </div>
+                                      )}
+                                      <div className="flex justify-between text-xs text-gray-500 border-t border-gray-100 pt-1 mt-1">
+                                        <span>
+                                          Łącznie za dobę ({domek.cenaBazowa}{domek.dodatkoweOsoby > 0 ? ` + ${domek.dodatkoweOsoby}×${domek.cenaZaDodatkowaOsoba}` : ''}):
+                                        </span>
+                                        <span>{domek.cenaZaDobe} PLN</span>
+                                      </div>
+                                      <div className="flex justify-between text-xs text-gray-500">
+                                        <span>{domek.iloscNocy} {domek.iloscNocy === 1 ? 'noc' : 'nocy'}:</span>
+                                        <span>{domek.iloscNocy} × {domek.cenaZaDobe} PLN</span>
+                                      </div>
+                                    </>
+                                  ) : (
+                                    /* Fallback gdy cenaBazowa jest null (sezonowe) */
+                                    <div className="flex justify-between text-xs text-gray-500">
+                                      <span>Szczegóły cenowe dostępne po wyborze dat</span>
+                                    </div>
+                                  )}
+                                </>
+                              )}
+                                </div>
+                              )}
+                              
+                              <div className="flex justify-between font-semibold text-[#3c3333] pt-2 border-t border-gray-200">
+                                <span>Cena za domek:</span>
+                                <span>{domek.cenaCałkowita} PLN</span>
+                              </div>
+                            </div>
                           </div>
                         ))}
-                        
-                        {/* Pokaż podsumowanie tylko jeśli NIE ma rozliczenia sezonowego */}
-                        {!selectedDates.obliczeniaCeny.rozliczenieSezonowe && (
-                          <div className="flex justify-between border-t pt-2">
-                            <span className="text-gray-600">
-                              Cena za dobę × {selectedDates.nights} {selectedDates.nights === 1 ? 'noc' : 'nocy'}
-                            </span>
-                            <span>{selectedDates.obliczeniaCeny.cenaZaDobe} × {selectedDates.nights} = {selectedDates.totalPrice} zł</span>
+                      </div>
+
+                      {/* Podsumowanie łączne */}
+                      <div className="border-t border-gray-300 pt-4">
+                        <div className="space-y-2 text-sm">
+                          <div className="flex justify-between">
+                            <span className="text-gray-600">Liczba domków:</span>
+                            <span className="font-medium">{selectedDomki.length}</span>
                           </div>
+                          <div className="flex justify-between">
+                            <span className="text-gray-600">Łączna liczba osób:</span>
+                            <span className="font-medium">{liczbOsobCałkowita}</span>
+                          </div>
+                        </div>
+                        
+                        <div className="flex justify-between text-xl font-bold text-[#3c3333] mt-4 pt-4 border-t border-gray-200">
+                          <span>ŁĄCZNIE:</span>
+                          <span>{cenaCałkowita} PLN</span>
+                        </div>
+                      </div>
+
+                      {/* Informacje dodatkowe */}
+                      <div className="bg-blue-50 rounded-lg p-4 text-sm text-blue-800">
+                        <p className="font-medium mb-2">Informacje:</p>
+                        <ul className="space-y-1 text-xs">
+                          <li>• Informacje o płatności w mailu rezerwacyjnym</li>
+                          <li>• Możliwość anulowania do 7 dni przed przyjazdem</li>
+                          <li>• Check-in: 15:00, Check-out: 11:00</li>
+                          <li>• Każdy domek jest identyczny i w pełni wyposażony</li>
+                        </ul>
+                      </div>
+
+                      {/* Przycisk rezerwacji */}
+                      <button
+                        type="submit"
+                        disabled={loading || selectedDomki.length === 0}
+                        className="w-full bg-[#3c3333] text-[#fdf2d0] py-3 px-6 rounded-lg font-bold hover:bg-[#2a2525] transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 mt-4"
+                        onClick={handleSubmit(onSubmit)}
+                      >
+                        {loading ? (
+                          <>
+                            <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white"></div>
+                            Przetwarzanie...
+                          </>
+                        ) : (
+                          <>
+                            <FiDollarSign />
+                            Zarezerwuj {selectedDomki.length > 0 && `(${cenaCałkowita} PLN)`}
+                          </>
                         )}
-                      </div>
-                    ) : (
-                      <div className="flex justify-between items-center text-sm mb-2">
-                        <span className="text-gray-600">
-                          {Math.round(selectedDates.totalPrice / selectedDates.nights)} zł × {selectedDates.nights} nocy
-                        </span>
-                        <span>{selectedDates.totalPrice} zł</span>
-                      </div>
-                    )}
-                    
-                    {/* Informacja o sezonach jeśli występują */}
-                    {selectedDates.obliczeniaCeny?.rozliczenieSezonowe && selectedDates.obliczeniaCeny.rozliczenieSezonowe.length > 1 && (
-                      <div className="mb-4 p-3 bg-blue-50 border border-blue-200 rounded-lg">
-                        <p className="text-xs text-blue-800 font-medium">
-                          ℹ️ Twój pobyt obejmuje różne taryfy cenowe - każdy dzień naliczany jest według odpowiedniej stawki.
-                        </p>
-                      </div>
-                    )}
-                    
-                    <div className="flex justify-between items-center text-xl font-bold pt-3 border-t">
-                      <span>Razem:</span>
-                      <span>{selectedDates.totalPrice} zł</span>
-                    </div>
-                  </div>
-                )}
-
-                {/* Przycisk rezerwacji */}
-                <button
-                  onClick={handleSubmit(onSubmit)}
-                  disabled={!selectedDates}
-                  className={`w-full py-4 px-6 rounded-lg font-semibold text-lg transition-all duration-300 flex items-center justify-center gap-2 ${
-                    selectedDates ? 'bg-[#3c3333] text-[#fdf2d0] hover:bg-opacity-90 transform hover:scale-105' : 'bg-gray-300 text-gray-500 cursor-not-allowed'
-                  }`}
-                >
-                  {selectedDates ? (
-                    <>
-                      <FiCheck />
-                      <span>Potwierdź rezerwację</span>
+                      </button>
                     </>
-                  ) : (
-                    <span>Rezerwowanie...</span>
                   )}
-                </button>
-
-                {/* Informacje prawne */}
-                <p className="text-xs text-center text-gray-500">
-                  Klikając &quot;Potwierdź rezerwację&quot; akceptujesz{' '}
-                  <Link href="/regulamin" className="underline hover:text-gray-700">
-                    Regulamin
-                  </Link>{' '}
-                  oraz{' '}
-                  <Link href="/polityka-prywatnosci" className="underline hover:text-gray-700">
-                    Politykę Prywatności
-                  </Link>
-                </p>
-              </div>
-            </section>
+                </div>
+              </section>
+            </div>
           </div>
-        </div>
-      </main>
-    </div>
+        </main>
+      </div>
     </>
   );
 };
