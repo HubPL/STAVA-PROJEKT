@@ -63,7 +63,7 @@ const TabelaCenSezonowych = ({ config }) => {
         <div className="overflow-x-auto">
             <table className="w-full border-collapse">
                 <thead>
-                    <tr className="border-b-2 border-brand-800">
+                    <tr className="border-b-2 border-[#3c3333]">
                         <th className="text-left py-3 font-lumios text-lg">Sezon</th>
                         <th className="text-left py-3 font-lumios text-lg">Okres</th>
                         <th className="text-right py-3 font-lumios text-lg">Różnica cenowa</th>
@@ -76,7 +76,7 @@ const TabelaCenSezonowych = ({ config }) => {
                         const roznicaColor = roznica > 0 ? 'text-orange-600' : roznica < 0 ? 'text-green-600' : 'text-gray-600';
                         
                         return (
-                            <tr key={index} className="border-b border-brand-200 hover:bg-brand-50 transition-colors">
+                            <tr key={index} className="border-b border-[#3c3333]/20 hover:bg-[#fdf2d0]/50 transition-colors">
                                 <td className="py-4 font-medium">{sezon.nazwa}</td>
                                 <td className="py-4 text-gray-600">
                                     {formatDate(sezon.od)} - {formatDate(sezon.do)}
@@ -89,7 +89,7 @@ const TabelaCenSezonowych = ({ config }) => {
                     })}
                 </tbody>
             </table>
-            <div className="mt-4 p-4 bg-brand-50 rounded-lg">
+                            <div className="mt-4 p-4 bg-[#fdf2d0]/50 rounded-lg">
                 <p className="text-sm text-gray-600">
                     <FiDollarSign className="inline mr-2" />
                     Cena podstawowa: <strong>{cenaPostawowa} zł za dobę</strong>
@@ -160,9 +160,9 @@ export default function OfertaPage() {
 
     if (loading) {
         return (
-            <div className="min-h-screen bg-[#e3e0d8] flex items-center justify-center font-serif text-[#3a3a3a]">
+            <div className="min-h-screen bg-[#fdf2d0] flex items-center justify-center font-serif text-[#3c3333]">
                 <div className="text-center">
-                    <div className="w-12 h-12 border-2 border-[#3a3a3a] border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
+                    <div className="w-12 h-12 border-2 border-[#3c3333] border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
                     <p className="text-xl tracking-widest">Ładowanie oferty...</p>
                 </div>
             </div>
@@ -184,7 +184,7 @@ export default function OfertaPage() {
                 <meta name="twitter:card" content="summary_large_image" />
                 <link rel="canonical" href="https://stavakiszewa.pl/domki" />
             </Head>
-            <div className="bg-[#e3e0d8] font-serif text-[#3a3a3a] pt-32">
+            <div className="bg-[#fdf2d0] font-serif text-[#3c3333] pt-32">
             {/* 1. GALERIA ZDJĘĆ */}
             <section className="container mx-auto px-4 pt-10 pb-16">
                 {images.length > 0 ? (
@@ -249,26 +249,26 @@ export default function OfertaPage() {
                         {/* Układ przestrzenny */}
                         <div>
                             <h2 className="text-3xl tracking-wider mb-8 font-lumios">Układ przestrzenny</h2>
-                            <div className="bg-[#f8f6f3] p-6 rounded-lg">
-                                <p className="text-lg mb-4">{DOMEK_INFO.uklad.opis}</p>
-                                <div className="grid md:grid-cols-2 gap-6 mt-6">
-                                    <div>
-                                        <h3 className="font-semibold text-xl mb-3">Parter:</h3>
-                                        <ul className="space-y-2">
-                                            <li>• <strong>Salon z jadalnią:</strong> {DOMEK_INFO.uklad.szczegoly.parter.salon}</li>
-                                            <li>• <strong>Kuchnia:</strong> {DOMEK_INFO.uklad.szczegoly.parter.kuchnia}</li>
-                                            <li>• <strong>Łazienka:</strong> {DOMEK_INFO.uklad.szczegoly.parter.lazienka}</li>
-                                        </ul>
-                                    </div>
-                                    <div>
-                                        <h3 className="font-semibold text-xl mb-3">Piętro:</h3>
-                                        <ul className="space-y-2">
-                                            <li>• <strong>Sypialnia 1:</strong> {DOMEK_INFO.uklad.szczegoly.pietro.sypialnia1}</li>
-                                            <li>• <strong>Sypialnia 2:</strong> {DOMEK_INFO.uklad.szczegoly.pietro.sypialnia2}</li>
-                                        </ul>
-                                    </div>
+                            <div className="bg-[#ffffff] p-6 rounded-lg shadow-sm border border-gray-100">
+                            <p className="text-lg mb-4">{DOMEK_INFO.uklad.opis}</p>
+                            <div className="grid md:grid-cols-2 gap-6 mt-6">
+                                <div>
+                                    <h3 className="font-semibold text-xl mb-3">Parter:</h3>
+                                    <ul className="space-y-2">
+                                        <li>• <strong>Salon z jadalnią:</strong> {DOMEK_INFO.uklad.szczegoly.parter.salon}</li>
+                                        <li>• <strong>Kuchnia:</strong> {DOMEK_INFO.uklad.szczegoly.parter.kuchnia}</li>
+                                        <li>• <strong>Łazienka:</strong> {DOMEK_INFO.uklad.szczegoly.parter.lazienka}</li>
+                                    </ul>
+                                </div>
+                                <div>
+                                    <h3 className="font-semibold text-xl mb-3">Piętro:</h3>
+                                    <ul className="space-y-2">
+                                        <li>• <strong>Sypialnia 1:</strong> {DOMEK_INFO.uklad.szczegoly.pietro.sypialnia1}</li>
+                                        <li>• <strong>Sypialnia 2:</strong> {DOMEK_INFO.uklad.szczegoly.pietro.sypialnia2}</li>
+                                    </ul>
                                 </div>
                             </div>
+                        </div>
                         </div>
 
                         {/* Udogodnienia */}
@@ -288,15 +288,15 @@ export default function OfertaPage() {
                         <div>
                             <h2 className="text-3xl tracking-wider mb-8 font-lumios">Tarasy i przestrzeń zewnętrzna</h2>
                             <div className="grid md:grid-cols-3 gap-6">
-                                <div className="bg-[#f8f6f3] p-5 rounded-lg">
+                                <div className="bg-[#ffffff] p-5 rounded-lg shadow-sm border border-gray-100">
                                     <h3 className="font-semibold text-lg mb-2">Taras główny</h3>
                                     <p>{DOMEK_INFO.tarasy.taras1}</p>
                                 </div>
-                                <div className="bg-[#f8f6f3] p-5 rounded-lg">
+                                <div className="bg-[#ffffff] p-5 rounded-lg shadow-sm border border-gray-100">
                                     <h3 className="font-semibold text-lg mb-2">Taras intymny</h3>
                                     <p>{DOMEK_INFO.tarasy.taras2}</p>
                                 </div>
-                                <div className="bg-[#f8f6f3] p-5 rounded-lg">
+                                <div className="bg-[#ffffff] p-5 rounded-lg shadow-sm border border-gray-100">
                                     <h3 className="font-semibold text-lg mb-2">Leśna wyspa SPA</h3>
                                     <p>{DOMEK_INFO.tarasy.taras3}</p>
                                 </div>
@@ -309,7 +309,7 @@ export default function OfertaPage() {
                              <div className="grid grid-cols-2 md:grid-cols-3 gap-x-6 gap-y-4">
                                 {DOMEK_INFO.wyposazenie.map((item, index) => (
                                     <div key={index} className="flex items-center gap-3">
-                                        <span className="w-2 h-2 bg-[#3a3a3a]/30 rounded-full flex-shrink-0"></span>
+                                        <span className="w-2 h-2 bg-[#3c3333]/30 rounded-full flex-shrink-0"></span>
                                         <span className="tracking-wide">{item}</span>
                                     </div>
                                 ))}
@@ -320,10 +320,10 @@ export default function OfertaPage() {
                         {(config?.ceny?.podstawowa || config?.cena_podstawowa) && (
                             <div id="tabela-cen">
                                 <h2 className="text-3xl tracking-wider mb-8 font-lumios">Cennik sezonowy</h2>
-                                <div className="bg-white p-6 rounded-lg border border-brand-200 shadow-sm">
+                                <div className="bg-white p-6 rounded-lg border border-[#3c3333]/20 shadow-sm">
                                     <div className="flex items-center gap-2 mb-4">
-                                        <FiCalendar className="text-brand-600" />
-                                        <p className="text-brand-600">
+                                        <FiCalendar className="text-[#3c3333]" />
+                                        <p className="text-[#3c3333]">
                                             Ceny mogą różnić się w zależności od sezonu. Sprawdź aktualne ceny:
                                         </p>
                                     </div>
@@ -336,31 +336,31 @@ export default function OfertaPage() {
                         <div>
                              <h2 className="text-3xl tracking-wider mb-8 font-lumios">Informacje praktyczne</h2>
                              <div className="space-y-4 text-lg">
-                                <div className="flex justify-between py-3 border-b border-[#3a3a3a]/10">
+                                <div className="flex justify-between py-3 border-b border-[#3c3333]/10">
                                     <span>Zameldowanie:</span>
                                     <span className="font-medium">{DOMEK_INFO.dodatkoweInfo.zameldowanie}</span>
                                 </div>
-                                <div className="flex justify-between py-3 border-b border-[#3a3a3a]/10">
+                                <div className="flex justify-between py-3 border-b border-[#3c3333]/10">
                                     <span>Wymeldowanie:</span>
                                     <span className="font-medium">{DOMEK_INFO.dodatkoweInfo.wymeldowanie}</span>
                                 </div>
-                                <div className="py-3 border-b border-[#3a3a3a]/10">
+                                <div className="py-3 border-b border-[#3c3333]/10">
                                     <span className="font-medium">Liczba osób:</span>
                                     <p className="mt-1 text-base">{DOMEK_INFO.dodatkoweInfo.maxOsob}</p>
                                 </div>
-                                <div className="py-3 border-b border-[#3a3a3a]/10">
+                                <div className="py-3 border-b border-[#3c3333]/10">
                                     <span className="font-medium">Zwierzęta:</span>
                                     <p className="mt-1 text-base">{DOMEK_INFO.dodatkoweInfo.zwierzeta}</p>
                                 </div>
-                                <div className="py-3 border-b border-[#3a3a3a]/10">
+                                <div className="py-3 border-b border-[#3c3333]/10">
                                     <span className="font-medium">Palenie:</span>
                                     <p className="mt-1 text-base">{DOMEK_INFO.dodatkoweInfo.palenie}</p>
                                 </div>
-                                <div className="py-3 border-b border-[#3a3a3a]/10">
+                                <div className="py-3 border-b border-[#3c3333]/10">
                                     <span className="font-medium">Klimatyzacja:</span>
                                     <p className="mt-1 text-base">{DOMEK_INFO.dodatkoweInfo.klimatyzacja}</p>
                                 </div>
-                                <div className="py-3 border-b border-[#3a3a3a]/10">
+                                <div className="py-3 border-b border-[#3c3333]/10">
                                     <span className="font-medium">Ogrzewanie:</span>
                                     <p className="mt-1 text-base">{DOMEK_INFO.dodatkoweInfo.ogrzewanie}</p>
                                 </div>
@@ -370,7 +370,7 @@ export default function OfertaPage() {
 
                     {/* Right Column (Sticky) */}
                     <div className="lg:sticky top-28 h-fit">
-                        <div className="border border-[#3a3a3a]/20 rounded-sm p-8">
+                        <div className="border border-[#3c3333]/20 rounded-sm p-8">
                             <div className="flex justify-between items-baseline mb-6">
                                 <span className="text-lg">Aktualna cena za dobę od</span>
                                 <span className="text-3xl font-semibold">
@@ -410,9 +410,9 @@ export default function OfertaPage() {
                             
                             {aktualnaCena && config?.ceny?.sezonowe && config.ceny.sezonowe.length > 0 && (
                                 <div className="mb-6 p-3 bg-amber-50 border border-amber-200 rounded-lg">
-                                    <p className="text-sm text-amber-800">
+                                    <p className="text-sm text-[#3c3333]">
                                         <FiCalendar className="inline mr-1" />
-                                        Ceny różnią się w zależności od <a href="#tabela-cen" className="underline hover:text-amber-900 transition-colors">sezonu</a>
+                                        Ceny różnią się w zależności od <a href="#tabela-cen" className="underline hover:text-[#3c3333] transition-colors">sezonu</a>
                                     </p>
                                 </div>
                             )}
@@ -432,12 +432,12 @@ export default function OfertaPage() {
                             </div>
                             <Link 
                               href="/rezerwacja" 
-                              className="w-full block text-center px-8 py-4 bg-[#3a3a3a] text-[#e3e0d8] font-montserrat font-bold text-lg uppercase tracking-widest hover:bg-opacity-90 transition-all duration-300 transform-gpu hover:scale-105"
+                              className="w-full block text-center px-8 py-4 bg-[#3c3333] text-[#fdf2d0] font-montserrat font-bold text-lg uppercase tracking-widest hover:bg-opacity-90 transition-all duration-300 transform-gpu hover:scale-105"
                             >
                               {aktualnaCena ? 'Zarezerwuj' : 'Zapytaj o dostępność'}
                             </Link>
                             {aktualnaCena && (
-                                <p className="text-sm text-center mt-4 text-[#3a3a3a]/60">
+                                <p className="text-sm text-center mt-4 text-[#3c3333]/60">
                                     Minimalny pobyt: {config?.min_nocy || 2} noce
                                 </p>
                             )}

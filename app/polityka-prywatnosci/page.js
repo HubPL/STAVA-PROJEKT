@@ -10,10 +10,10 @@ export default function PolitykaPrywatnosciPage() {
 
     const Section = ({ title, children }) => (
         <div className="mb-12">
-            <h2 className="text-2xl md:text-3xl font-semibold tracking-wider mb-6 pb-3 border-b border-[#3a3a3a]/20 font-lumios">
-                {title}
-            </h2>
-            <div className="prose prose-lg max-w-none text-[#3a3a3a] tracking-wide leading-relaxed">
+                <h2 className="text-2xl md:text-3xl font-semibold tracking-wider mb-6 pb-3 border-b border-[#3c3333]/20 font-lumios">
+      {title}
+    </h2>
+    <div className="prose prose-lg max-w-none text-[#3c3333] tracking-wide leading-relaxed">
                 {children}
             </div>
         </div>
@@ -25,8 +25,8 @@ export default function PolitykaPrywatnosciPage() {
             type === 'warning' ? 'bg-red-50 border-red-400' : 
             'bg-blue-50 border-blue-400'
         }`}>
-            <h4 className="font-semibold text-[#3a3a3a] mb-3 font-montserrat">{title}</h4>
-            <div className="text-sm text-[#3a3a3a]/80 leading-relaxed">{children}</div>
+                      <h4 className="font-semibold text-[#3c3333] mb-3 font-montserrat">{title}</h4>
+          <div className="text-sm text-[#3c3333]/80 leading-relaxed">{children}</div>
         </div>
     );
 
@@ -42,7 +42,7 @@ export default function PolitykaPrywatnosciPage() {
                 <meta name="robots" content="index, follow" />
                 <link rel="canonical" href="https://stavakiszewa.pl/polityka-prywatnosci" />
             </Head>
-            <div className="bg-[#e3e0d8] font-serif text-[#3a3a3a] min-h-screen">
+            <div className="bg-[#fdf2d0] font-serif text-[#3c3333] min-h-screen">
             <PageHero 
                 titleKey="privacy.title"
                 subtitleKey="privacy.subtitle"

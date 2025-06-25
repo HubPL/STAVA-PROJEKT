@@ -77,9 +77,9 @@ export default function RootLayout({ children }) {
         <link rel="canonical" href="https://stavakiszewa.pl" />
         
         {/* Hreflang dla wielojęzyczności */}
-        <link rel="alternate" href="https://stavakiszewa.pl" hreflang="pl" />
-        <link rel="alternate" href="https://stavakiszewa.pl/en" hreflang="en" />
-        <link rel="alternate" href="https://stavakiszewa.pl" hreflang="x-default" />
+        <link rel="alternate" href="https://stavakiszewa.pl" hrefLang="pl" />
+        <link rel="alternate" href="https://stavakiszewa.pl/en" hrefLang="en" />
+        <link rel="alternate" href="https://stavakiszewa.pl" hrefLang="x-default" />
         
         {/* Dane strukturalne */}
         <script

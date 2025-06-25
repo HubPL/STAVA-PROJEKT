@@ -6,27 +6,28 @@ module.exports = {
   theme: {
     extend: {
       fontFamily: {
-        'serif': ['Playfair Display', 'serif'],
-        'display': ['Lumios Typewriter', 'monospace'],
-        'playfair': ['Playfair Display', 'serif'],
-        'lumios': ['Lumios Typewriter', 'monospace'],
+        'serif': ['Plus Jakarta Sans', 'sans-serif'],
+        'display': ['Plus Jakarta Sans', 'sans-serif'],
+        'playfair': ['Plus Jakarta Sans', 'sans-serif'],
+        'lumios': ['Plus Jakarta Sans', 'sans-serif'],
+        'plus-jakarta-sans': ['Plus Jakarta Sans', 'sans-serif'],
         'inter': ['Inter', 'sans-serif'],
         'montserrat': ['Montserrat', 'sans-serif'],
         'sans': ['Inter', 'sans-serif'],
       },
       colors: {
-        // Paleta kolorów pasująca do strony
+        // Nowa paleta kolorów STAVA
         'brand': {
-          50: '#f8f6f3',   // najjaśniejszy beż
-          100: '#f0ebe4',  // bardzo jasny beż
-          200: '#e3e0d8',  // główne tło strony
-          300: '#d4cfc4',  // trochę ciemniejszy beż
-          400: '#b8b0a0',  // średni beż
-          500: '#8a8070',  // ciemniejszy beż
-          600: '#5c5548',  // ciemny brąz
-          700: '#3a3a3a',  // główny kolor tekstu
-          800: '#2a2a2a',  // bardzo ciemny
-          900: '#1a1a1a',  // najciemniejszy
+          50: '#fdf9f0',   // najjaśniejszy beż
+          100: '#fdf2d0',  // główny nowy beż (tło strony)
+          200: '#fbeabb',  // jaśniejszy odcień
+          300: '#f7de9c',  // średni beż
+          400: '#f0cc73',  // ciemniejszy beż
+          500: '#e6b54a',  // akcent beżowy
+          600: '#d49e2e',  // ciemny beż
+          700: '#3c3333',  // główny nowy kolor tekstu (ciemny brąz)
+          800: '#2d2626',  // ciemniejszy brąz
+          900: '#1f1a1a',  // najciemniejszy
         },
         'accent': {
           50: '#f9fafb',

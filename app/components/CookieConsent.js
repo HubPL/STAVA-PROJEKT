@@ -148,15 +148,15 @@ export default function CookieConsent() {
 
   return (
     <div className="fixed inset-0 bg-black/50 backdrop-blur-sm z-[100] flex items-end justify-center">
-      <div className="bg-[#e3e0d8] border-t-4 border-[#3a3a3a] shadow-2xl w-full max-w-6xl mx-4 mb-4 rounded-t-2xl overflow-hidden">
+      <div className="bg-[#fdf2d0] border-t-4 border-[#3c3333] shadow-2xl w-full max-w-6xl mx-4 mb-4 rounded-t-2xl overflow-hidden">
         <div className="p-6 md:p-8">
           {/* Header */}
           <div className="flex items-start justify-between mb-6">
             <div>
-              <h2 className="text-2xl md:text-3xl font-semibold text-[#3a3a3a] tracking-wider font-lumios mb-2">
+              <h2 className="text-2xl md:text-3xl font-semibold text-[#3c3333] tracking-wider font-lumios mb-2">
                 🍪 Pliki Cookies
               </h2>
-              <p className="text-lg text-[#3a3a3a]/80 tracking-wide">
+              <p className="text-lg text-[#3c3333]/80 tracking-wide">
                 Dbamy o Twoją prywatność i transparentność
               </p>
             </div>
@@ -164,7 +164,7 @@ export default function CookieConsent() {
 
           {/* Main Content */}
           <div className="mb-8">
-            <p className="text-[#3a3a3a] text-lg leading-relaxed tracking-wide mb-4">
+            <p className="text-[#3c3333] text-lg leading-relaxed tracking-wide mb-4">
               Używamy plików cookies, aby zapewnić najlepsze doświadczenia na naszej stronie. 
               Niektóre są niezbędne do działania, inne pomagają nam ulepszać usługi i dostosowywać treści do Twoich potrzeb.
             </p>
@@ -172,13 +172,13 @@ export default function CookieConsent() {
             <div className="flex items-center gap-4 text-sm">
               <Link 
                 href="/polityka-prywatnosci" 
-                className="text-[#3a3a3a] underline hover:opacity-70 transition-opacity font-medium"
+                className="text-[#3c3333] underline hover:opacity-70 transition-opacity font-medium"
               >
                 📋 Polityka Prywatności
               </Link>
               <button
                 onClick={() => setShowDetails(!showDetails)}
-                className="text-[#3a3a3a] underline hover:opacity-70 transition-opacity font-medium"
+                className="text-[#3c3333] underline hover:opacity-70 transition-opacity font-medium"
               >
                 {showDetails ? '📋 Ukryj szczegóły' : '⚙️ Zarządzaj preferencjami'}
               </button>
@@ -187,8 +187,8 @@ export default function CookieConsent() {
 
           {/* Detailed Preferences */}
           {showDetails && (
-            <div className="mb-8 p-6 bg-white/60 rounded-xl border border-[#3a3a3a]/10">
-              <h3 className="text-xl font-semibold text-[#3a3a3a] mb-6 font-lumios">
+            <div className="mb-8 p-6 bg-white/60 rounded-xl border border-[#3c3333]/10">
+                              <h3 className="text-xl font-semibold text-[#3c3333] mb-6 font-lumios">
                 Zarządzanie cookies
               </h3>
               
@@ -197,16 +197,16 @@ export default function CookieConsent() {
                   <div key={category.id} className="flex items-start gap-4 p-4 bg-white/80 rounded-lg">
                     <div className="flex-1">
                       <div className="flex items-center gap-3 mb-2">
-                        <h4 className="font-semibold text-[#3a3a3a] font-montserrat">
+                        <h4 className="font-semibold text-[#3c3333] font-montserrat">
                           {category.title}
                         </h4>
                         {category.required && (
-                          <span className="text-xs bg-[#3a3a3a] text-[#e3e0d8] px-2 py-1 rounded-full font-montserrat">
+                          <span className="text-xs bg-[#3c3333] text-[#fdf2d0] px-2 py-1 rounded-full font-montserrat">
                             Wymagane
                           </span>
                         )}
                       </div>
-                      <p className="text-sm text-[#3a3a3a]/70 leading-relaxed">
+                      <p className="text-sm text-[#3c3333]/70 leading-relaxed">
                         {category.description}
                       </p>
                     </div>
@@ -220,7 +220,7 @@ export default function CookieConsent() {
                           disabled={category.required}
                           className="sr-only peer"
                         />
-                        <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-[#3a3a3a] disabled:opacity-50 disabled:cursor-not-allowed"></div>
+                        <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-[#3c3333] disabled:opacity-50 disabled:cursor-not-allowed"></div>
                       </label>
                     </div>
                   </div>
@@ -234,7 +234,7 @@ export default function CookieConsent() {
             <div className="flex flex-col sm:flex-row gap-3 flex-1">
               <button
                 onClick={acceptNecessary}
-                className="px-6 py-3 border-2 border-[#3a3a3a] text-[#3a3a3a] rounded-lg hover:bg-[#3a3a3a] hover:text-[#e3e0d8] transition-all duration-300 font-montserrat font-semibold text-sm uppercase tracking-widest"
+                className="px-6 py-3 border-2 border-[#3c3333] text-[#3c3333] rounded-lg hover:bg-[#3c3333] hover:text-[#fdf2d0] transition-all duration-300 font-montserrat font-semibold text-sm uppercase tracking-widest"
               >
                 Tylko niezbędne
               </button>
@@ -242,7 +242,7 @@ export default function CookieConsent() {
               {showDetails && (
                 <button
                   onClick={acceptSelected}
-                  className="px-6 py-3 bg-[#3a3a3a]/80 text-[#e3e0d8] rounded-lg hover:bg-[#3a3a3a] transition-all duration-300 font-montserrat font-semibold text-sm uppercase tracking-widest"
+                  className="px-6 py-3 bg-[#3c3333]/80 text-[#fdf2d0] rounded-lg hover:bg-[#3c3333] transition-all duration-300 font-montserrat font-semibold text-sm uppercase tracking-widest"
                 >
                   Zapisz wybrane
                 </button>
@@ -251,15 +251,15 @@ export default function CookieConsent() {
             
             <button
               onClick={acceptAll}
-              className="px-8 py-3 bg-[#3a3a3a] text-[#e3e0d8] rounded-lg hover:bg-opacity-90 transition-all duration-300 transform-gpu hover:scale-105 font-montserrat font-semibold text-sm uppercase tracking-widest"
+              className="px-8 py-3 bg-[#3c3333] text-[#fdf2d0] rounded-lg hover:bg-opacity-90 transition-all duration-300 transform-gpu hover:scale-105 font-montserrat font-semibold text-sm uppercase tracking-widest"
             >
               ✅ Akceptuj wszystkie
             </button>
           </div>
 
           {/* Footer Note */}
-          <div className="mt-6 pt-4 border-t border-[#3a3a3a]/20">
-            <p className="text-xs text-[#3a3a3a]/60 text-center">
+          <div className="mt-6 pt-4 border-t border-[#3c3333]/20">
+            <p className="text-xs text-[#3c3333]/60 text-center">
               Możesz zmienić swoje preferencje w każdej chwili poprzez ustawienia przeglądarki. 
               Zgodnie z RODO masz prawo do cofnięcia zgody w dowolnym momencie.
             </p>

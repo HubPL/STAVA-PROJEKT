@@ -218,10 +218,10 @@ export default function AdminPanel() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-brand-200 flex items-center justify-center">
+      <div className="min-h-screen bg-[#fdf2d0] flex items-center justify-center">
         <div className="text-center">
-          <div className="w-16 h-16 border-4 border-brand-300 border-t-brand-600 rounded-full animate-spin mx-auto mb-4"></div>
-          <p className="mt-4 text-brand-600">Ładowanie...</p>
+          <div className="w-16 h-16 border-4 border-[#3c3333]/20 border-t-[#3c3333] rounded-full animate-spin mx-auto mb-4"></div>
+          <p className="mt-4 text-[#3c3333]">Ładowanie...</p>
         </div>
       </div>
     );
@@ -229,19 +229,19 @@ export default function AdminPanel() {
 
   if (!user) {
     return (
-      <div className="min-h-screen bg-brand-200 flex items-center justify-center">
+      <div className="min-h-screen bg-[#fdf2d0] flex items-center justify-center">
         <div className="h-32"></div>
         <div className="max-w-md w-full space-y-8 p-8">
-          <div className="bg-white rounded-3xl shadow-xl p-8 border border-brand-300">
+          <div className="bg-white rounded-3xl shadow-xl p-8 border border-[#3c3333]/20">
             <div className="text-center">
-                              <h2 className="text-3xl font-lumios text-brand-800">Panel Administracyjny</h2>
-              <p className="mt-2 text-sm text-brand-600">Zaloguj się aby zarządzać rezerwacjami</p>
+                              <h2 className="text-3xl font-lumios text-[#3c3333]">Panel Administracyjny</h2>
+              <p className="mt-2 text-sm text-[#3c3333]">Zaloguj się aby zarządzać rezerwacjami</p>
             </div>
             
             <form className="mt-8 space-y-6" onSubmit={handleLogin}>
               <div className="space-y-4">
                 <div>
-                  <label htmlFor="email" className="block text-sm font-medium text-brand-700">
+                  <label htmlFor="email" className="block text-sm font-medium text-[#3c3333]">
                     Email
                   </label>
                   <input
@@ -251,13 +251,13 @@ export default function AdminPanel() {
                     required
                     value={loginForm.email}
                     onChange={(e) => setLoginForm(prev => ({ ...prev, email: e.target.value }))}
-                    className="mt-1 block w-full px-3 py-2 border border-brand-300 rounded-md shadow-sm placeholder-brand-400 focus:outline-none focus:ring-brand-500 focus:border-brand-500"
+                    className="mt-1 block w-full px-3 py-2 border border-[#3c3333]/20 rounded-md shadow-sm placeholder-[#3c3333]/40 focus:outline-none focus:ring-[#3c3333] focus:border-[#3c3333]"
                     placeholder="admin@stavakiszewa.pl"
                   />
                 </div>
                 
                 <div>
-                  <label htmlFor="password" className="block text-sm font-medium text-brand-700">
+                  <label htmlFor="password" className="block text-sm font-medium text-[#3c3333]">
                     Hasło
                   </label>
                   <input
@@ -267,7 +267,7 @@ export default function AdminPanel() {
                     required
                     value={loginForm.password}
                     onChange={(e) => setLoginForm(prev => ({ ...prev, password: e.target.value }))}
-                    className="mt-1 block w-full px-3 py-2 border border-brand-300 rounded-md shadow-sm placeholder-brand-400 focus:outline-none focus:ring-brand-500 focus:border-brand-500"
+                    className="mt-1 block w-full px-3 py-2 border border-[#3c3333]/20 rounded-md shadow-sm placeholder-[#3c3333]/40 focus:outline-none focus:ring-[#3c3333] focus:border-[#3c3333]"
                   />
                 </div>
               </div>
@@ -281,7 +281,7 @@ export default function AdminPanel() {
               <button
                 type="submit"
                 disabled={loginLoading}
-                className="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-brand-600 hover:bg-brand-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-brand-500 disabled:opacity-50 disabled:cursor-not-allowed"
+                className="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-[#3c3333] hover:bg-[#3c3333]/90 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#3c3333] disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 {loginLoading ? 'Logowanie...' : 'Zaloguj się'}
               </button>
@@ -293,16 +293,16 @@ export default function AdminPanel() {
   }
 
   return (
-    <div className="min-h-screen bg-brand-200">
+    <div className="min-h-screen bg-[#fdf2d0]">
       <div className="h-32"></div>
       
       <div className="container mx-auto px-4 py-8">
         {/* Header */}
-        <div className="bg-white rounded-3xl shadow-xl p-6 mb-8 border border-brand-300">
+        <div className="bg-white rounded-3xl shadow-xl p-6 mb-8 border border-[#3c3333]/20">
           <div className="flex justify-between items-center">
             <div>
-                              <h1 className="text-3xl font-lumios text-brand-800">Panel Administracyjny</h1>
-              <p className="text-brand-600">Zalogowany jako: {user?.email}</p>
+                              <h1 className="text-3xl font-lumios text-[#3c3333]">Panel Administracyjny</h1>
+              <p className="text-[#3c3333]">Zalogowany jako: {user?.email}</p>
             </div>
             <div className="flex items-center space-x-4">
                <Link href="/panel/ceny" className="px-4 py-2 bg-green-600 hover:bg-green-700 text-white rounded-lg transition duration-200">
@@ -322,14 +322,14 @@ export default function AdminPanel() {
         </div>
 
         {/* Lista rezerwacji */}
-        <div className="bg-white rounded-3xl shadow-xl border border-brand-300">
-          <div className="p-6 border-b border-brand-200">
+        <div className="bg-white rounded-3xl shadow-xl border border-[#3c3333]/20">
+                      <div className="p-6 border-b border-[#3c3333]/20">
             <div className="flex justify-between items-center">
-                              <h2 className="text-2xl font-lumios text-brand-800">Lista Rezerwacji</h2>
+                              <h2 className="text-2xl font-lumios text-[#3c3333]">Lista Rezerwacji</h2>
               <button
                 onClick={loadRezerwacje}
                 disabled={rezervationsLoading}
-                className="px-4 py-2 bg-brand-600 hover:bg-brand-700 text-white rounded-lg transition duration-200 disabled:opacity-50"
+                className="px-4 py-2 bg-[#3c3333] hover:bg-[#3c3333] text-white rounded-lg transition duration-200 disabled:opacity-50"
               >
                 {rezervationsLoading ? 'Ładowanie...' : 'Odśwież'}
               </button>
@@ -339,63 +339,63 @@ export default function AdminPanel() {
           <div className="p-6">
             {rezervationsLoading ? (
               <div className="text-center py-8">
-                <div className="w-16 h-16 border-4 border-brand-300 border-t-brand-600 rounded-full animate-spin mx-auto mb-4"></div>
-                <p className="text-brand-600">Ładowanie rezerwacji...</p>
+                <div className="w-16 h-16 border-4 border-[#3c3333]/20 border-t-[#3c3333] rounded-full animate-spin mx-auto mb-4"></div>
+                <p className="text-[#3c3333]">Ładowanie rezerwacji...</p>
               </div>
             ) : rezerwacje.length === 0 ? (
               <div className="text-center py-8">
-                <p className="text-brand-600">Brak rezerwacji</p>
+                <p className="text-[#3c3333]">Brak rezerwacji</p>
               </div>
             ) : (
               <div className="overflow-x-auto">
-                <table className="min-w-full divide-y divide-brand-200">
-                  <thead className="bg-brand-50">
+                <table className="min-w-full divide-y divide-[#3c3333]/20">
+                  <thead className="bg-[#fdf2d0]/50">
                     <tr>
-                      <th className="px-6 py-3 text-left text-xs font-medium text-brand-500 uppercase tracking-wider">
+                      <th className="px-6 py-3 text-left text-xs font-medium text-[#3c3333] uppercase tracking-wider">
                         Gość
                       </th>
-                      <th className="px-6 py-3 text-left text-xs font-medium text-brand-500 uppercase tracking-wider">
+                      <th className="px-6 py-3 text-left text-xs font-medium text-[#3c3333] uppercase tracking-wider">
                         Domek
                       </th>
-                      <th className="px-6 py-3 text-left text-xs font-medium text-brand-500 uppercase tracking-wider">
+                      <th className="px-6 py-3 text-left text-xs font-medium text-[#3c3333] uppercase tracking-wider">
                         Termin
                       </th>
-                      <th className="px-6 py-3 text-left text-xs font-medium text-brand-500 uppercase tracking-wider">
+                      <th className="px-6 py-3 text-left text-xs font-medium text-[#3c3333] uppercase tracking-wider">
                         Osoby
                       </th>
-                      <th className="px-6 py-3 text-left text-xs font-medium text-brand-500 uppercase tracking-wider">
+                      <th className="px-6 py-3 text-left text-xs font-medium text-[#3c3333] uppercase tracking-wider">
                         Cena
                       </th>
-                      <th className="px-6 py-3 text-left text-xs font-medium text-brand-500 uppercase tracking-wider">
+                      <th className="px-6 py-3 text-left text-xs font-medium text-[#3c3333] uppercase tracking-wider">
                         Status
                       </th>
-                      <th className="px-6 py-3 text-left text-xs font-medium text-brand-500 uppercase tracking-wider">
+                      <th className="px-6 py-3 text-left text-xs font-medium text-[#3c3333] uppercase tracking-wider">
                         Akcje
                       </th>
                     </tr>
                   </thead>
-                  <tbody className="bg-white divide-y divide-brand-200">
+                  <tbody className="bg-white divide-y divide-[#3c3333]/20">
                     {rezerwacje.map((rezerwacja) => (
-                      <tr key={rezerwacja.id} className="hover:bg-brand-50">
+                      <tr key={rezerwacja.id} className="hover:bg-[#fdf2d0]/50">
                         <td className="px-6 py-4 whitespace-nowrap">
-                          <div className="text-sm font-medium text-brand-900">
+                          <div className="text-sm font-medium text-[#3c3333]">
                             {rezerwacja.imie} {rezerwacja.nazwisko}
                           </div>
-                          <div className="text-sm text-brand-500">{rezerwacja.email}</div>
+                          <div className="text-sm text-[#3c3333]">{rezerwacja.email}</div>
                         </td>
-                        <td className="px-6 py-4 whitespace-nowrap text-sm text-brand-600">
+                        <td className="px-6 py-4 whitespace-nowrap text-sm text-[#3c3333]">
                           {rezerwacja.domekNazwa || <span className="text-gray-400 italic">Nieprzydzielony</span>}
                         </td>
-                        <td className="px-6 py-4 whitespace-nowrap text-sm text-brand-600">
+                        <td className="px-6 py-4 whitespace-nowrap text-sm text-[#3c3333]">
                           {rezerwacja.startDate?.toLocaleDateString('pl-PL')} - {rezerwacja.endDate?.toLocaleDateString('pl-PL')}
-                          <div className="text-xs text-brand-400">
+                          <div className="text-xs text-[#3c3333]">
                             {rezerwacja.iloscNocy} {rezerwacja.iloscNocy === 1 ? 'noc' : 'nocy'}
                           </div>
                         </td>
-                        <td className="px-6 py-4 whitespace-nowrap text-sm text-brand-600">
+                        <td className="px-6 py-4 whitespace-nowrap text-sm text-[#3c3333]">
                           {rezerwacja.liczbOsob}
                         </td>
-                        <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-brand-800">
+                        <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-[#3c3333]">
                           {rezerwacja.cenaCałkowita} PLN
                         </td>
                         <td className="px-6 py-4 whitespace-nowrap">

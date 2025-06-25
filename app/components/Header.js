@@ -45,6 +45,7 @@ const Header = () => {
   ];
 
   const rightNavLinks = [
+    { href: `${basePath}/rezerwacja`, label: t('nav.reserve'), isCTA: true },
     { href: `${basePath}/#kontakt`, label: t('nav.contact') },
     { href: `${basePath}/regulamin`, label: t('nav.terms') },
   ];
@@ -55,8 +56,8 @@ const Header = () => {
   const navLinkClasses = (isTransparent) => 
     `group relative px-3 py-2 rounded-lg font-montserrat font-semibold transition-all duration-300 uppercase tracking-wider ${
       isTransparent
-        ? 'text-white hover:text-brand-100 hover:bg-white/10 [text-shadow:0_1px_3px_rgb(0_0_0_/_0.5)]'
-        : 'text-brand-700 hover:text-brand-900 hover:bg-brand-50' 
+        ? 'text-white hover:text-white/90 hover:bg-white/10 [text-shadow:0_1px_3px_rgb(0_0_0_/_0.5)]'
+        : 'text-[#3c3333] hover:text-[#3c3333]/90 hover:bg-[#fdf2d0]/50' 
     }`;
 
   return (
@@ -68,7 +69,7 @@ const Header = () => {
       }`}
     >
       <div 
-        className={`absolute inset-0 bg-[#e3e0d8]/90 backdrop-blur-[2px] border-b border-black/10 transition-opacity duration-500 ease-out ${
+        className={`absolute inset-0 bg-[#fdf2d0]/90 backdrop-blur-[2px] border-b border-black/10 transition-opacity duration-500 ease-out ${
           shouldShowTransparent ? 'opacity-0' : 'opacity-100'
         }`}
       ></div>
@@ -96,9 +97,9 @@ const Header = () => {
                 width={180} 
                 height={180} 
                 priority
-                className="h-24 w-auto transition-all duration-300 group-hover:scale-110"
+                className="h-24 w-auto scale-150 transition-all duration-300 group-hover:scale-[1.375]"
               />
-              <div className={`absolute inset-0 bg-brand-400/20 rounded-full blur-xl opacity-0 group-hover:opacity-100 transition-opacity duration-300 -z-10 ${shouldShowTransparent ? '[filter:drop-shadow(0_2px_5px_rgb(0_0_0_/_0.7))' : ''}`}></div>
+              <div className={`absolute inset-0 bg-[#3c3333]/20 rounded-full blur-xl opacity-0 group-hover:opacity-100 transition-opacity duration-300 -z-10 ${shouldShowTransparent ? '[filter:drop-shadow(0_2px_5px_rgb(0_0_0_/_0.7))' : ''}`}></div>
             </div>
           </Link>
         </div>
@@ -108,7 +109,11 @@ const Header = () => {
             <Link 
               key={link.href} 
               href={link.href} 
-              className={navLinkClasses(shouldShowTransparent)}
+              className={
+                link.isCTA 
+                  ? `px-6 py-3 bg-[#3c3333] text-[#fdf2d0] font-montserrat font-bold rounded-lg uppercase tracking-widest transition-all duration-300 hover:bg-[#3c3333]/90 transform hover:scale-105 shadow-lg`
+                  : navLinkClasses(shouldShowTransparent)
+              }
             >
               <span>{link.label}</span>
             </Link>
@@ -120,7 +125,7 @@ const Header = () => {
               className={`group relative px-3 py-2 rounded-lg font-montserrat font-medium transition-all duration-300 uppercase tracking-wider ${
                 shouldShowTransparent
                   ? 'text-amber-200 hover:text-amber-100 bg-amber-600/20 hover:bg-amber-600/30'
-                  : 'text-amber-600 hover:text-amber-700 bg-amber-50 hover:bg-amber-100' 
+                  : 'text-[#3c3333] hover:text-[#3c3333] bg-amber-50 hover:bg-amber-100' 
               }`}
               title={t('nav.admin_panel')}
             >
@@ -134,14 +139,14 @@ const Header = () => {
             className={`p-2 rounded-lg transition-colors duration-300 ${
               shouldShowTransparent
                 ? 'hover:bg-white/10 text-white'
-                : 'hover:bg-brand-100 text-brand-700' 
+                : 'hover:bg-[#fdf2d0]/50 text-[#3c3333]' 
             }`}
             onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
           >
             <div className="w-6 h-6 relative flex flex-col justify-center items-center">
-              <div className={`w-6 h-0.5 rounded-full transition-all duration-300 ${isMobileMenuOpen ? 'rotate-45 translate-y-1.5' : ''} ${shouldShowTransparent ? 'bg-white' : 'bg-brand-700'}`}></div>
-              <div className={`w-6 h-0.5 rounded-full my-1 transition-all duration-300 ${isMobileMenuOpen ? 'opacity-0' : ''} ${shouldShowTransparent ? 'bg-white' : 'bg-brand-700'}`}></div>
-              <div className={`w-6 h-0.5 rounded-full transition-all duration-300 ${isMobileMenuOpen ? '-rotate-45 -translate-y-1.5' : ''} ${shouldShowTransparent ? 'bg-white' : 'bg-brand-700'}`}></div>
+              <div className={`w-6 h-0.5 rounded-full transition-all duration-300 ${isMobileMenuOpen ? 'rotate-45 translate-y-1.5' : ''} ${shouldShowTransparent ? 'bg-white' : 'bg-[#3c3333]'}`}></div>
+              <div className={`w-6 h-0.5 rounded-full my-1 transition-all duration-300 ${isMobileMenuOpen ? 'opacity-0' : ''} ${shouldShowTransparent ? 'bg-white' : 'bg-[#3c3333]'}`}></div>
+              <div className={`w-6 h-0.5 rounded-full transition-all duration-300 ${isMobileMenuOpen ? '-rotate-45 -translate-y-1.5' : ''} ${shouldShowTransparent ? 'bg-white' : 'bg-[#3c3333]'}`}></div>
             </div>
           </button>
         </div>
@@ -152,17 +157,25 @@ const Header = () => {
           isMobileMenuOpen ? 'max-h-96 opacity-100' : 'max-h-0 opacity-0'
         }`}
       >
-        <div className="bg-brand-50/95 backdrop-blur-sm border-t border-brand-200 shadow-lg">
+        <div className="bg-[#fdf2d0]/95 backdrop-blur-sm border-t border-[#3c3333]/20 shadow-lg">
           <nav className="flex flex-col p-4 space-y-2">
             {[...leftNavLinks, ...rightNavLinks].map((link, index) => (
               <Link 
                 key={link.href} 
                 href={link.href} 
-                className="group p-4 rounded-xl hover:bg-brand-100 transition-all duration-300 transform hover:scale-105"
+                className={
+                  link.isCTA
+                    ? "group p-4 rounded-xl bg-[#3c3333] text-[#fdf2d0] hover:bg-[#3c3333]/90 transition-all duration-300 transform hover:scale-105 text-center"
+                    : "group p-4 rounded-xl hover:bg-[#fdf2d0]/80 transition-all duration-300 transform hover:scale-105"
+                }
                 onClick={() => setIsMobileMenuOpen(false)}
                 style={{animationDelay: `${index * 0.1}s`}}
               >
-                <span className="font-montserrat font-medium text-brand-700 group-hover:text-brand-900 uppercase tracking-wider">
+                <span className={
+                  link.isCTA
+                    ? "font-montserrat font-bold text-[#fdf2d0] uppercase tracking-wider"
+                    : "font-montserrat font-medium text-[#3c3333] group-hover:text-[#3c3333]/90 uppercase tracking-wider"
+                }>
                   {link.label}
                 </span>
               </Link>
@@ -174,7 +187,7 @@ const Header = () => {
                 className="group p-4 rounded-xl hover:bg-amber-100 transition-all duration-300 transform hover:scale-105"
                 onClick={() => setIsMobileMenuOpen(false)}
               >
-                <span className="font-montserrat font-medium text-amber-600 group-hover:text-amber-700 uppercase tracking-wider">
+                <span className="font-montserrat font-medium text-[#3c3333] group-hover:text-[#3c3333] uppercase tracking-wider">
                   PANEL
                 </span>
               </Link>

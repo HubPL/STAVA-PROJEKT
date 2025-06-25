@@ -142,10 +142,10 @@ const ReservationPage = () => {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-[#e3e0d8] flex items-center justify-center">
+      <div className="min-h-screen bg-[#fdf2d0] flex items-center justify-center">
         <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[#3a3a3a] mx-auto"></div>
-          <p className="mt-4 text-[#3a3a3a]">Ładowanie formularza rezerwacji...</p>
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[#3c3333] mx-auto"></div>
+          <p className="mt-4 text-[#3c3333]">Ładowanie formularza rezerwacji...</p>
         </div>
       </div>
     );
@@ -164,7 +164,7 @@ const ReservationPage = () => {
         <meta name="twitter:card" content="summary_large_image" />
         <link rel="canonical" href="https://stavakiszewa.pl/rezerwacja" />
       </Head>
-      <div className="min-h-screen bg-[#e3e0d8] font-serif text-[#3a3a3a]">
+      <div className="min-h-screen bg-[#fdf2d0] font-serif text-[#3c3333]">
       <PageHero
         title="Rezerwacja"
         subtitle="Zarezerwuj swój wymarzony pobyt w domkach STAVA"
@@ -177,7 +177,7 @@ const ReservationPage = () => {
             {/* Sekcja 1: Kalendarz */}
             <section>
               <div className="flex items-center gap-3 mb-6">
-                <div className="w-10 h-10 bg-[#3a3a3a] text-[#e3e0d8] rounded-full flex items-center justify-center font-bold">
+                <div className="w-10 h-10 bg-[#3c3333] text-[#fdf2d0] rounded-full flex items-center justify-center font-bold">
                   1
                 </div>
                 <h2 className="text-2xl font-bold font-lumios">Wybierz termin pobytu</h2>
@@ -191,7 +191,7 @@ const ReservationPage = () => {
             {/* Sekcja 2: Formularz */}
             <section>
               <div className="flex items-center gap-3 mb-6">
-                <div className="w-10 h-10 bg-[#3a3a3a] text-[#e3e0d8] rounded-full flex items-center justify-center font-bold">
+                <div className="w-10 h-10 bg-[#3c3333] text-[#fdf2d0] rounded-full flex items-center justify-center font-bold">
                   2
                 </div>
                 <h2 className="text-2xl font-bold font-lumios">Podaj dane kontaktowe</h2>
@@ -207,7 +207,7 @@ const ReservationPage = () => {
                       <input
                         {...register('imie')}
                         type="text"
-                        className={`w-full pl-10 pr-4 py-3 border rounded-lg focus:ring-2 focus:ring-[#3a3a3a] focus:border-transparent transition-colors ${
+                        className={`w-full pl-10 pr-4 py-3 border rounded-lg focus:ring-2 focus:ring-[#3c3333] focus:border-transparent transition-colors ${
                           errors.imie ? 'border-red-500' : 'border-gray-300'
                         }`}
                         placeholder="Jan"
@@ -225,7 +225,7 @@ const ReservationPage = () => {
                       <input
                         {...register('nazwisko')}
                         type="text"
-                        className={`w-full pl-10 pr-4 py-3 border rounded-lg focus:ring-2 focus:ring-[#3a3a3a] focus:border-transparent transition-colors ${
+                        className={`w-full pl-10 pr-4 py-3 border rounded-lg focus:ring-2 focus:ring-[#3c3333] focus:border-transparent transition-colors ${
                           errors.nazwisko ? 'border-red-500' : 'border-gray-300'
                         }`}
                         placeholder="Kowalski"
@@ -245,7 +245,7 @@ const ReservationPage = () => {
                     <input
                       {...register('email')}
                       type="email"
-                      className={`w-full pl-10 pr-4 py-3 border rounded-lg focus:ring-2 focus:ring-[#3a3a3a] focus:border-transparent transition-colors ${
+                      className={`w-full pl-10 pr-4 py-3 border rounded-lg focus:ring-2 focus:ring-[#3c3333] focus:border-transparent transition-colors ${
                         errors.email ? 'border-red-500' : 'border-gray-300'
                       }`}
                       placeholder="jan.kowalski@email.com"
@@ -264,7 +264,7 @@ const ReservationPage = () => {
                     <input
                       {...register('telefon')}
                       type="tel"
-                      className={`w-full pl-10 pr-4 py-3 border rounded-lg focus:ring-2 focus:ring-[#3a3a3a] focus:border-transparent transition-colors ${
+                      className={`w-full pl-10 pr-4 py-3 border rounded-lg focus:ring-2 focus:ring-[#3c3333] focus:border-transparent transition-colors ${
                         errors.telefon ? 'border-red-500' : 'border-gray-300'
                       }`}
                       placeholder="+48 123 456 789"
@@ -287,7 +287,7 @@ const ReservationPage = () => {
                       type="number"
                       min="1"
                       max={config?.max_osob || 6}
-                      className={`w-full pl-10 pr-4 py-3 border rounded-lg focus:ring-2 focus:ring-[#3a3a3a] focus:border-transparent transition-colors ${
+                      className={`w-full pl-10 pr-4 py-3 border rounded-lg focus:ring-2 focus:ring-[#3c3333] focus:border-transparent transition-colors ${
                         errors.liczbOsob ? 'border-red-500' : 'border-gray-300'
                       }`}
                     />
@@ -307,7 +307,7 @@ const ReservationPage = () => {
                     <textarea
                       {...register('uwagi')}
                       rows="4"
-                      className={`w-full pl-10 pr-4 py-3 border rounded-lg focus:ring-2 focus:ring-[#3a3a3a] focus:border-transparent transition-colors resize-none ${
+                      className={`w-full pl-10 pr-4 py-3 border rounded-lg focus:ring-2 focus:ring-[#3c3333] focus:border-transparent transition-colors resize-none ${
                         errors.uwagi ? 'border-red-500' : 'border-gray-300'
                       }`}
                       placeholder="Specjalne życzenia, godzina przyjazdu itp."
@@ -332,7 +332,7 @@ const ReservationPage = () => {
           <div className="lg:col-span-1">
             <section className="sticky top-8">
               <div className="flex items-center gap-3 mb-6">
-                <div className="w-10 h-10 bg-[#3a3a3a] text-[#e3e0d8] rounded-full flex items-center justify-center font-bold">
+                <div className="w-10 h-10 bg-[#3c3333] text-[#fdf2d0] rounded-full flex items-center justify-center font-bold">
                   3
                 </div>
                 <h2 className="text-2xl font-bold font-lumios">Podsumowanie</h2>
@@ -455,7 +455,7 @@ const ReservationPage = () => {
                   onClick={handleSubmit(onSubmit)}
                   disabled={!selectedDates}
                   className={`w-full py-4 px-6 rounded-lg font-semibold text-lg transition-all duration-300 flex items-center justify-center gap-2 ${
-                    selectedDates ? 'bg-[#3a3a3a] text-[#e3e0d8] hover:bg-opacity-90 transform hover:scale-105' : 'bg-gray-300 text-gray-500 cursor-not-allowed'
+                    selectedDates ? 'bg-[#3c3333] text-[#fdf2d0] hover:bg-opacity-90 transform hover:scale-105' : 'bg-gray-300 text-gray-500 cursor-not-allowed'
                   }`}
                 >
                   {selectedDates ? (

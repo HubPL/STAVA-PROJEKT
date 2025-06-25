@@ -110,14 +110,14 @@ export default function DostepnoscPanel() {
   };
 
   if (loading) {
-    return <div className="min-h-screen bg-brand-200 flex items-center justify-center"><p>Ładowanie...</p></div>;
+    return <div className="min-h-screen bg-[#fdf2d0] flex items-center justify-center"><p>Ładowanie...</p></div>;
   }
 
   if (!user) {
     return (
-      <div className="min-h-screen bg-brand-200 flex items-center justify-center">
+      <div className="min-h-screen bg-[#fdf2d0] flex items-center justify-center">
         <div className="text-center">
-          <p className="text-brand-700">Odmowa dostępu.</p>
+          <p className="text-[#3c3333]">Odmowa dostępu.</p>
           <Link href="/panel" className="text-blue-600 hover:underline">Zaloguj się</Link>
         </div>
       </div>
@@ -125,18 +125,18 @@ export default function DostepnoscPanel() {
   }
 
   return (
-    <div className="min-h-screen bg-brand-200">
+    <div className="min-h-screen bg-[#fdf2d0]">
       <div className="h-32"></div>
       <div className="container mx-auto px-4 py-8">
         
         {/* Nagłówek */}
-        <div className="bg-white rounded-3xl shadow-xl p-6 mb-8 border border-brand-300">
+        <div className="bg-white rounded-3xl shadow-xl p-6 mb-8 border border-[#3c3333]/20">
           <div className="flex justify-between items-center">
             <div>
-              <h1 className="text-3xl font-lumios text-brand-800">Zarządzanie Dostępnością Domków</h1>
-              <p className="text-brand-600">Blokuj terminy dla poszczególnych domków w razie awarii lub remontu.</p>
+                      <h1 className="text-3xl font-lumios text-[#3c3333]">Zarządzanie Dostępnością Domków</h1>
+        <p className="text-[#3c3333]">Blokuj terminy dla poszczególnych domków w razie awarii lub remontu.</p>
             </div>
-            <Link href="/panel" className="px-4 py-2 bg-brand-600 hover:bg-brand-700 text-white rounded-lg transition duration-200">
+            <Link href="/panel" className="px-4 py-2 bg-[#3c3333] hover:bg-[#3c3333]/90 text-white rounded-lg transition duration-200">
               Powrót do rezerwacji
             </Link>
           </div>
@@ -176,26 +176,26 @@ export default function DostepnoscPanel() {
         )}
 
         {/* Formularz dodawania niedostępności */}
-        <div className="bg-white rounded-3xl shadow-xl p-6 mb-8 border border-brand-300">
-                          <h2 className="text-2xl font-lumios text-brand-800 mb-4">Dodaj nowy okres niedostępności</h2>
+        <div className="bg-white rounded-3xl shadow-xl p-6 mb-8 border border-[#3c3333]/20">
+                          <h2 className="text-2xl font-lumios text-[#3c3333] mb-4">Dodaj nowy okres niedostępności</h2>
           <form onSubmit={handleAddNiedostepnosc} className="grid grid-cols-1 md:grid-cols-4 gap-4 items-end">
             <div>
-              <label htmlFor="domek_id" className="block text-sm font-medium text-brand-700">Domek</label>
-              <select name="domek_id" id="domek_id" value={formData.domek_id} onChange={handleFormChange} className="mt-1 block w-full px-3 py-2 border border-brand-300 rounded-md">
+              <label htmlFor="domek_id" className="block text-sm font-medium text-[#3c3333]">Domek</label>
+              <select name="domek_id" id="domek_id" value={formData.domek_id} onChange={handleFormChange} className="mt-1 block w-full px-3 py-2 border border-[#3c3333]/20 rounded-md">
                 {domki.map(d => <option key={d.id} value={d.id}>{d.nazwa}</option>)}
               </select>
             </div>
             <div>
-              <label htmlFor="od" className="block text-sm font-medium text-brand-700">Data od</label>
-              <input type="date" name="od" id="od" value={formData.od} onChange={handleFormChange} className="mt-1 block w-full px-3 py-2 border border-brand-300 rounded-md" />
+              <label htmlFor="od" className="block text-sm font-medium text-[#3c3333]">Data od</label>
+              <input type="date" name="od" id="od" value={formData.od} onChange={handleFormChange} className="mt-1 block w-full px-3 py-2 border border-[#3c3333]/20 rounded-md" />
             </div>
             <div>
-              <label htmlFor="do" className="block text-sm font-medium text-brand-700">Data do</label>
-              <input type="date" name="do" id="do" value={formData.do} onChange={handleFormChange} className="mt-1 block w-full px-3 py-2 border border-brand-300 rounded-md" />
+              <label htmlFor="do" className="block text-sm font-medium text-[#3c3333]">Data do</label>
+              <input type="date" name="do" id="do" value={formData.do} onChange={handleFormChange} className="mt-1 block w-full px-3 py-2 border border-[#3c3333]/20 rounded-md" />
             </div>
             <div>
-              <label htmlFor="powod" className="block text-sm font-medium text-brand-700">Powód (opcjonalnie)</label>
-              <input type="text" name="powod" id="powod" value={formData.powod} onChange={handleFormChange} placeholder="np. Awaria" className="mt-1 block w-full px-3 py-2 border border-brand-300 rounded-md" />
+              <label htmlFor="powod" className="block text-sm font-medium text-[#3c3333]">Powód (opcjonalnie)</label>
+              <input type="text" name="powod" id="powod" value={formData.powod} onChange={handleFormChange} placeholder="np. Awaria" className="mt-1 block w-full px-3 py-2 border border-[#3c3333]/20 rounded-md" />
             </div>
             <button type="submit" disabled={formLoading} className="w-full px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded-lg transition duration-200 disabled:opacity-50">
               {formLoading ? 'Dodawanie...' : 'Zablokuj termin'}
@@ -204,27 +204,27 @@ export default function DostepnoscPanel() {
         </div>
 
         {/* Lista obecnych niedostępności */}
-        <div className="bg-white rounded-3xl shadow-xl p-6 border border-brand-300">
-                      <h2 className="text-2xl font-lumios text-brand-800 mb-4">Aktualnie zablokowane terminy</h2>
+        <div className="bg-white rounded-3xl shadow-xl p-6 border border-[#3c3333]/20">
+                      <h2 className="text-2xl font-lumios text-[#3c3333] mb-4">Aktualnie zablokowane terminy</h2>
           {niedostepnosci.length > 0 ? (
             <div className="overflow-x-auto">
-              <table className="min-w-full divide-y divide-brand-200">
-                <thead className="bg-brand-50">
+              <table className="min-w-full divide-y divide-[#3c3333]/20">
+                <thead className="bg-[#fdf2d0]/50">
                   <tr>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-brand-500 uppercase tracking-wider">Domek</th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-brand-500 uppercase tracking-wider">Od</th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-brand-500 uppercase tracking-wider">Do</th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-brand-500 uppercase tracking-wider">Powód</th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-brand-500 uppercase tracking-wider">Akcje</th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-[#3c3333] uppercase tracking-wider">Domek</th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-[#3c3333] uppercase tracking-wider">Od</th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-[#3c3333] uppercase tracking-wider">Do</th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-[#3c3333] uppercase tracking-wider">Powód</th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-[#3c3333] uppercase tracking-wider">Akcje</th>
                   </tr>
                 </thead>
-                <tbody className="bg-white divide-y divide-brand-200">
+                <tbody className="bg-white divide-y divide-[#3c3333]/20">
                   {niedostepnosci.map(n => (
                     <tr key={n.id}>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-brand-900">{getDomekName(n.domek_id || n.domekId)}</td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm text-brand-600">{new Date(n.od || n.startDate).toLocaleDateString('pl-PL')}</td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm text-brand-600">{new Date(n.do || n.endDate).toLocaleDateString('pl-PL')}</td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm text-brand-600">{n.powod}</td>
+                      <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-[#3c3333]">{getDomekName(n.domek_id || n.domekId)}</td>
+                      <td className="px-6 py-4 whitespace-nowrap text-sm text-[#3c3333]">{new Date(n.od || n.startDate).toLocaleDateString('pl-PL')}</td>
+                      <td className="px-6 py-4 whitespace-nowrap text-sm text-[#3c3333]">{new Date(n.do || n.endDate).toLocaleDateString('pl-PL')}</td>
+                      <td className="px-6 py-4 whitespace-nowrap text-sm text-[#3c3333]">{n.powod}</td>
                       <td className="px-6 py-4 whitespace-nowrap text-sm">
                         <button
                           onClick={() => handleRemoveNiedostepnosc(n.id)}
@@ -239,7 +239,7 @@ export default function DostepnoscPanel() {
               </table>
             </div>
           ) : (
-            <div className="text-center text-brand-500 py-8">
+            <div className="text-center text-[#3c3333] py-8">
               <p>Brak ręcznie zablokowanych terminów.</p>
             </div>
           )}

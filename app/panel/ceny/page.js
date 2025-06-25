@@ -221,14 +221,14 @@ export default function CenyPanel() {
   };
 
   if (loading) {
-    return <div className="min-h-screen bg-brand-200 flex items-center justify-center"><p>Ładowanie...</p></div>;
+    return <div className="min-h-screen bg-[#fdf2d0] flex items-center justify-center"><p>Ładowanie...</p></div>;
   }
 
   if (!user) {
     return (
-      <div className="min-h-screen bg-brand-200 flex items-center justify-center">
+      <div className="min-h-screen bg-[#fdf2d0] flex items-center justify-center">
         <div className="text-center">
-          <p className="text-brand-700">Odmowa dostępu.</p>
+          <p className="text-[#3c3333]">Odmowa dostępu.</p>
           <Link href="/panel" className="text-blue-600 hover:underline">Zaloguj się</Link>
         </div>
       </div>
@@ -236,18 +236,18 @@ export default function CenyPanel() {
   }
 
   return (
-    <div className="min-h-screen bg-brand-200">
+    <div className="min-h-screen bg-[#fdf2d0]">
       <div className="h-32"></div>
       <div className="container mx-auto px-4 py-8">
         
         {/* Nagłówek */}
-        <div className="bg-white rounded-3xl shadow-xl p-6 mb-8 border border-brand-300">
+        <div className="bg-white rounded-3xl shadow-xl p-6 mb-8 border border-[#3c3333]/20">
           <div className="flex justify-between items-center">
             <div>
-              <h1 className="text-3xl font-lumios text-brand-800">Zarządzanie Cenami</h1>
-              <p className="text-brand-600">Ustaw cenę podstawową i ceny sezonowe</p>
+              <h1 className="text-3xl font-lumios text-[#3c3333]">Zarządzanie Cenami</h1>
+              <p className="text-[#3c3333]">Ustaw cenę podstawową i ceny sezonowe</p>
             </div>
-            <Link href="/panel" className="px-4 py-2 bg-brand-600 hover:bg-brand-700 text-white rounded-lg transition duration-200">
+            <Link href="/panel" className="px-4 py-2 bg-[#3c3333] hover:bg-[#3c3333]/90 text-white rounded-lg transition duration-200">
               Powrót do panelu
             </Link>
           </div>
@@ -287,18 +287,18 @@ export default function CenyPanel() {
         )}
 
         {/* Cena podstawowa */}
-        <div className="bg-white rounded-3xl shadow-xl p-6 mb-8 border border-brand-300">
-          <h2 className="text-2xl font-lumios text-brand-800 mb-4">Cena podstawowa</h2>
+        <div className="bg-white rounded-3xl shadow-xl p-6 mb-8 border border-[#3c3333]/20">
+          <h2 className="text-2xl font-lumios text-[#3c3333] mb-4">Cena podstawowa</h2>
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-sm text-brand-600 mb-2">Domyślna cena za dobę (PLN)</p>
+              <p className="text-sm text-[#3c3333] mb-2">Domyślna cena za dobę (PLN)</p>
               {editingBase ? (
                 <div className="flex items-center gap-2">
                   <input
                     type="number"
                     value={basePriceTemp}
                     onChange={(e) => setBasePriceTemp(e.target.value)}
-                    className="px-3 py-2 border border-brand-300 rounded-md"
+                    className="px-3 py-2 border border-[#3c3333]/20 rounded-md"
                     placeholder="Cena"
                   />
                   <button
@@ -317,7 +317,7 @@ export default function CenyPanel() {
                 </div>
               ) : (
                 <div className="flex items-center gap-3">
-                  <span className="text-3xl font-bold text-brand-800">{config?.ceny?.podstawowa || 380} PLN</span>
+                  <span className="text-3xl font-bold text-[#3c3333]">{config?.ceny?.podstawowa || 380} PLN</span>
                   <button
                     onClick={() => {
                       setEditingBase(true);
@@ -334,24 +334,24 @@ export default function CenyPanel() {
         </div>
 
         {/* Cena za dodatkową osobę */}
-        <div className="bg-white rounded-3xl shadow-xl p-6 mb-8 border border-brand-300">
-          <h2 className="text-2xl font-lumios text-brand-800 mb-4">Opłata za dodatkowe osoby</h2>
+        <div className="bg-white rounded-3xl shadow-xl p-6 mb-8 border border-[#3c3333]/20">
+          <h2 className="text-2xl font-lumios text-[#3c3333] mb-4">Opłata za dodatkowe osoby</h2>
           <div className="mb-4">
-            <p className="text-sm text-brand-600 mb-2">
+            <p className="text-sm text-[#3c3333] mb-2">
               Cena bazowa obejmuje pobyt do <strong>{config?.bazowa_liczba_osob || 4} osób</strong>. 
               Za każdą dodatkową osobę (powyżej {config?.bazowa_liczba_osob || 4}, maksymalnie {config?.max_osob || 6}) pobierana jest dodatkowa opłata.
             </p>
           </div>
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-sm text-brand-600 mb-2">Cena za każdą dodatkową osobę (PLN)</p>
+              <p className="text-sm text-[#3c3333] mb-2">Cena za każdą dodatkową osobę (PLN)</p>
               {editingExtraPerson ? (
                 <div className="flex items-center gap-2">
                   <input
                     type="number"
                     value={extraPersonPriceTemp}
                     onChange={(e) => setExtraPersonPriceTemp(e.target.value)}
-                    className="px-3 py-2 border border-brand-300 rounded-md"
+                    className="px-3 py-2 border border-[#3c3333]/20 rounded-md"
                     placeholder="Cena za dodatkową osobę"
                     min="0"
                   />
@@ -371,7 +371,7 @@ export default function CenyPanel() {
                 </div>
               ) : (
                 <div className="flex items-center gap-3">
-                  <span className="text-3xl font-bold text-brand-800">
+                  <span className="text-3xl font-bold text-[#3c3333]">
                     +{config?.ceny?.cena_za_dodatkowa_osoba || 0} PLN
                   </span>
                   <button
@@ -389,9 +389,9 @@ export default function CenyPanel() {
           </div>
           
           {/* Przykład kalkulacji */}
-          <div className="mt-6 p-4 bg-brand-50 rounded-lg">
-            <h4 className="font-semibold text-brand-800 mb-2">Przykład kalkulacji:</h4>
-            <div className="text-sm text-brand-600 space-y-1">
+          <div className="mt-6 p-4 bg-[#fdf2d0]/50 rounded-lg">
+            <h4 className="font-semibold text-[#3c3333] mb-2">Przykład kalkulacji:</h4>
+            <div className="text-sm text-[#3c3333] space-y-1">
               <p>• {config?.bazowa_liczba_osob || 4} osoby: {config?.ceny?.podstawowa || 380} PLN za dobę</p>
               <p>• 5 osób: {config?.ceny?.podstawowa || 380} + {config?.ceny?.cena_za_dodatkowa_osoba || 0} = {(config?.ceny?.podstawowa || 380) + (config?.ceny?.cena_za_dodatkowa_osoba || 0)} PLN za dobę</p>
               <p>• 6 osób: {config?.ceny?.podstawowa || 380} + 2×{config?.ceny?.cena_za_dodatkowa_osoba || 0} = {(config?.ceny?.podstawowa || 380) + 2*(config?.ceny?.cena_za_dodatkowa_osoba || 0)} PLN za dobę</p>
@@ -400,9 +400,9 @@ export default function CenyPanel() {
         </div>
 
         {/* Ceny sezonowe */}
-        <div className="bg-white rounded-3xl shadow-xl p-6 border border-brand-300">
+        <div className="bg-white rounded-3xl shadow-xl p-6 border border-[#3c3333]/20">
           <div className="flex justify-between items-center mb-6">
-                          <h2 className="text-2xl font-lumios text-brand-800">Ceny sezonowe</h2>
+                          <h2 className="text-2xl font-lumios text-[#3c3333]">Ceny sezonowe</h2>
             <button
               onClick={() => setShowNewSeason(true)}
               className="px-4 py-2 bg-green-600 hover:bg-green-700 text-white rounded-lg transition duration-200 flex items-center gap-2"
@@ -413,7 +413,7 @@ export default function CenyPanel() {
 
           {/* Formularz nowego sezonu */}
           {showNewSeason && (
-            <div className="bg-brand-50 p-4 rounded-lg mb-6">
+            <div className="bg-[#fdf2d0]/50 p-4 rounded-lg mb-6">
               <h3 className="font-semibold mb-3">Nowy sezon</h3>
               <div className="grid grid-cols-1 md:grid-cols-5 gap-3">
                 <input
@@ -421,26 +421,26 @@ export default function CenyPanel() {
                   placeholder="Nazwa sezonu"
                   value={newSeason.nazwa}
                   onChange={(e) => setNewSeason({...newSeason, nazwa: e.target.value})}
-                  className="px-3 py-2 border border-brand-300 rounded-md"
+                  className="px-3 py-2 border border-[#3c3333]/20 rounded-md"
                 />
                 <input
                   type="date"
                   value={newSeason.od}
                   onChange={(e) => setNewSeason({...newSeason, od: e.target.value})}
-                  className="px-3 py-2 border border-brand-300 rounded-md"
+                  className="px-3 py-2 border border-[#3c3333]/20 rounded-md"
                 />
                 <input
                   type="date"
                   value={newSeason.do}
                   onChange={(e) => setNewSeason({...newSeason, do: e.target.value})}
-                  className="px-3 py-2 border border-brand-300 rounded-md"
+                  className="px-3 py-2 border border-[#3c3333]/20 rounded-md"
                 />
                 <input
                   type="number"
                   placeholder="Cena PLN"
                   value={newSeason.cena}
                   onChange={(e) => setNewSeason({...newSeason, cena: e.target.value})}
-                  className="px-3 py-2 border border-brand-300 rounded-md"
+                  className="px-3 py-2 border border-[#3c3333]/20 rounded-md"
                 />
                 <div className="flex gap-2">
                   <button
@@ -467,17 +467,17 @@ export default function CenyPanel() {
           {/* Lista sezonów */}
           {config?.ceny?.sezonowe?.length > 0 ? (
             <div className="overflow-x-auto">
-              <table className="min-w-full divide-y divide-brand-200">
-                <thead className="bg-brand-50">
+              <table className="min-w-full divide-y divide-[#3c3333]/20">
+                <thead className="bg-[#fdf2d0]/50">
                   <tr>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-brand-500 uppercase tracking-wider">Nazwa</th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-brand-500 uppercase tracking-wider">Od</th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-brand-500 uppercase tracking-wider">Do</th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-brand-500 uppercase tracking-wider">Cena</th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-brand-500 uppercase tracking-wider">Akcje</th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-[#3c3333] uppercase tracking-wider">Nazwa</th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-[#3c3333] uppercase tracking-wider">Od</th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-[#3c3333] uppercase tracking-wider">Do</th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-[#3c3333] uppercase tracking-wider">Cena</th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-[#3c3333] uppercase tracking-wider">Akcje</th>
                   </tr>
                 </thead>
-                <tbody className="bg-white divide-y divide-brand-200">
+                <tbody className="bg-white divide-y divide-[#3c3333]/20">
                   {config.ceny.sezonowe.map(sezon => (
                     <tr key={sezon.id}>
                       {editingSeasonId === sezon.id ? (
@@ -487,7 +487,7 @@ export default function CenyPanel() {
                               type="text"
                               value={editingSeason.nazwa}
                               onChange={(e) => setEditingSeason({...editingSeason, nazwa: e.target.value})}
-                              className="px-2 py-1 border border-brand-300 rounded"
+                              className="px-2 py-1 border border-[#3c3333]/20 rounded"
                             />
                           </td>
                           <td className="px-6 py-4">
@@ -495,7 +495,7 @@ export default function CenyPanel() {
                               type="date"
                               value={editingSeason.od}
                               onChange={(e) => setEditingSeason({...editingSeason, od: e.target.value})}
-                              className="px-2 py-1 border border-brand-300 rounded"
+                              className="px-2 py-1 border border-[#3c3333]/20 rounded"
                             />
                           </td>
                           <td className="px-6 py-4">
@@ -503,7 +503,7 @@ export default function CenyPanel() {
                               type="date"
                               value={editingSeason.do}
                               onChange={(e) => setEditingSeason({...editingSeason, do: e.target.value})}
-                              className="px-2 py-1 border border-brand-300 rounded"
+                              className="px-2 py-1 border border-[#3c3333]/20 rounded"
                             />
                           </td>
                           <td className="px-6 py-4">
@@ -511,7 +511,7 @@ export default function CenyPanel() {
                               type="number"
                               value={editingSeason.cena}
                               onChange={(e) => setEditingSeason({...editingSeason, cena: e.target.value})}
-                              className="px-2 py-1 border border-brand-300 rounded w-24"
+                              className="px-2 py-1 border border-[#3c3333]/20 rounded w-24"
                             />
                           </td>
                           <td className="px-6 py-4 flex gap-2">
@@ -561,7 +561,7 @@ export default function CenyPanel() {
               </table>
             </div>
           ) : (
-            <p className="text-center text-brand-500 py-8">Brak zdefiniowanych cen sezonowych</p>
+            <p className="text-center text-[#3c3333] py-8">Brak zdefiniowanych cen sezonowych</p>
           )}
         </div>
       </div>

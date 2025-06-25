@@ -20,7 +20,7 @@ export default function RegulaminPage() {
                 <meta name="robots" content="index, follow" />
                 <link rel="canonical" href="https://stavakiszewa.pl/regulamin" />
             </Head>
-            <div className="bg-[#e3e0d8] font-serif text-[#3a3a3a] min-h-screen">
+            <div className="bg-[#fdf2d0] font-serif text-[#3c3333] min-h-screen">
             <PageHero 
                 titleKey="terms.title"
                 subtitleKey="terms.subtitle"
@@ -32,8 +32,8 @@ export default function RegulaminPage() {
 
                     <div className="text-center py-20">
                         <div className="mb-8">
-                            <div className="w-16 h-16 bg-[#3a3a3a]/10 rounded-full flex items-center justify-center mx-auto mb-6">
-                                <svg className="w-8 h-8 text-[#3a3a3a]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                      <div className="w-16 h-16 bg-[#3c3333]/10 rounded-full flex items-center justify-center mx-auto mb-6">
+            <svg className="w-8 h-8 text-[#3c3333]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
                                 </svg>
                             </div>
@@ -45,7 +45,7 @@ export default function RegulaminPage() {
                             </p>
                         </div>
                         
-                        <div className="bg-white/60 p-8 rounded-xl border border-[#3a3a3a]/10 max-w-2xl mx-auto">
+                        <div className="bg-white/60 p-8 rounded-xl border border-[#3c3333]/10 max-w-2xl mx-auto">
                             <h3 className="text-xl font-semibold mb-4 font-lumios">{t('terms.have_questions')}</h3>
                             <p className="text-base tracking-wide mb-6">
                                 {t('terms.contact_us')}
