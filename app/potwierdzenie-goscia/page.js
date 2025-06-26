@@ -4,7 +4,7 @@ import Link from 'next/link';
 
 export default function PotwierdzenieGosciaPage() {
   return (
-    <div className="min-h-screen bg-[#fdf2d0] py-40 px-6 sm:px-8 lg:px-4">
+    <div className="min-h-screen bg-[#FFF9E8] py-40 px-6 sm:px-8 lg:px-4">
       <div className="container mx-auto max-w-4xl">
         <div className="text-center mb-12">
           <h1 className="text-3xl md:text-4xl font-semibold tracking-widest uppercase mb-6 font-lumios text-[#3c3333]">
@@ -39,7 +39,7 @@ export default function PotwierdzenieGosciaPage() {
             
             <div className="space-y-6">
               <div className="flex items-start space-x-4">
-                <div className="flex-shrink-0 w-8 h-8 bg-[#3c3333] text-[#fdf2d0] rounded-full flex items-center justify-center font-bold">
+                <div className="flex-shrink-0 w-8 h-8 bg-[#3c3333] text-[#FFF9E8] rounded-full flex items-center justify-center font-bold">
                   1
                 </div>
                 <div>
@@ -51,7 +51,7 @@ export default function PotwierdzenieGosciaPage() {
               </div>
 
               <div className="flex items-start space-x-4">
-                <div className="flex-shrink-0 w-8 h-8 bg-[#3c3333] text-[#fdf2d0] rounded-full flex items-center justify-center font-bold">
+                <div className="flex-shrink-0 w-8 h-8 bg-[#3c3333] text-[#FFF9E8] rounded-full flex items-center justify-center font-bold">
                   2
                 </div>
                 <div>
@@ -63,7 +63,7 @@ export default function PotwierdzenieGosciaPage() {
               </div>
 
               <div className="flex items-start space-x-4">
-                <div className="flex-shrink-0 w-8 h-8 bg-[#3c3333] text-[#fdf2d0] rounded-full flex items-center justify-center font-bold">
+                <div className="flex-shrink-0 w-8 h-8 bg-[#3c3333] text-[#FFF9E8] rounded-full flex items-center justify-center font-bold">
                   3
                 </div>
                 <div>
@@ -77,7 +77,7 @@ export default function PotwierdzenieGosciaPage() {
           </div>
 
           {/* Informacje kontaktowe */}
-          <div className="bg-[#fdf2d0]/30 rounded-2xl p-6 mb-8 border border-[#3c3333]/20">
+          <div className="bg-[#FFF9E8]/30 rounded-2xl p-6 mb-8 border border-[#3c3333]/20">
             <h4 className="text-lg font-lumios font-semibold text-[#3c3333] mb-4">Masz pytania?</h4>
             <div className="space-y-3 text-[#3c3333] font-inter">
               <p>
@@ -117,7 +117,7 @@ export default function PotwierdzenieGosciaPage() {
             </Link>
             <Link 
               href="/domki" 
-              className="inline-flex items-center justify-center px-6 py-3 bg-white border-2 border-[#3c3333]/20 text-[#3c3333] hover:bg-[#fdf2d0]/30 font-montserrat font-semibold rounded-xl shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-300"
+              className="inline-flex items-center justify-center px-6 py-3 bg-white border-2 border-[#3c3333]/20 text-[#3c3333] hover:bg-[#FFF9E8]/30 font-montserrat font-semibold rounded-xl shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-300"
             >
               Zobacz nasze domki
             </Link>

@@ -78,7 +78,7 @@ export default function DynamicImage({
       
       {/* Loading state */}
       {!isLoaded && (
-        <div className="absolute inset-0 bg-[#fdf2d0] animate-pulse flex items-center justify-center">
+        <div className="absolute inset-0 bg-[#FFF9E8] animate-pulse flex items-center justify-center">
           <div className="w-8 h-8 border-2 border-[#3c3333] border-t-transparent rounded-full animate-spin"></div>
         </div>
       )}

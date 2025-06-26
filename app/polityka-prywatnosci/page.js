@@ -42,7 +42,7 @@ export default function PolitykaPrywatnosciPage() {
                 <meta name="robots" content="index, follow" />
                 <link rel="canonical" href="https://stavakiszewa.pl/polityka-prywatnosci" />
             </Head>
-            <div className="bg-[#fdf2d0] font-serif text-[#3c3333] min-h-screen">
+            <div className="bg-[#FFF9E8] font-serif text-[#3c3333] min-h-screen">
             <PageHero 
                 titleKey="privacy.title"
                 subtitleKey="privacy.subtitle"

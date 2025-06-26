@@ -14,6 +14,10 @@ const AdminPanel = () => {
   const [updatingStatus, setUpdatingStatus] = useState({});
   const [searchTerm, setSearchTerm] = useState('');
   const [statusFilter, setStatusFilter] = useState('all');
+  const [dateFrom, setDateFrom] = useState('');
+  const [dateTo, setDateTo] = useState('');
+  const [cleanupStats, setCleanupStats] = useState(null);
+  const [isCleaningUp, setIsCleaningUp] = useState(false);
 
   useEffect(() => {
     const unsubscribe = onAuthChange((user) => {
@@ -21,6 +25,7 @@ const AdminPanel = () => {
       setLoading(false);
       if (user) {
         fetchRezerwacje();
+        checkExpiredReservations();
       }
     });
     return () => unsubscribe();
@@ -54,6 +59,50 @@ const AdminPanel = () => {
       setRezerwacje(rezerwacjeData);
     } catch (error) {
       console.error('Błąd pobierania rezerwacji:', error);
+    }
+  };
+
+  const checkExpiredReservations = async () => {
+    try {
+      const response = await fetch('/api/cleanup-expired-reservations', {
+        method: 'GET',
+      });
+      const data = await response.json();
+      
+      if (data.success) {
+        setCleanupStats(data);
+      }
+    } catch (error) {
+      console.error('Błąd sprawdzania przeterminowanych rezerwacji:', error);
+    }
+  };
+
+  const cleanupExpiredReservations = async () => {
+    if (!confirm('Czy na pewno chcesz usunąć wszystkie przeterminowane rezerwacje (starsze niż 24 godziny)?')) {
+      return;
+    }
+    
+    setIsCleaningUp(true);
+    
+    try {
+      const response = await fetch('/api/cleanup-expired-reservations', {
+        method: 'POST',
+      });
+      const data = await response.json();
+      
+      if (data.success) {
+        alert(`Pomyślnie usunięto ${data.deletedCount} przeterminowanych rezerwacji z ${data.foundExpired} znalezionych.`);
+        // Odśwież listę rezerwacji i statystyki
+        await fetchRezerwacje();
+        await checkExpiredReservations();
+      } else {
+        alert('Błąd podczas czyszczenia: ' + data.message);
+      }
+    } catch (error) {
+      console.error('Błąd czyszczenia przeterminowanych rezerwacji:', error);
+      alert('Wystąpił błąd podczas czyszczenia przeterminowanych rezerwacji');
+    } finally {
+      setIsCleaningUp(false);
     }
   };
 
@@ -116,12 +165,37 @@ const AdminPanel = () => {
     
     const matchesStatus = statusFilter === 'all' || rez.status === statusFilter;
     
-    return matchesSearch && matchesStatus;
+    // Filtrowanie po datach
+    let matchesDate = true;
+    if ((dateFrom || dateTo) && rez.selectedDomki && Array.isArray(rez.selectedDomki)) {
+      const filterFromDate = dateFrom ? new Date(dateFrom) : null;
+      const filterToDate = dateTo ? new Date(dateTo) : null;
+      
+      matchesDate = rez.selectedDomki.some(domek => {
+        const startDate = domek.startDate instanceof Date ? domek.startDate : new Date(domek.startDate);
+        const endDate = domek.endDate instanceof Date ? domek.endDate : new Date(domek.endDate);
+        
+        // Sprawdzenie czy okresy się nakładają
+        if (filterFromDate && filterToDate) {
+          // Okresy nakładają się jeśli start <= filterTo && end >= filterFrom
+          return startDate <= filterToDate && endDate >= filterFromDate;
+        } else if (filterFromDate) {
+          // Sprawdź czy rezerwacja kończy się po lub w dniu filterFrom
+          return endDate >= filterFromDate;
+        } else if (filterToDate) {
+          // Sprawdź czy rezerwacja zaczyna się przed lub w dniu filterTo
+          return startDate <= filterToDate;
+        }
+        return true;
+      });
+    }
+    
+    return matchesSearch && matchesStatus && matchesDate;
   });
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-[#fdf2d0] flex items-center justify-center">
+      <div className="min-h-screen bg-[#FFF9E8] flex items-center justify-center">
         <div className="text-center">
           <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[#3c3333] mx-auto"></div>
           <p className="mt-4 text-[#3c3333]">Ładowanie...</p>
@@ -132,7 +206,7 @@ const AdminPanel = () => {
 
   if (!user) {
     return (
-      <div className="min-h-screen bg-[#fdf2d0] flex items-center justify-center">
+      <div className="min-h-screen bg-[#FFF9E8] flex items-center justify-center">
         <div className="bg-white p-8 rounded-xl shadow-lg w-full max-w-md">
           <h1 className="text-2xl font-bold text-[#3c3333] mb-6 text-center">Panel Administracyjny</h1>
           <form onSubmit={handleLogin} className="space-y-4">
@@ -156,7 +230,7 @@ const AdminPanel = () => {
             </div>
             <button
               type="submit"
-              className="w-full bg-[#3c3333] text-[#fdf2d0] py-2 px-4 rounded-lg hover:bg-[#2a2525] transition-colors"
+              className="w-full bg-[#3c3333] text-[#FFF9E8] py-2 px-4 rounded-lg hover:bg-[#2a2525] transition-colors"
             >
               Zaloguj się
             </button>
@@ -167,12 +241,41 @@ const AdminPanel = () => {
   }
 
   return (
-    <div className="min-h-screen bg-[#fdf2d0] pt-40 pb-8">
+    <div className="min-h-screen bg-[#FFF9E8] pt-40 pb-8">
       <div className="container mx-auto px-4 max-w-7xl">
         {/* Nagłówek */}
         <div className="flex justify-between items-center mb-8">
-          <h1 className="text-3xl font-bold text-[#3c3333]">Panel Administracyjny</h1>
+          <div>
+            <h1 className="text-3xl font-bold text-[#3c3333]">Panel Administracyjny</h1>
+            {cleanupStats && cleanupStats.expiredReservations > 0 && (
+              <div className="mt-2 flex items-center gap-2 text-sm text-amber-700 bg-amber-50 px-3 py-1 rounded-lg border border-amber-200">
+                <span>⚠️</span>
+                <span>
+                  Znaleziono <strong>{cleanupStats.expiredReservations}</strong> przeterminowanych rezerwacji
+                  {cleanupStats.totalPendingReservations > 0 && ` z ${cleanupStats.totalPendingReservations} oczekujących`}
+                </span>
+              </div>
+            )}
+          </div>
           <div className="flex gap-4">
+            {cleanupStats && cleanupStats.expiredReservations > 0 && (
+              <button
+                onClick={cleanupExpiredReservations}
+                disabled={isCleaningUp}
+                className="bg-orange-600 text-white px-4 py-2 rounded-lg hover:bg-orange-700 transition-colors disabled:opacity-50 flex items-center gap-2"
+              >
+                {isCleaningUp ? (
+                  <>
+                    <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white"></div>
+                    Czyszczenie...
+                  </>
+                ) : (
+                  <>
+                    🗑️ Usuń przeterminowane ({cleanupStats.expiredReservations})
+                  </>
+                )}
+              </button>
+            )}
             <Link
               href="/panel/ceny"
               className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors"
@@ -202,7 +305,7 @@ const AdminPanel = () => {
 
         {/* Filtry */}
         <div className="bg-white rounded-xl shadow-lg p-6 mb-6">
-          <div className="grid md:grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-2">
                 Szukaj po imieniu, nazwisku lub emailu
@@ -230,18 +333,61 @@ const AdminPanel = () => {
                 <option value="odrzucona">Odrzucone</option>
               </select>
             </div>
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                Data od
+              </label>
+              <input
+                type="date"
+                value={dateFrom}
+                onChange={(e) => setDateFrom(e.target.value)}
+                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#3c3333] focus:border-transparent"
+              />
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                Data do
+              </label>
+              <input
+                type="date"
+                value={dateTo}
+                onChange={(e) => setDateTo(e.target.value)}
+                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#3c3333] focus:border-transparent"
+              />
+            </div>
           </div>
+          
+          {(dateFrom || dateTo) && (
+            <div className="mt-4 p-3 bg-blue-50 border border-blue-200 rounded-lg">
+              <p className="text-sm text-blue-800">
+                💡 Filtry dat pokazują rezerwacje, które nakładają się z wybranym okresem. 
+                {dateFrom && dateTo ? ' Wybrano okres od ' + new Date(dateFrom).toLocaleDateString('pl-PL') + ' do ' + new Date(dateTo).toLocaleDateString('pl-PL') + '.' : ''}
+              </p>
+            </div>
+          )}
+          
+          {cleanupStats && (
+            <div className="mt-4 p-3 bg-gray-50 border border-gray-200 rounded-lg">
+              <p className="text-sm text-gray-700">
+                ℹ️ System automatyczny: Oczekujące rezerwacje starsze niż 24 godziny są automatycznie usuwane.
+                {cleanupStats.totalPendingReservations > 0 && ` Obecnie ${cleanupStats.totalPendingReservations} rezerwacji oczekuje na potwierdzenie.`}
+                {cleanupStats.expiredReservations === 0 && ' Brak przeterminowanych rezerwacji.'}
+              </p>
+            </div>
+                    )}
           
           {filteredRezerwacje.length !== rezerwacje.length && (
             <div className="mt-4 flex justify-between items-center">
               <p className="text-sm text-gray-600">
                 Znaleziono {filteredRezerwacje.length} z {rezerwacje.length} rezerwacji
               </p>
-              {(searchTerm || statusFilter !== 'all') && (
+              {(searchTerm || statusFilter !== 'all' || dateFrom || dateTo) && (
                 <button
                   onClick={() => {
                     setSearchTerm('');
                     setStatusFilter('all');
+                    setDateFrom('');
+                    setDateTo('');
                   }}
                   className="text-sm text-blue-600 hover:text-blue-800"
                 >

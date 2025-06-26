@@ -24,10 +24,9 @@ export default function AboutPage() {
         <meta name="twitter:card" content="summary_large_image" />
         <link rel="canonical" href="https://stavakiszewa.pl/o-nas" />
       </Head>
-      <div className="bg-[#fdf2d0] font-serif text-[#3c3333]">
+      <div className="bg-[#FFF9E8] font-serif text-[#3c3333]">
       <PageHero 
         titleKey="about.title"
-        subtitleKey="about.subtitle"
       />
 
       {/* 2. MAIN CONTENT SECTION */}
@@ -112,7 +111,7 @@ export default function AboutPage() {
                 </p>
                 <Link 
                     href={`${basePath}/rezerwacja`}
-                    className="inline-block px-10 py-4 bg-[#3c3333] text-[#fdf2d0] font-semibold text-lg uppercase tracking-widest hover:bg-opacity-90 transition-all duration-300 transform-gpu hover:scale-105"
+                    className="inline-block px-10 py-4 bg-[#3c3333] text-[#FFF9E8] font-semibold text-lg uppercase tracking-widest hover:bg-opacity-90 transition-all duration-300 transform-gpu hover:scale-105"
                 >
                     {t('cottages.reserve_now')}
                 </Link>

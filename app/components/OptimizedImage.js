@@ -69,7 +69,7 @@ const OptimizedImage = forwardRef(function OptimizedImage({
       
       {/* Loading overlay */}
       {isLoading && !hasError && (
-        <div className="absolute inset-0 bg-[#fdf2d0] animate-pulse" />
+        <div className="absolute inset-0 bg-[#FFF9E8] animate-pulse" />
       )}
     </div>
   );

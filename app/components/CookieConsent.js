@@ -148,7 +148,7 @@ export default function CookieConsent() {
 
   return (
     <div className="fixed inset-0 bg-black/50 backdrop-blur-sm z-[100] flex items-end justify-center">
-      <div className="bg-[#fdf2d0] border-t-4 border-[#3c3333] shadow-2xl w-full max-w-6xl mx-4 mb-4 rounded-t-2xl overflow-hidden">
+      <div className="bg-[#FFF9E8] border-t-4 border-[#3c3333] shadow-2xl w-full max-w-6xl mx-4 mb-4 rounded-t-2xl overflow-hidden">
         <div className="p-6 md:p-8">
           {/* Header */}
           <div className="flex items-start justify-between mb-6">
@@ -201,7 +201,7 @@ export default function CookieConsent() {
                           {category.title}
                         </h4>
                         {category.required && (
-                          <span className="text-xs bg-[#3c3333] text-[#fdf2d0] px-2 py-1 rounded-full font-montserrat">
+                          <span className="text-xs bg-[#3c3333] text-[#FFF9E8] px-2 py-1 rounded-full font-montserrat">
                             Wymagane
                           </span>
                         )}
@@ -234,7 +234,7 @@ export default function CookieConsent() {
             <div className="flex flex-col sm:flex-row gap-3 flex-1">
               <button
                 onClick={acceptNecessary}
-                className="px-6 py-3 border-2 border-[#3c3333] text-[#3c3333] rounded-lg hover:bg-[#3c3333] hover:text-[#fdf2d0] transition-all duration-300 font-montserrat font-semibold text-sm uppercase tracking-widest"
+                className="px-6 py-3 border-2 border-[#3c3333] text-[#3c3333] rounded-lg hover:bg-[#3c3333] hover:text-[#FFF9E8] transition-all duration-300 font-montserrat font-semibold text-sm uppercase tracking-widest"
               >
                 Tylko niezbędne
               </button>
@@ -242,7 +242,7 @@ export default function CookieConsent() {
               {showDetails && (
                 <button
                   onClick={acceptSelected}
-                  className="px-6 py-3 bg-[#3c3333]/80 text-[#fdf2d0] rounded-lg hover:bg-[#3c3333] transition-all duration-300 font-montserrat font-semibold text-sm uppercase tracking-widest"
+                  className="px-6 py-3 bg-[#3c3333]/80 text-[#FFF9E8] rounded-lg hover:bg-[#3c3333] transition-all duration-300 font-montserrat font-semibold text-sm uppercase tracking-widest"
                 >
                   Zapisz wybrane
                 </button>
@@ -251,7 +251,7 @@ export default function CookieConsent() {
             
             <button
               onClick={acceptAll}
-              className="px-8 py-3 bg-[#3c3333] text-[#fdf2d0] rounded-lg hover:bg-opacity-90 transition-all duration-300 transform-gpu hover:scale-105 font-montserrat font-semibold text-sm uppercase tracking-widest"
+              className="px-8 py-3 bg-[#3c3333] text-[#FFF9E8] rounded-lg hover:bg-opacity-90 transition-all duration-300 transform-gpu hover:scale-105 font-montserrat font-semibold text-sm uppercase tracking-widest"
             >
               ✅ Akceptuj wszystkie
             </button>

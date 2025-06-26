@@ -106,32 +106,15 @@ export default function Lightbox({ images, selectedIndex, onClose, onNavigate })
           onClick={onClose}
         />
 
-        {/* Header z kontrolkami */}
+        {/* Header z kontrolkami - tylko na desktop */}
         <motion.div
           initial={{ y: -100, opacity: 0 }}
           animate={{ y: 0, opacity: 1 }}
           exit={{ y: -100, opacity: 0 }}
           transition={{ delay: 0.1 }}
-          className="absolute top-0 left-0 right-0 z-10 bg-gradient-to-b from-black/50 to-transparent"
+          className="absolute top-0 left-0 right-0 z-10 bg-gradient-to-b from-black/50 to-transparent hidden md:block"
         >
-          <div className="flex items-center justify-between p-4 md:p-6">
-            {/* Info o obrazie */}
-            <div className="text-white">
-              <h3 className="font-semibold text-lg">
-                {currentImage.title || currentImage.alt}
-              </h3>
-              <p className="text-sm text-white/70">
-                {selectedIndex + 1} z {images.length}
-                {imageAspectRatio && (
-                  <span className="ml-2">
-                    • {imageAspectRatio > 1.5 ? 'Panorama' : 
-                       imageAspectRatio < 0.7 ? 'Portret' : 
-                       imageAspectRatio > 1.1 ? 'Landscape' : 'Kwadrat'}
-                  </span>
-                )}
-              </p>
-            </div>
-
+          <div className="flex items-center justify-end p-4 md:p-6">
             {/* Kontrolki */}
             <div className="flex items-center space-x-2">
               <button
@@ -189,6 +172,20 @@ export default function Lightbox({ images, selectedIndex, onClose, onNavigate })
               setIsZoomed(prev => !prev);
             }}
           >
+            {/* Przycisk X dla mobile - w rogu zdjęcia */}
+            <motion.button
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              onClick={(e) => {
+                e.stopPropagation();
+                onClose();
+              }}
+              className="absolute top-2 right-2 z-30 p-2 bg-black/70 backdrop-blur-sm text-white rounded-full md:hidden"
+              title="Zamknij"
+            >
+              <FiX size={20} />
+            </motion.button>
             {/* Uproszczony kontener dla obrazu */}
             <div className="relative w-full h-full flex items-center justify-center">
               <Image
@@ -283,25 +280,7 @@ export default function Lightbox({ images, selectedIndex, onClose, onNavigate })
           </motion.div>
         )}
 
-        {/* Instrukcje */}
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          exit={{ opacity: 0 }}
-          transition={{ delay: 0.5 }}
-          className="absolute bottom-4 left-4 text-white/50 text-sm space-y-1"
-        >
-          <div>← → Nawigacja</div>
-          <div>Spacja: Zoom {isZoomed ? '(powiększone)' : ''}</div>
-          <div>Ctrl+Scroll: Zoom myszką</div>
-          <div>Esc: Zamknij</div>
-          {imageAspectRatio && imageAspectRatio < 0.7 && (
-            <div className="text-blue-300">💡 Wysokie zdjęcie - scroll żeby zobaczyć więcej</div>
-          )}
-          {imageAspectRatio && imageAspectRatio > 1.5 && (
-            <div className="text-blue-300">💡 Szerokie zdjęcie - użyj zoom dla szczegółów</div>
-          )}
-        </motion.div>
+
       </div>
     </AnimatePresence>
   );

@@ -60,7 +60,7 @@ export default function GaleriaPage() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-[#fdf2d0] flex items-center justify-center font-serif text-[#3c3333]">
+      <div className="min-h-screen bg-[#FFF9E8] flex items-center justify-center font-serif text-[#3c3333]">
         <div className="text-center">
           <div className="w-12 h-12 border-2 border-[#3c3333] border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
           <p className="text-xl tracking-widest">{t('gallery.loading')}</p>
@@ -82,7 +82,7 @@ export default function GaleriaPage() {
         <meta name="twitter:card" content="summary_large_image" />
         <link rel="canonical" href="https://stavakiszewa.pl/galeria" />
       </Head>
-      <div className="bg-[#fdf2d0] font-serif text-[#3c3333]">
+              <div className="bg-[#FFF9E8] font-serif text-[#3c3333]">
       <PageHero 
         titleKey="gallery.title"
       />

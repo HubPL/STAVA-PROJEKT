@@ -77,7 +77,7 @@ const TabelaCenSezonowych = ({ config, t }) => {
                         const roznicaColor = roznica > 0 ? 'text-orange-600' : roznica < 0 ? 'text-green-600' : 'text-gray-600';
                         
                         return (
-                            <tr key={index} className="border-b border-[#3c3333]/20 hover:bg-[#fdf2d0]/50 transition-colors">
+                            <tr key={index} className="border-b border-[#3c3333]/20 hover:bg-[#FFF9E8]/50 transition-colors">
                                 <td className="py-4 font-medium">{sezon.nazwa}</td>
                                 <td className="py-4 text-gray-600">
                                     {formatDate(sezon.od)} - {formatDate(sezon.do)}
@@ -90,7 +90,7 @@ const TabelaCenSezonowych = ({ config, t }) => {
                     })}
                 </tbody>
             </table>
-                            <div className="mt-4 p-4 bg-[#fdf2d0]/50 rounded-lg">
+                            <div className="mt-4 p-4 bg-[#FFF9E8]/50 rounded-lg">
                 <p className="text-sm text-gray-600">
                     <FiDollarSign className="inline mr-2" />
                     {t('cottages.base_price')} <strong>{cenaPostawowa} PLN {t('cottages.per_night', 'per night')}</strong>
@@ -123,7 +123,7 @@ export default function OfertaPage() {
                     id: `domek-${index + 1}`,
                     src: url,
                     alt: isExterior ? `Domek STAVA - widok zewnętrzny ${index + 1}` : `Domek STAVA - wnętrze ${index + 1}`,
-                    title: isExterior ? `Exterior ${index + 1}` : `Interior ${index + 1}`,
+                    title: '',
                     category: isExterior ? 'exterior' : 'interior',
                 };
             } catch (error) {
@@ -165,7 +165,7 @@ export default function OfertaPage() {
 
     if (loading) {
         return (
-            <div className="min-h-screen bg-[#fdf2d0] flex items-center justify-center font-serif text-[#3c3333]">
+            <div className="min-h-screen bg-[#FFF9E8] flex items-center justify-center font-serif text-[#3c3333]">
                                     <div className="text-center">
                         <div className="w-12 h-12 border-2 border-[#3c3333] border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
                         <p className="text-xl tracking-widest">{t('cottages.loading_offer')}</p>
@@ -189,26 +189,26 @@ export default function OfertaPage() {
                 <meta name="twitter:card" content="summary_large_image" />
                 <link rel="canonical" href="https://stavakiszewa.pl/domki" />
             </Head>
-            <div className="bg-[#fdf2d0] font-serif text-[#3c3333] pt-32">
+            <div className="bg-[#FFF9E8] font-serif text-[#3c3333] pt-32">
             {/* 1. GALERIA ZDJĘĆ */}
-            <section className="container mx-auto px-6 sm:px-8 lg:px-4 pt-10 pb-16">
+            <section className="pb-16">
                 {images.length > 0 ? (
                     <div className="space-y-6">
-                        {/* Główne zdjęcie */}
+                        {/* Główne zdjęcie - pełna szerokość */}
                         <div 
-                            className="rounded-lg overflow-hidden group cursor-pointer relative aspect-[16/9] mx-auto max-w-4xl"
+                            className="overflow-hidden cursor-pointer relative aspect-[16/9] w-full"
                             onClick={() => lightbox.openLightbox(0)}
                         >
                             <OptimizedImage 
                                 src={images[0]?.src} 
                                 alt={images[0]?.alt}
-                                width={1200}
-                                height={675}
-                                className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+                                width={1920}
+                                height={1080}
+                                className="w-full h-full object-cover"
                                 priority
                             />
                             {/* Overlay z informacją o liczbie zdjęć */}
-                            <div className="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-all duration-300 flex items-center justify-center">
+                            <div className="absolute inset-0 flex items-center justify-center">
                                 <div className="absolute bottom-4 right-4 bg-black/50 backdrop-blur-sm text-white px-3 py-2 rounded-lg text-sm">
                                     {images.length} {locale === 'en' 
                                         ? (images.length === 1 ? 'photo' : 'photos')
@@ -218,39 +218,45 @@ export default function OfertaPage() {
                             </div>
                         </div>
                         
-                        {/* Małe thumbnails */}
+                        {/* Małe thumbnails - w kontenerze */}
                         {images.length > 1 && (
-                            <div className="max-w-4xl mx-auto">
-                                <div className="flex gap-3 overflow-x-auto pb-2">
-                                    {images.slice(1).map((image, index) => (
-                                        <div key={image.id} className="flex-shrink-0 w-20 h-20">
-                                            <DynamicImage
-                                                src={image.src}
-                                                alt={image.alt}
-                                                fixedAspectRatio="aspect-square"
-                                                onClick={() => lightbox.openLightbox(index + 1)}
-                                                className="transition-all duration-300 hover:scale-105 w-full h-full"
-                                            />
-                                        </div>
-                                    ))}
+                            <div className="container mx-auto px-6 sm:px-8 lg:px-4">
+                                <div className="max-w-4xl mx-auto">
+                                    <div className="flex gap-3 overflow-x-auto pb-2">
+                                        {images.slice(1).map((image, index) => (
+                                            <div key={image.id} className="flex-shrink-0 w-20 h-20">
+                                                <DynamicImage
+                                                    src={image.src}
+                                                    alt={image.alt}
+                                                    fixedAspectRatio="aspect-square"
+                                                    onClick={() => lightbox.openLightbox(index + 1)}
+                                                    className="transition-all duration-300 hover:scale-105 w-full h-full"
+                                                />
+                                            </div>
+                                        ))}
+                                    </div>
                                 </div>
                             </div>
                         )}
                     </div>
                 ) : (
-                    <div className="h-[60vh] bg-gray-200 rounded-lg flex items-center justify-center">
-                        <p className="text-xl text-gray-500">{t('cottages.loading_photos')}</p>
+                    <div className="container mx-auto px-6 sm:px-8 lg:px-4">
+                        <div className="h-[60vh] bg-gray-200 rounded-lg flex items-center justify-center">
+                            <p className="text-xl text-gray-500">{t('cottages.loading_photos')}</p>
+                        </div>
                     </div>
                 )}
                 
-                {/* Przycisk Zarezerwuj pod zdjęciami */}
-                <div className="text-center mt-8">
-                    <Link 
-                      href="/rezerwacja" 
-                      className="inline-block px-12 py-4 bg-[#3c3333] text-[#fdf2d0] font-montserrat font-bold text-xl uppercase tracking-widest hover:bg-opacity-90 transition-all duration-300 transform-gpu hover:scale-105"
-                    >
-                      {t('cottages.reserve_now')}
-                    </Link>
+                {/* Przycisk Zarezerwuj pod zdjęciami - w kontenerze */}
+                <div className="container mx-auto px-6 sm:px-8 lg:px-4">
+                    <div className="text-center mt-8">
+                        <Link 
+                          href="/rezerwacja" 
+                          className="inline-block px-12 py-4 bg-[#3c3333] text-[#FFF9E8] font-montserrat font-bold text-xl uppercase tracking-widest hover:bg-opacity-90 transition-all duration-300 transform-gpu hover:scale-105"
+                        >
+                          {t('cottages.reserve_now')}
+                        </Link>
+                    </div>
                 </div>
             </section>
             
@@ -386,7 +392,7 @@ export default function OfertaPage() {
                             </div>
                             <Link 
                               href="/rezerwacja" 
-                              className="w-full block text-center px-8 py-4 bg-[#3c3333] text-[#fdf2d0] font-montserrat font-bold text-lg uppercase tracking-widest hover:bg-opacity-90 transition-all duration-300 transform-gpu hover:scale-105"
+                              className="w-full block text-center px-8 py-4 bg-[#3c3333] text-[#FFF9E8] font-montserrat font-bold text-lg uppercase tracking-widest hover:bg-opacity-90 transition-all duration-300 transform-gpu hover:scale-105"
                             >
                               {aktualnaCena ? t('cottages.reserve_now') : t('cottages.ask_availability')}
                             </Link>

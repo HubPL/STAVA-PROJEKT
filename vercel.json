@@ -9,9 +9,17 @@
     },
     "app/api/send-status-email/route.js": {
       "maxDuration": 10
+    },
+    "app/api/cleanup-expired-reservations/route.js": {
+      "maxDuration": 30
     }
   },
-  "crons": [],
+  "crons": [
+    {
+      "path": "/api/cleanup-expired-reservations",
+      "schedule": "0 */6 * * *"
+    }
+  ],
   "env": {
     "NEXT_PUBLIC_APP_URL": "https://stavakiszewa.pl"
   },

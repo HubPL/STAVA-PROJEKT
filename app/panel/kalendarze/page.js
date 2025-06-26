@@ -147,7 +147,7 @@ export default function KalendarzePanel() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-[#fdf2d0] flex items-center justify-center">
+      <div className="min-h-screen bg-[#FFF9E8] flex items-center justify-center">
         <p>Ładowanie...</p>
       </div>
     );
@@ -155,7 +155,7 @@ export default function KalendarzePanel() {
 
   if (!user) {
     return (
-      <div className="min-h-screen bg-[#fdf2d0] flex items-center justify-center">
+      <div className="min-h-screen bg-[#FFF9E8] flex items-center justify-center">
         <div className="text-center">
           <p className="text-[#3c3333]">Odmowa dostępu.</p>
           <Link href="/panel" className="text-blue-600 hover:underline">Zaloguj się</Link>
@@ -165,7 +165,7 @@ export default function KalendarzePanel() {
   }
 
   return (
-    <div className="min-h-screen bg-[#fdf2d0] pt-40 pb-8">
+    <div className="min-h-screen bg-[#FFF9E8] pt-40 pb-8">
       <div className="container mx-auto px-4 max-w-7xl">
         
         {/* Nagłówek */}

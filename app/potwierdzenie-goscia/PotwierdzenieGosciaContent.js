@@ -60,7 +60,7 @@ export default function PotwierdzenieGosciaContent() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-[#fdf2d0] flex flex-col items-center justify-center px-6 sm:px-8 lg:px-4">
+      <div className="min-h-screen bg-[#FFF9E8] flex flex-col items-center justify-center px-6 sm:px-8 lg:px-4">
         <div className="text-center">
           <div className="w-12 h-12 border-2 border-[#3c3333] border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
           <p className="text-xl tracking-widest">Sprawdzam potwierdzenie...</p>
@@ -71,7 +71,7 @@ export default function PotwierdzenieGosciaContent() {
 
   if (error) {
     return (
-      <div className="min-h-screen bg-[#fdf2d0] flex flex-col items-center justify-center px-6 sm:px-8 lg:px-4">
+      <div className="min-h-screen bg-[#FFF9E8] flex flex-col items-center justify-center px-6 sm:px-8 lg:px-4">
         <div className="text-center max-w-md">
           <div className="w-16 h-16 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-6">
             <svg className="w-8 h-8 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -80,7 +80,7 @@ export default function PotwierdzenieGosciaContent() {
           </div>
           <h1 className="text-2xl font-semibold tracking-widest uppercase mb-4 font-lumios">Ups! Coś poszło nie tak</h1>
           <p className="text-lg tracking-wider mb-8">{error}</p>
-          <Link href="/" className="inline-block px-8 py-3 bg-[#3c3333] text-[#fdf2d0] rounded-lg hover:bg-opacity-90 transition-colors font-montserrat font-semibold">
+          <Link href="/" className="inline-block px-8 py-3 bg-[#3c3333] text-[#FFF9E8] rounded-lg hover:bg-opacity-90 transition-colors font-montserrat font-semibold">
             Wróć na stronę główną
           </Link>
         </div>
@@ -90,7 +90,7 @@ export default function PotwierdzenieGosciaContent() {
 
   if (!reservation) {
     return (
-      <div className="min-h-screen bg-[#fdf2d0] flex flex-col items-center justify-center px-4">
+      <div className="min-h-screen bg-[#FFF9E8] flex flex-col items-center justify-center px-4">
         <div className="text-center">
           <div className="w-24 h-24 bg-[#ffffff] rounded-full flex items-center justify-center mx-auto mb-6">
             <svg className="w-12 h-12 text-[#3c3333]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -185,7 +185,7 @@ export default function PotwierdzenieGosciaContent() {
               // Nowa struktura - wiele domków
               <div className="space-y-8">
                 {/* Podsumowanie ogólne */}
-                <div className="bg-[#fdf2d0]/30 rounded-xl p-6 border border-[#3c3333]/20">
+                <div className="bg-[#FFF9E8]/30 rounded-xl p-6 border border-[#3c3333]/20">
                   <h4 className="text-lg font-lumios font-semibold text-[#3c3333] mb-4">
                     Podsumowanie rezerwacji
                   </h4>
@@ -242,8 +242,8 @@ export default function PotwierdzenieGosciaContent() {
                       <p><span className="font-medium">Telefon:</span> {reservation.telefon}</p>
                       {reservation.uwagi && (
                         <div>
-                          <span className="font-medium">Uwagi:</span>
-                          <p className="mt-1 p-3 bg-[#fdf2d0]/30 rounded-lg text-sm">{reservation.uwagi}</p>
+                                                  <span className="font-medium">Uwagi:</span>
+                        <p className="mt-1 p-3 bg-[#FFF9E8]/30 rounded-lg text-sm">{reservation.uwagi}</p>
                         </div>
                       )}
                     </div>
@@ -281,7 +281,7 @@ export default function PotwierdzenieGosciaContent() {
                     {reservation.uwagi && (
                       <div>
                         <span className="font-medium">Uwagi:</span>
-                        <p className="mt-1 p-3 bg-[#fdf2d0]/30 rounded-lg text-sm">{reservation.uwagi}</p>
+                        <p className="mt-1 p-3 bg-[#FFF9E8]/30 rounded-lg text-sm">{reservation.uwagi}</p>
                       </div>
                     )}
                   </div>
@@ -291,7 +291,7 @@ export default function PotwierdzenieGosciaContent() {
           </div>
 
           {/* Informacje dodatkowe */}
-          <div className="bg-[#fdf2d0]/30 rounded-2xl p-6 mb-8 border border-[#3c3333]/20">
+          <div className="bg-[#FFF9E8]/30 rounded-2xl p-6 mb-8 border border-[#3c3333]/20">
             <h4 className="text-lg font-lumios font-semibold text-[#3c3333] mb-4">Ważne informacje</h4>
             <div className="space-y-3 text-[#3c3333] font-inter">
               <p>
@@ -319,7 +319,7 @@ export default function PotwierdzenieGosciaContent() {
             </Link>
             <Link 
               href="/#kontakt" 
-              className="inline-flex items-center justify-center px-6 py-3 bg-white border-2 border-[#3c3333]/20 text-[#3c3333] hover:bg-[#fdf2d0]/30 font-montserrat font-semibold rounded-xl shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-300"
+              className="inline-flex items-center justify-center px-6 py-3 bg-white border-2 border-[#3c3333]/20 text-[#3c3333] hover:bg-[#FFF9E8]/30 font-montserrat font-semibold rounded-xl shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-300"
             >
               Skontaktuj się z nami
             </Link>

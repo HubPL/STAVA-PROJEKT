@@ -153,12 +153,12 @@ export default function DostepnoscPanel() {
   };
 
   if (loading) {
-    return <div className="min-h-screen bg-[#fdf2d0] flex items-center justify-center"><p>Ładowanie...</p></div>;
+    return <div className="min-h-screen bg-[#FFF9E8] flex items-center justify-center"><p>Ładowanie...</p></div>;
   }
 
   if (!user) {
     return (
-      <div className="min-h-screen bg-[#fdf2d0] flex items-center justify-center">
+      <div className="min-h-screen bg-[#FFF9E8] flex items-center justify-center">
         <div className="text-center">
           <p className="text-[#3c3333]">Odmowa dostępu.</p>
           <Link href="/panel" className="text-blue-600 hover:underline">Zaloguj się</Link>
@@ -168,7 +168,7 @@ export default function DostepnoscPanel() {
   }
 
   return (
-    <div className="min-h-screen bg-[#fdf2d0]">
+    <div className="min-h-screen bg-[#FFF9E8]">
       <div className="h-32"></div>
       <div className="container mx-auto px-4 py-8">
         
@@ -303,7 +303,7 @@ export default function DostepnoscPanel() {
           {niedostepnosci.length > 0 ? (
             <div className="overflow-x-auto">
               <table className="min-w-full divide-y divide-[#3c3333]/20">
-                <thead className="bg-[#fdf2d0]/50">
+                <thead className="bg-[#FFF9E8]/50">
                   <tr>
                     <th className="px-6 py-3 text-left text-xs font-medium text-[#3c3333] uppercase tracking-wider">Domek</th>
                     <th className="px-6 py-3 text-left text-xs font-medium text-[#3c3333] uppercase tracking-wider">Od</th>

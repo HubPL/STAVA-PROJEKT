@@ -20,7 +20,7 @@ export default function RegulaminPage() {
                 <meta name="robots" content="index, follow" />
                 <link rel="canonical" href="https://stavakiszewa.pl/regulamin" />
             </Head>
-            <div className="bg-[#fdf2d0] font-serif text-[#3c3333] min-h-screen">
+            <div className="bg-[#FFF9E8] font-serif text-[#3c3333] min-h-screen">
             <PageHero 
                 titleKey="terms.title"
                 subtitleKey="terms.subtitle"

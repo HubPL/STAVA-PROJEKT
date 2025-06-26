@@ -6,6 +6,7 @@ import { useState, useEffect } from 'react';
 import { usePathname } from 'next/navigation';
 import { onAuthChange } from '@/lib/auth';
 import { useTranslation } from '../../lib/i18n';
+import LanguageSwitcher from './LanguageSwitcher';
 
 const LOGO_URL = "https://firebasestorage.googleapis.com/v0/b/stava-62c2a.firebasestorage.app/o/global%2Flogo.webp?alt=media&token=5e6f9ec9-d680-4d21-a85f-722c3a8bd2fe";
 const LOGO_BLACK_URL = "https://firebasestorage.googleapis.com/v0/b/stava-62c2a.firebasestorage.app/o/global%2FLogo_black.webp?alt=media&token=7bc56914-443b-47c6-af3e-22486d8ade69";
@@ -40,12 +41,12 @@ const Header = () => {
   
   const leftNavLinks = [
     { href: `${basePath}/domki`, label: t('nav.cottages') },
+    { href: `${basePath}/rezerwacja`, label: t('nav.reserve') },
     { href: `${basePath}/galeria`, label: t('nav.gallery') },
-    { href: `${basePath}/o-nas`, label: t('nav.about') },
   ];
 
   const rightNavLinks = [
-    { href: `${basePath}/rezerwacja`, label: t('nav.reserve'), isCTA: true },
+    { href: `${basePath}/o-nas`, label: t('nav.about') },
     { href: `${basePath}/#kontakt`, label: t('nav.contact') },
     { href: `${basePath}/regulamin`, label: t('nav.terms') },
   ];
@@ -57,7 +58,7 @@ const Header = () => {
     `group relative px-3 py-2 rounded-lg font-montserrat font-semibold transition-all duration-300 uppercase tracking-wider ${
       isTransparent
         ? 'text-white hover:text-white/90 hover:bg-white/10 [text-shadow:0_1px_3px_rgb(0_0_0_/_0.5)]'
-        : 'text-[#3c3333] hover:text-[#3c3333]/90 hover:bg-[#fdf2d0]/50' 
+        : 'text-[#3c3333] hover:text-[#3c3333]/90 hover:bg-[#FFF9E8]/50' 
     }`;
 
   return (
@@ -69,7 +70,7 @@ const Header = () => {
       }`}
     >
       <div 
-        className={`absolute inset-0 bg-[#fdf2d0]/90 backdrop-blur-[2px] border-b border-black/10 transition-opacity duration-500 ease-out ${
+        className={`absolute inset-0 bg-[#FFF9E8]/90 backdrop-blur-[2px] border-b border-black/10 transition-opacity duration-500 ease-out ${
           shouldShowTransparent ? 'opacity-0' : 'opacity-100'
         }`}
       ></div>
@@ -109,11 +110,7 @@ const Header = () => {
             <Link 
               key={link.href} 
               href={link.href} 
-              className={
-                link.isCTA 
-                  ? `px-6 py-3 bg-[#3c3333] text-[#fdf2d0] font-montserrat font-bold rounded-lg uppercase tracking-widest transition-all duration-300 hover:bg-[#3c3333]/90 transform hover:scale-105 shadow-lg`
-                  : navLinkClasses(shouldShowTransparent)
-              }
+              className={navLinkClasses(shouldShowTransparent)}
             >
               <span>{link.label}</span>
             </Link>
@@ -132,6 +129,10 @@ const Header = () => {
               <span className="text-sm">PANEL</span>
             </Link>
           )}
+          
+          <div className="ml-4">
+            <LanguageSwitcher />
+          </div>
         </nav>
 
         <div className="lg:hidden flex justify-end">
@@ -139,7 +140,7 @@ const Header = () => {
             className={`p-2 rounded-lg transition-colors duration-300 ${
               shouldShowTransparent
                 ? 'hover:bg-white/10 text-white'
-                : 'hover:bg-[#fdf2d0]/50 text-[#3c3333]' 
+                : 'hover:bg-[#FFF9E8]/50 text-[#3c3333]' 
             }`}
             onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
           >
@@ -157,29 +158,15 @@ const Header = () => {
           isMobileMenuOpen ? 'max-h-96 opacity-100' : 'max-h-0 opacity-0'
         }`}
       >
-        <div className="bg-[#fdf2d0]/95 backdrop-blur-sm border-t border-[#3c3333]/20 shadow-lg">
+        <div className="bg-[#FFF9E8]/95 backdrop-blur-sm border-t border-[#3c3333]/20 shadow-lg">
           <nav className="flex flex-col p-6 space-y-2">
-            {rightNavLinks.filter(link => link.isCTA).map((link, index) => (
+            {[...leftNavLinks, ...rightNavLinks].map((link, index) => (
               <Link 
                 key={link.href} 
                 href={link.href} 
-                className="group p-4 rounded-xl bg-[#3c3333] text-[#fdf2d0] hover:bg-[#3c3333]/90 transition-all duration-300 transform hover:scale-105 text-center"
+                className="group p-4 rounded-xl hover:bg-[#FFF9E8]/80 transition-all duration-300 transform hover:scale-105"
                 onClick={() => setIsMobileMenuOpen(false)}
                 style={{animationDelay: `${index * 0.1}s`}}
-              >
-                <span className="font-montserrat font-bold text-[#fdf2d0] uppercase tracking-wider">
-                  {link.label}
-                </span>
-              </Link>
-            ))}
-            
-            {[...leftNavLinks, ...rightNavLinks.filter(link => !link.isCTA)].map((link, index) => (
-              <Link 
-                key={link.href} 
-                href={link.href} 
-                className="group p-4 rounded-xl hover:bg-[#fdf2d0]/80 transition-all duration-300 transform hover:scale-105"
-                onClick={() => setIsMobileMenuOpen(false)}
-                style={{animationDelay: `${(index + 1) * 0.1}s`}}
               >
                 <span className="font-montserrat font-medium text-[#3c3333] group-hover:text-[#3c3333]/90 uppercase tracking-wider">
                   {link.label}
@@ -198,6 +185,10 @@ const Header = () => {
                 </span>
               </Link>
             )}
+            
+            <div className="p-4 flex justify-center">
+              <LanguageSwitcher />
+            </div>
           </nav>
         </div>
       </div>

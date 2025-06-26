@@ -4,7 +4,6 @@ import Image from "next/image";
 import Link from "next/link";
 import { useState } from 'react';
 import { useTranslation } from "../lib/i18n";
-import LanguageSwitcher from "./components/LanguageSwitcher";
 import { FaFacebookF, FaInstagram, FaTiktok, FaMapMarkerAlt, FaEnvelope, FaPhone } from 'react-icons/fa';
 import { getImageUrl, HERO_IMAGES, GALLERY_IMAGES } from '../lib/image-paths';
 import OptimizedImage from './components/OptimizedImage';
@@ -70,7 +69,7 @@ export default function HomePage() {
   ];
 
   return (
-    <div className="bg-[#fdf2d0] font-serif text-[#3c3333]">
+    <div className="bg-[#FFF9E8] font-serif text-[#3c3333]">
       {/* 1. HERO SECTION */}
       <section className="relative min-h-screen overflow-hidden text-white">
         <div className="absolute inset-0 z-0">
@@ -88,7 +87,7 @@ export default function HomePage() {
             <div className="inline-block transition-all duration-500 hover:scale-105">
                 <Link 
                   href={`${basePath}/rezerwacja`}
-                  className="px-10 py-4 bg-[#fdf2d0] text-[#3c3333] font-montserrat font-bold text-lg uppercase tracking-widest hover:bg-opacity-90 transition-all duration-300 transform-gpu"
+                  className="px-10 py-4 bg-[#FFF9E8] text-[#3c3333] font-montserrat font-bold text-lg uppercase tracking-widest hover:bg-opacity-90 transition-all duration-300 transform-gpu"
                 >
                   {t('home.reserve')}
                 </Link>
@@ -99,14 +98,8 @@ export default function HomePage() {
             </a>
         </div>
 
-        <div className="absolute bottom-24 left-6 sm:left-8 z-30">
-            <div className="bg-[#fdf2d0]/90 backdrop-blur-sm rounded-full p-2 hover:scale-110 transition-transform">
-                <LanguageSwitcher />
-            </div>
-        </div>
-        
         <div className="absolute bottom-24 right-6 sm:right-8 z-30">
-            <div className="bg-[#fdf2d0]/90 backdrop-blur-sm rounded-full p-3 flex items-center space-x-4">
+            <div className="bg-[#FFF9E8]/90 backdrop-blur-sm rounded-full p-3 flex items-center space-x-4">
                 <a href="https://www.facebook.com/people/STAVA/61576052219084/" target="_blank" rel="noopener noreferrer" className="text-[#3c3333] hover:text-black transition-all hover:scale-125 transform-gpu"><FaFacebookF size={20}/></a>
                 <a href="https://www.instagram.com/stavakiszewa?igsh=djdqZnJhYXVydzg5" target="_blank" rel="noopener noreferrer" className="text-[#3c3333] hover:text-black transition-all hover:scale-125 transform-gpu"><FaInstagram size={20}/></a>
                 <a href="https://www.tiktok.com/@stavakiszewa?_r=1&_d=secCgYIASAHKAESPgo86AKRBJy%2F%2F0ulPZVVzpL8cpBqfcVy%2FITpK0a5%2FL2fhobzr2Av2La8xYWLgDl8XIXopK7AIIyU%2FjtnOQFJGgA%3D&_svg=2&checksum=348cac23501e99a759db6ab61df7b2d17609ffb037bdb3480df48cd9d07258fd&sec_uid=MS4wLjABAAAAIqLGeo_tuGCRgZ4x06hTKAhZDbiPKtCgnF4cHsHyh77TU5l5SsJpXRVy5zly5JAF&sec_user_id=MS4wLjABAAAAIqLGeo_tuGCRgZ4x06hTKAhZDbiPKtCgnF4cHsHyh77TU5l5SsJpXRVy5zly5JAF&share_app_id=1233&share_author_id=7513310117291590678&share_link_id=3D598EDA-1BC4-45C3-A358-E201D9BA7AB2&share_scene=1&sharer_language=pl&social_share_type=4&source=h5_m&timestamp=1750428408&tt_from=copy&u_code=ekj9hllcl1h53i&ug_btm=b8727%2Cb0&user_id=7513310117291590678&utm_campaign=client_share&utm_medium=ios&utm_source=copy" target="_blank" rel="noopener noreferrer" className="text-[#3c3333] hover:text-black transition-all hover:scale-125 transform-gpu"><FaTiktok size={20}/></a>
@@ -116,7 +109,7 @@ export default function HomePage() {
 
       {/* 2. SEKCJA O NAS */}
       <AnimateOnScroll>
-        <section id="o-nas" className="relative py-12 px-6 sm:px-8 lg:px-4 bg-[#fdf2d0] -mt-16 rounded-t-3xl z-20">
+        <section id="o-nas" className="relative py-12 px-6 sm:px-8 lg:px-4 bg-[#FFF9E8] -mt-16 rounded-t-3xl z-20">
           <div className="container mx-auto max-w-4xl text-center">
             <div className="mb-12">
               <div className="flex items-center justify-center mb-4">
@@ -152,7 +145,7 @@ export default function HomePage() {
             <div className="mt-12">
               <div className="flex items-center justify-center">
                   <span className="flex-grow h-px bg-[#3c3333]"></span>
-                  <Link href={`${basePath}/o-nas`} className="inline-block mx-4 px-6 py-2 bg-[#3c3333] text-[#fdf2d0] rounded-full text-lg tracking-widest font-montserrat font-semibold hover:bg-opacity-80 transition-colors">
+                  <Link href={`${basePath}/o-nas`} className="inline-block mx-4 px-6 py-2 bg-[#3c3333] text-[#FFF9E8] rounded-full text-lg tracking-widest font-montserrat font-semibold hover:bg-opacity-80 transition-colors">
                     <span className="mr-2">&gt;</span> {t('home.about_us')}
                   </Link>
                   <span className="flex-grow h-px bg-[#3c3333]"></span>
@@ -164,7 +157,7 @@ export default function HomePage() {
 
       {/* 3. SEKCJA GALERII */}
       <AnimateOnScroll>
-        <section className="py-12 px-6 sm:px-8 lg:px-4 bg-[#fdf2d0]">
+        <section className="py-12 px-6 sm:px-8 lg:px-4 bg-[#FFF9E8]">
             <div className="container mx-auto">
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-4xl mx-auto">
                     {galleryImages.map((img, index) => (
@@ -181,7 +174,7 @@ export default function HomePage() {
                     ))}
                 </div>
                 <div className="mt-12 text-center">
-                    <Link href={`${basePath}/galeria`} className="inline-block mx-4 px-8 py-3 bg-[#3c3333] text-[#fdf2d0] rounded-full text-lg tracking-widest font-montserrat font-semibold hover:bg-opacity-80 transition-all duration-300 transform-gpu hover:scale-105">
+                    <Link href={`${basePath}/galeria`} className="inline-block mx-4 px-8 py-3 bg-[#3c3333] text-[#FFF9E8] rounded-full text-lg tracking-widest font-montserrat font-semibold hover:bg-opacity-80 transition-all duration-300 transform-gpu hover:scale-105">
                         <span className="mr-2">&gt;</span> {t('home.gallery_photos')}
                     </Link>
                 </div>
@@ -203,7 +196,7 @@ export default function HomePage() {
             </div>
             <div className="relative z-10 container mx-auto grid lg:grid-cols-2 gap-8 lg:gap-12 items-stretch">
                 {/* Kolumna z formularzem */}
-                <div className="bg-[#fdf2d0] p-6 lg:p-10 rounded-lg shadow-2xl h-full lg:order-1 flex flex-col">
+                <div className="bg-[#FFF9E8] p-6 lg:p-10 rounded-lg shadow-2xl h-full lg:order-1 flex flex-col">
                     <h2 className="text-2xl lg:text-3xl font-semibold uppercase tracking-widest mb-2 text-center font-lumios">{t('home.write_to_us')}</h2>
                     <p className="mt-2 text-md tracking-wider text-center mb-8">{t('home.write_subtitle')}</p>
                     {isSubmitted ? (
@@ -217,7 +210,7 @@ export default function HomePage() {
                         <p className="text-sm mt-2 text-gray-600">{t('home.thanks_subtitle')}</p>
                         <button 
                           onClick={() => setIsSubmitted(false)}
-                          className="mt-6 px-6 py-2 bg-[#3c3333] text-[#fdf2d0] font-montserrat font-semibold text-sm uppercase tracking-widest hover:bg-opacity-90 transition-all duration-300 transform-gpu hover:scale-105"
+                          className="mt-6 px-6 py-2 bg-[#3c3333] text-[#FFF9E8] font-montserrat font-semibold text-sm uppercase tracking-widest hover:bg-opacity-90 transition-all duration-300 transform-gpu hover:scale-105"
                         >
                           {t('home.send_another')}
                         </button>
@@ -286,7 +279,7 @@ export default function HomePage() {
                           <button 
                             type="submit" 
                             disabled={isLoading}
-                            className="px-10 py-3 bg-[#3c3333] text-[#fdf2d0] font-montserrat font-semibold text-sm uppercase tracking-widest hover:bg-opacity-90 transition-all duration-300 transform-gpu hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none"
+                            className="px-10 py-3 bg-[#3c3333] text-[#FFF9E8] font-montserrat font-semibold text-sm uppercase tracking-widest hover:bg-opacity-90 transition-all duration-300 transform-gpu hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none"
                           >
                             {isLoading ? (
                               <span className="flex items-center justify-center">
@@ -307,7 +300,7 @@ export default function HomePage() {
                 {/* Kolumna z danymi kontaktowymi i mapą */}
                 <div className="space-y-6 lg:order-2">
                     {/* Dane kontaktowe - góra prawej kolumny */}
-                    <div className="bg-[#fdf2d0] p-6 lg:p-8 rounded-lg shadow-2xl h-fit">
+                    <div className="bg-[#FFF9E8] p-6 lg:p-8 rounded-lg shadow-2xl h-fit">
                         <h3 className="text-xl lg:text-2xl font-semibold uppercase tracking-widest mb-6 font-lumios">{t('home.our_data')}</h3>
                         <div className="space-y-4 lg:space-y-5 text-base lg:text-lg tracking-wider">
                             <p className="flex items-center"><FaMapMarkerAlt className="mr-3 lg:mr-4 text-lg lg:text-xl flex-shrink-0"/><span>ul. Wygonińska 38, 83-430 Stara Kiszewa</span></p>

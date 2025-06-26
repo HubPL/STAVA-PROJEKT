@@ -221,12 +221,12 @@ export default function CenyPanel() {
   };
 
   if (loading) {
-    return <div className="min-h-screen bg-[#fdf2d0] flex items-center justify-center"><p>Ładowanie...</p></div>;
+    return <div className="min-h-screen bg-[#FFF9E8] flex items-center justify-center"><p>Ładowanie...</p></div>;
   }
 
   if (!user) {
     return (
-      <div className="min-h-screen bg-[#fdf2d0] flex items-center justify-center">
+      <div className="min-h-screen bg-[#FFF9E8] flex items-center justify-center">
         <div className="text-center">
           <p className="text-[#3c3333]">Odmowa dostępu.</p>
           <Link href="/panel" className="text-blue-600 hover:underline">Zaloguj się</Link>
@@ -236,7 +236,7 @@ export default function CenyPanel() {
   }
 
   return (
-    <div className="min-h-screen bg-[#fdf2d0]">
+    <div className="min-h-screen bg-[#FFF9E8]">
       <div className="h-32"></div>
       <div className="container mx-auto px-4 py-8">
         
@@ -389,7 +389,7 @@ export default function CenyPanel() {
           </div>
           
           {/* Przykład kalkulacji */}
-          <div className="mt-6 p-4 bg-[#fdf2d0]/50 rounded-lg">
+          <div className="mt-6 p-4 bg-[#FFF9E8]/50 rounded-lg">
             <h4 className="font-semibold text-[#3c3333] mb-2">Przykład kalkulacji:</h4>
             <div className="text-sm text-[#3c3333] space-y-1">
               <p>• {config?.bazowa_liczba_osob || 4} osoby: {config?.ceny?.podstawowa || 380} PLN za dobę</p>
@@ -413,7 +413,7 @@ export default function CenyPanel() {
 
           {/* Formularz nowego sezonu */}
           {showNewSeason && (
-            <div className="bg-[#fdf2d0]/50 p-4 rounded-lg mb-6">
+            <div className="bg-[#FFF9E8]/50 p-4 rounded-lg mb-6">
               <h3 className="font-semibold mb-3">Nowy sezon</h3>
               <div className="grid grid-cols-1 md:grid-cols-5 gap-3">
                 <input
@@ -468,7 +468,7 @@ export default function CenyPanel() {
           {config?.ceny?.sezonowe?.length > 0 ? (
             <div className="overflow-x-auto">
               <table className="min-w-full divide-y divide-[#3c3333]/20">
-                <thead className="bg-[#fdf2d0]/50">
+                <thead className="bg-[#FFF9E8]/50">
                   <tr>
                     <th className="px-6 py-3 text-left text-xs font-medium text-[#3c3333] uppercase tracking-wider">Nazwa</th>
                     <th className="px-6 py-3 text-left text-xs font-medium text-[#3c3333] uppercase tracking-wider">Od</th>

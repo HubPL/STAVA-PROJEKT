@@ -19,7 +19,7 @@ module.exports = {
         // Nowa paleta kolorów STAVA
         'brand': {
           50: '#fdf9f0',   // najjaśniejszy beż
-          100: '#fdf2d0',  // główny nowy beż (tło strony)
+          100: '#FFF9E8',  // główny nowy beż (tło strony)
           200: '#fbeabb',  // jaśniejszy odcień
           300: '#f7de9c',  // średni beż
           400: '#f0cc73',  // ciemniejszy beż

@@ -156,7 +156,7 @@ const ReservationPage = () => {
         <meta name="twitter:card" content="summary_large_image" />
         <link rel="canonical" href="https://stavakiszewa.pl/rezerwacja" />
       </Head>
-      <div className="min-h-screen bg-[#fdf2d0] font-serif text-[#3c3333]">
+      <div className="min-h-screen bg-[#FFF9E8] font-serif text-[#3c3333]">
         <PageHero
           title="Rezerwacja"
           subtitle="Zarezerwuj swój wymarzony pobyt w domkach STAVA"
@@ -169,7 +169,7 @@ const ReservationPage = () => {
               {/* Sekcja 1: Kalendarze */}
               <section>
                 <div className="flex items-center gap-3 mb-6">
-                  <div className="w-10 h-10 bg-[#3c3333] text-[#fdf2d0] rounded-full flex items-center justify-center font-bold">
+                  <div className="w-10 h-10 bg-[#3c3333] text-[#FFF9E8] rounded-full flex items-center justify-center font-bold">
                     1
                   </div>
                   <h2 className="text-2xl font-bold font-lumios">Wybierz domki i terminy</h2>
@@ -180,7 +180,7 @@ const ReservationPage = () => {
               {/* Sekcja 2: Formularz */}
               <section>
                 <div className="flex items-center gap-3 mb-6">
-                  <div className="w-10 h-10 bg-[#3c3333] text-[#fdf2d0] rounded-full flex items-center justify-center font-bold">
+                  <div className="w-10 h-10 bg-[#3c3333] text-[#FFF9E8] rounded-full flex items-center justify-center font-bold">
                     2
                   </div>
                   <h2 className="text-2xl font-bold font-lumios">Dane kontaktowe</h2>
@@ -284,7 +284,7 @@ const ReservationPage = () => {
             <div className="lg:col-span-1">
               <section className="sticky top-8">
                 <div className="flex items-center gap-3 mb-6">
-                  <div className="w-10 h-10 bg-[#3c3333] text-[#fdf2d0] rounded-full flex items-center justify-center font-bold">
+                  <div className="w-10 h-10 bg-[#3c3333] text-[#FFF9E8] rounded-full flex items-center justify-center font-bold">
                     3
                   </div>
                   <h2 className="text-2xl font-bold font-lumios">Podsumowanie</h2>
@@ -433,7 +433,7 @@ const ReservationPage = () => {
                       <button
                         type="submit"
                         disabled={loading || selectedDomki.length === 0}
-                        className="w-full bg-[#3c3333] text-[#fdf2d0] py-3 px-6 rounded-lg font-bold hover:bg-[#2a2525] transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 mt-4"
+                        className="w-full bg-[#3c3333] text-[#FFF9E8] py-3 px-6 rounded-lg font-bold hover:bg-[#2a2525] transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 mt-4"
                         onClick={handleSubmit(onSubmit)}
                       >
                         {loading ? (
