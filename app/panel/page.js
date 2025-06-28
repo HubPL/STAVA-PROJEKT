@@ -78,10 +78,6 @@ const AdminPanel = () => {
   };
 
   const cleanupExpiredReservations = async () => {
-    if (!confirm('Czy na pewno chcesz usunąć wszystkie przeterminowane rezerwacje (starsze niż 24 godziny)?')) {
-      return;
-    }
-    
     setIsCleaningUp(true);
     
     try {
@@ -91,16 +87,16 @@ const AdminPanel = () => {
       const data = await response.json();
       
       if (data.success) {
-        alert(`Pomyślnie usunięto ${data.deletedCount} przeterminowanych rezerwacji z ${data.foundExpired} znalezionych.`);
+        alert(`Automatycznie odrzucono ${data.rejectedCount} przeterminowanych rezerwacji z ${data.foundExpired} znalezionych.`);
         // Odśwież listę rezerwacji i statystyki
         await fetchRezerwacje();
         await checkExpiredReservations();
       } else {
-        alert('Błąd podczas czyszczenia: ' + data.message);
+        alert('Błąd podczas automatycznego odrzucania: ' + data.message);
       }
     } catch (error) {
-      console.error('Błąd czyszczenia przeterminowanych rezerwacji:', error);
-      alert('Wystąpił błąd podczas czyszczenia przeterminowanych rezerwacji');
+      console.error('Błąd automatycznego odrzucania przeterminowanych rezerwacji:', error);
+      alert('Wystąpił błąd podczas automatycznego odrzucania przeterminowanych rezerwacji');
     } finally {
       setIsCleaningUp(false);
     }
@@ -251,7 +247,7 @@ const AdminPanel = () => {
               <div className="mt-2 flex items-center gap-2 text-sm text-amber-700 bg-amber-50 px-3 py-1 rounded-lg border border-amber-200">
                 <span>⚠️</span>
                 <span>
-                  Znaleziono <strong>{cleanupStats.expiredReservations}</strong> przeterminowanych rezerwacji
+                  Znaleziono <strong>{cleanupStats.expiredReservations}</strong> przeterminowanych rezerwacji do odrzucenia
                   {cleanupStats.totalPendingReservations > 0 && ` z ${cleanupStats.totalPendingReservations} oczekujących`}
                 </span>
               </div>
@@ -267,11 +263,11 @@ const AdminPanel = () => {
                 {isCleaningUp ? (
                   <>
                     <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white"></div>
-                    Czyszczenie...
+                    Odrzucanie...
                   </>
                 ) : (
                   <>
-                    🗑️ Usuń przeterminowane ({cleanupStats.expiredReservations})
+                    ❌ Odrzuć przeterminowane ({cleanupStats.expiredReservations})
                   </>
                 )}
               </button>
@@ -369,7 +365,7 @@ const AdminPanel = () => {
           {cleanupStats && (
             <div className="mt-4 p-3 bg-gray-50 border border-gray-200 rounded-lg">
               <p className="text-sm text-gray-700">
-                ℹ️ System automatyczny: Oczekujące rezerwacje starsze niż 24 godziny są automatycznie usuwane.
+                ℹ️ System automatyczny: Oczekujące rezerwacje starsze niż 24 godziny są automatycznie odrzucane.
                 {cleanupStats.totalPendingReservations > 0 && ` Obecnie ${cleanupStats.totalPendingReservations} rezerwacji oczekuje na potwierdzenie.`}
                 {cleanupStats.expiredReservations === 0 && ' Brak przeterminowanych rezerwacji.'}
               </p>

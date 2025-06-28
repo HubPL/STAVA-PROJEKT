@@ -55,9 +55,9 @@ export default function PotwierdzenieGosciaPage() {
                   2
                 </div>
                 <div>
-                  <h4 className="text-lg font-semibold text-[#3c3333] mb-2">Sprawdzenie dostępności</h4>
+                  <h4 className="text-lg font-semibold text-[#3c3333] mb-2">Opłata rezerwacji</h4>
                   <p className="text-[#3c3333]">
-                    W ciągu <strong>24 godzin</strong> sprawdzimy dostępność wybranych domków w podanych terminach.
+                    Aby potwierdzić rezerwację, musisz ją opłacić w ciągu <strong>24 godzin</strong>. Po opłacie otrzymasz maila potwierdzającego rezerwację.
                   </p>
                 </div>
               </div>
@@ -95,17 +95,7 @@ export default function PotwierdzenieGosciaPage() {
             </div>
           </div>
 
-          {/* Przydatne informacje */}
-          <div className="bg-blue-50 rounded-2xl p-6 mb-8 border border-blue-200">
-            <h4 className="text-lg font-lumios font-semibold text-blue-800 mb-4">💡 Przydatne informacje</h4>
-            <div className="space-y-2 text-blue-800 font-inter text-sm">
-              <p><strong>Zameldowanie:</strong> od 15:00</p>
-              <p><strong>Wymeldowanie:</strong> do 11:00</p>
-              <p><strong>Każdy domek:</strong> identycznie wyposażony, komfortowy</p>
-              <p><strong>Płatność:</strong> na miejscu, gotówką lub kartą</p>
-              <p><strong>Anulowanie:</strong> możliwe do 7 dni przed przyjazdem</p>
-            </div>
-          </div>
+
 
           {/* Linki akcji */}
           <div className="flex flex-col sm:flex-row gap-4 justify-center">

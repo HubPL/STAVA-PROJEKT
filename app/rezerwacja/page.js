@@ -36,7 +36,8 @@ const rezerwacjaSchema = z.object({
       
       return polishPhoneRegex.test(cleaned);
     }, 'Podaj prawidłowy polski numer telefonu (np. +48 123 456 789 lub 123 456 789)'),
-  uwagi: z.string().optional()
+  uwagi: z.string().optional(),
+  acceptRegulamin: z.boolean().refine(val => val === true, 'Musisz zaakceptować regulamin')
 });
 
 const ReservationPage = () => {
@@ -52,7 +53,8 @@ const ReservationPage = () => {
       nazwisko: '',
       email: '',
       telefon: '',
-      uwagi: ''
+      uwagi: '',
+      acceptRegulamin: false
     }
   });
 
@@ -264,7 +266,23 @@ const ReservationPage = () => {
                     />
                   </div>
 
-
+                  {/* Checkbox regulamin */}
+                  <div className="flex items-start space-x-3">
+                    <input
+                      {...register('acceptRegulamin')}
+                      type="checkbox"
+                      id="acceptRegulamin"
+                      className="h-5 w-5 mt-0.5 text-[#3c3333] border-gray-300 rounded focus:ring-[#3c3333] cursor-pointer"
+                    />
+                    <label htmlFor="acceptRegulamin" className="text-sm text-gray-700 cursor-pointer">
+                      Potwierdzam, że zapoznałem się i akceptuję{' '}
+                      <Link href="/regulamin" className="text-[#3c3333] underline hover:text-[#2a2525] font-medium" target="_blank">
+                        regulamin
+                      </Link>
+                      {' '}STAVA Kiszewa. *
+                    </label>
+                  </div>
+                  {errors.acceptRegulamin && <p className="mt-1 text-sm text-red-600">{errors.acceptRegulamin.message}</p>}
 
                   {/* Komunikaty */}
                   {message.text && (
