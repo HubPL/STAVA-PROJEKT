@@ -14,16 +14,14 @@ export async function POST(request) {
       );
     }
 
-    // Rate limiting - bardzo restrykcyjny dla tego API
+    // Rate limiting - zwiększone limity dla panelu administracyjnego
     const clientIP = getClientIP(request);
-    if (!rateLimit(clientIP, 2, 10 * 60 * 1000)) { // 2 żądania na 10 minut
+    if (!rateLimit(clientIP, 10, 10 * 60 * 1000)) { // 10 żądań na 10 minut
       return NextResponse.json(
-        { error: 'Za dużo żądań. API endpoint jest przestarzały - użyj panelu administracyjnego.' },
+        { error: 'Za dużo żądań. Spróbuj ponownie za kilka minut.' },
         { status: 429 }
       );
     }
-
-
 
     const requestBody = await request.json();
     let rezerwacjaData, newStatus;

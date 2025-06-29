@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server';
 import { sendContactEmail, sendConfirmationEmailToGuest, sendNewReservationEmailToAdmin } from '@/lib/email';
+// import { sendAdminSMSNotification } from '@/lib/sms'; // Zakomentowane do czasu weryfikacji konta SMS
 import { rateLimitStoreFunction, getClientIP } from '@/lib/rate-limit';
 
 export async function POST(request) {
@@ -49,6 +50,17 @@ export async function POST(request) {
         console.error('Błąd wysyłania emaila do administratora:', error);
         results.adminEmailError = error.message;
       }
+      
+      // Wysyłanie SMS do administratora - ZAKOMENTOWANE DO CZASU WERYFIKACJI KONTA
+      /*
+      try {
+        const smsResult = await sendAdminSMSNotification(formData);
+        results.adminSMS = smsResult;
+      } catch (error) {
+        console.error('Błąd wysyłania SMS do administratora:', error);
+        results.adminSMSError = error.message;
+      }
+      */
       
       // Sprawdzenie rezultatów
       const hasSuccess = results.guestEmail || results.adminEmail;

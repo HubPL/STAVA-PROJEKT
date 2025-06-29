@@ -57,7 +57,7 @@ export default function PotwierdzenieGosciaPage() {
                 <div>
                   <h4 className="text-lg font-semibold text-[#3c3333] mb-2">Opłata rezerwacji</h4>
                   <p className="text-[#3c3333]">
-                    Aby potwierdzić rezerwację, musisz ją opłacić w ciągu <strong>24 godzin</strong>. Po opłacie otrzymasz maila potwierdzającego rezerwację.
+                    Aby potwierdzić rezerwację, musisz ją opłacić w ciągu <strong>24 godzin</strong>. Po opłaceniu otrzymasz maila potwierdzającego rezerwację.
                   </p>
                 </div>
               </div>
