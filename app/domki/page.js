@@ -267,6 +267,11 @@ export default function OfertaPage() {
                     <div className="lg:col-span-2 space-y-12">
                         <div>
                             <h1 className="text-4xl md:text-5xl tracking-wider mb-4 font-lumios">{domekInfo.nazwa}</h1>
+                            {domekInfo.opis && (
+                                <div className="text-lg text-[#3c3333] leading-relaxed whitespace-pre-line">
+                                    {domekInfo.opis}
+                                </div>
+                            )}
                         </div>
 
                         {/* Układ przestrzenny */}

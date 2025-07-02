@@ -63,7 +63,7 @@ const Header = () => {
 
   return (
     <header 
-      className={`w-full fixed top-16 sm:top-9 z-50 transition-shadow,transform duration-500 ease-out ${
+      className={`w-full fixed top-0 z-50 transition-shadow,transform duration-500 ease-out ${
         shouldShowTransparent
           ? '' 
           : 'shadow-lg'
