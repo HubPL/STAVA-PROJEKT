@@ -19,7 +19,7 @@ import {
 } from 'date-fns';
 import { pl } from 'date-fns/locale';
 import { FiChevronLeft, FiChevronRight, FiX } from 'react-icons/fi';
-import { getPotwierdzoneRezerwacje, getBlokadyWPrzedziale, getConfig } from '@/lib/firestore';
+import { getPotwierdzoneRezerwacje, getBlokadyWPrzedziale, getConfig, getMinimalnyPobytForDomek } from '@/lib/firestore';
 import { kalkulujCeneZOsobami } from '@/lib/domek-config';
 
 // Nowa paleta kolorów
@@ -149,7 +149,7 @@ const MultiDomekCalendar = ({ onSelectionChange }) => {
   }, []);
 
   // Obsługa kliknięcia w dzień
-  const handleDayClick = useCallback((date, domekId) => {
+  const handleDayClick = useCallback(async (date, domekId) => {
     const isPast = isBefore(date, startOfDay(new Date()));
     const isUnavailable = !isDayAvailable(date, domekId);
     
@@ -188,11 +188,22 @@ const MultiDomekCalendar = ({ onSelectionChange }) => {
 
       // Sprawdzenie minimalnej długości pobytu
       const nights = differenceInDays(date, currentSelection.startDate);
-      const minNights = config?.min_nocy || 2;
       
-      if (nights < minNights) {
-        setError(`Minimalny pobyt to ${minNights} noce`);
-        return;
+      try {
+        const minNights = await getMinimalnyPobytForDomek(domekId, currentSelection.startDate, date);
+        
+        if (nights < minNights) {
+          setError(`Minimalny pobyt to ${minNights} noce`);
+          return;
+        }
+      } catch (error) {
+        console.error('Błąd sprawdzania minimalnego pobytu:', error);
+        // Fallback do globalnej konfiguracji
+        const minNights = config?.min_nocy || 2;
+        if (nights < minNights) {
+          setError(`Minimalny pobyt to ${minNights} noce`);
+          return;
+        }
       }
 
       // Sprawdzenie dostępności zakresu

@@ -290,6 +290,12 @@ const AdminPanel = () => {
             >
               Kalendarze rezerwacji
             </Link>
+            <Link
+              href="/panel/minimalny-pobyt"
+              className="bg-orange-600 text-white px-4 py-2 rounded-lg hover:bg-orange-700 transition-colors"
+            >
+              Minimalny pobyt
+            </Link>
             <button
               onClick={logoutAdmin}
               className="bg-red-600 text-white px-4 py-2 rounded-lg hover:bg-red-700 transition-colors"
