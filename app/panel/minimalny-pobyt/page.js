@@ -163,7 +163,7 @@ const MinimalnyPobytPage = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 p-4">
+    <div className="min-h-screen bg-gray-50 p-32">
       <div className="max-w-6xl mx-auto">
         {/* Nagłówek */}
         <div className="flex justify-between items-center mb-6">
