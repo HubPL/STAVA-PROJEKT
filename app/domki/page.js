@@ -351,14 +351,6 @@ export default function OfertaPage() {
                                     <span className="font-medium">{t('cottages.smoking')}</span>
                                     <p className="mt-1 text-base">{domekInfo.dodatkoweInfo.palenie}</p>
                                 </div>
-                                <div className="py-3 border-b border-[#3c3333]/10">
-                                    <span className="font-medium">{t('cottages.ac')}</span>
-                                    <p className="mt-1 text-base">{domekInfo.dodatkoweInfo.klimatyzacja}</p>
-                                </div>
-                                <div className="py-3 border-b border-[#3c3333]/10">
-                                    <span className="font-medium">{t('cottages.heating')}</span>
-                                    <p className="mt-1 text-base">{domekInfo.dodatkoweInfo.ogrzewanie}</p>
-                                </div>
                              </div>
                         </div>
                     </div>
