@@ -441,7 +441,7 @@ const ReservationPage = () => {
                         <p className="font-medium mb-2">Informacje:</p>
                         <ul className="space-y-1 text-xs">
                           <li>• Informacje o płatności w mailu rezerwacyjnym</li>
-                          <li>• Możliwość anulowania do 7 dni przed przyjazdem</li>
+                          <li>• Istnieje możliwość anulowania rezerwacji i zwrot połowy kosztów do 7 dni przed przyjazdem.</li>
                           <li>• Check-in: 15:00, Check-out: 11:00</li>
                           <li>• Każdy domek jest identyczny i w pełni wyposażony</li>
                         </ul>
