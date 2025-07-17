@@ -89,10 +89,10 @@ export default function AboutPage() {
             <div className="order-1 lg:order-2">
               <div className="grid grid-cols-2 gap-4">
                 <div className="relative aspect-[3/4] rounded-md overflow-hidden shadow-lg">
-                  <Image src={getImageUrl(HERO_IMAGES.about1)} fill className="object-cover" alt="Hero O nas 1"/>
+                  <Image src={getImageUrl(HERO_IMAGES.hero2)} fill className="object-cover" alt="Hero O nas 1"/>
                 </div>
                 <div className="relative aspect-[3/4] mt-12 rounded-md overflow-hidden shadow-lg">
-                   <Image src={getImageUrl(HERO_IMAGES.about2)} fill className="object-cover" alt="Hero O nas 2"/>
+                   <Image src={getImageUrl(HERO_IMAGES.hero2)} fill className="object-cover" alt="Hero O nas 2"/>
                 </div>
               </div>
             </div>

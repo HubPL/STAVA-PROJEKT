@@ -187,7 +187,7 @@ export default function HomePage() {
         <section id="kontakt" className="relative py-24 px-6 sm:px-8 lg:px-4">
             <div className="absolute inset-0 z-0">
                 <Image
-                    src={getImageUrl(HERO_IMAGES.about2)}
+                    src={getImageUrl(HERO_IMAGES.hero2)}
                     alt="Tło formularza kontaktowego"
                     fill
                     className="object-cover"
