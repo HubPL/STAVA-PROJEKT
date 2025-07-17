@@ -65,7 +65,7 @@ export default function HomePage() {
   
   const galleryImages = [
     { src: getImageUrl(GALLERY_IMAGES.gallery1), alt: 'Galeria STAVA 1' },
-    { src: getImageUrl(GALLERY_IMAGES.gallery2), alt: 'Galeria STAVA 2' },
+    { src: getImageUrl(HERO_IMAGES.wanna), alt: 'Galeria STAVA 2' },
   ];
 
   return (
