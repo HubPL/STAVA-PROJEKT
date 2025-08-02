@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { onAuthChange } from '@/lib/auth';
-import { getConfig, getPotwierdzoneRezerwacje } from '@/lib/firestore';
+import { getConfig, getPotwierdzoneRezerwacje, getBlokadyWPrzedziale } from '@/lib/firestore';
 import { format, startOfMonth, endOfMonth, eachDayOfInterval, isSameDay, addMonths, subMonths, startOfDay, isToday } from 'date-fns';
 import { pl } from 'date-fns/locale';
 import { FiChevronLeft, FiChevronRight } from 'react-icons/fi';
@@ -13,6 +13,7 @@ export default function KalendarzePanel() {
   const [loading, setLoading] = useState(true);
   const [currentMonth, setCurrentMonth] = useState(new Date());
   const [rezerwacje, setRezerwacje] = useState([]);
+  const [blokady, setBlokady] = useState([]);
   const [config, setConfig] = useState(null);
   const [selectedReservation, setSelectedReservation] = useState(null);
 
@@ -35,9 +36,13 @@ export default function KalendarzePanel() {
 
   const loadData = async () => {
     try {
-      const [configData, rezerwacjeData] = await Promise.all([
+      const [configData, rezerwacjeData, blokadyData] = await Promise.all([
         getConfig(),
         getPotwierdzoneRezerwacje(
+          startOfMonth(subMonths(currentMonth, 1)),
+          endOfMonth(addMonths(currentMonth, 1))
+        ),
+        getBlokadyWPrzedziale(
           startOfMonth(subMonths(currentMonth, 1)),
           endOfMonth(addMonths(currentMonth, 1))
         )
@@ -45,6 +50,7 @@ export default function KalendarzePanel() {
       
       setConfig(configData);
       setRezerwacje(rezerwacjeData);
+      setBlokady(blokadyData);
     } catch (error) {
       console.error('Błąd ładowania danych:', error);
     }
@@ -69,11 +75,33 @@ export default function KalendarzePanel() {
     );
   };
 
+  // Funkcja do sprawdzania czy dany dzień ma blokadę dla domku
+  const getBlockedDay = (domekId, date) => {
+    return blokady.find(blokada => 
+      blokada.domek_id === domekId && 
+      date >= startOfDay(blokada.od) && 
+      date < startOfDay(blokada.do)
+    );
+  };
+
   // Funkcja do obsługi kliknięcia w dzień
   const handleDayClick = (domekId, date) => {
     const reservation = getReservationForDay(domekId, date);
+    const blocked = getBlockedDay(domekId, date);
+    
     if (reservation) {
       setSelectedReservation(reservation);
+    } else if (blocked) {
+      setSelectedReservation({
+        ...blocked,
+        isBlocked: true,
+        imie: 'BLOKADA',
+        nazwisko: blocked.powod || 'Brak powodu',
+        email: 'Administratorska blokada',
+        startDate: blocked.od,
+        endDate: blocked.do,
+        domekId: blocked.domek_id
+      });
     }
   };
 
@@ -108,9 +136,13 @@ export default function KalendarzePanel() {
           {/* Dni miesiąca */}
           {monthDays.map(date => {
             const reservation = getReservationForDay(domekId, date);
+            const blocked = getBlockedDay(domekId, date);
             const isReserved = !!reservation;
+            const isBlocked = !!blocked;
             const isStartDate = reservation && isSameDay(date, reservation.startDate);
             const isEndDate = reservation && isSameDay(date, reservation.endDate);
+            const isBlockedStartDate = blocked && isSameDay(date, blocked.od);
+            const isBlockedEndDate = blocked && isSameDay(date, blocked.do);
 
             let classes = 'relative w-full aspect-square flex items-center justify-center text-sm font-medium rounded-lg border transition-all duration-200 cursor-pointer ';
             
@@ -119,6 +151,12 @@ export default function KalendarzePanel() {
                 classes += 'bg-blue-600 text-white border-blue-700 transform scale-105 shadow-lg z-10';
               } else {
                 classes += 'bg-blue-100 text-blue-800 border-blue-300';
+              }
+            } else if (isBlocked) {
+              if (isBlockedStartDate || isBlockedEndDate) {
+                classes += 'bg-red-600 text-white border-red-700 transform scale-105 shadow-lg z-10';
+              } else {
+                classes += 'bg-red-100 text-red-800 border-red-300';
               }
             } else {
               classes += 'bg-gray-50 text-gray-400 border-gray-200 hover:bg-gray-100';
@@ -129,13 +167,13 @@ export default function KalendarzePanel() {
                 key={date.toISOString()}
                 onClick={() => handleDayClick(domekId, date)}
                 className={classes}
-                disabled={!isReserved}
+                disabled={!isReserved && !isBlocked}
               >
                 <span className={isToday(date) ? 'font-bold' : ''}>
                   {format(date, 'd')}
                 </span>
                 {isToday(date) && (
-                  <span className="absolute bottom-1 left-1/2 transform -translate-x-1/2 w-1 h-1 bg-red-500 rounded-full"></span>
+                  <span className="absolute bottom-1 left-1/2 transform -translate-x-1/2 w-1 h-1 bg-white rounded-full"></span>
                 )}
               </button>
             );
@@ -213,14 +251,22 @@ export default function KalendarzePanel() {
         {/* Legenda */}
         <div className="bg-white rounded-xl shadow-lg p-6 mb-8">
           <h3 className="text-lg font-semibold text-gray-700 mb-4">Legenda:</h3>
-          <div className="grid grid-cols-2 md:grid-cols-3 gap-4 text-sm">
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4 text-sm">
             <div className="flex items-center gap-2">
               <div className="w-4 h-4 rounded bg-blue-600"></div>
-              <span>Dzień przyjazdu/wyjazdu</span>
+              <span>Przyjazd/wyjazd gości</span>
             </div>
             <div className="flex items-center gap-2">
               <div className="w-4 h-4 rounded bg-blue-100 border border-blue-300"></div>
-              <span>Dni pobytu</span>
+              <span>Dni pobytu gości</span>
+            </div>
+            <div className="flex items-center gap-2">
+              <div className="w-4 h-4 rounded bg-red-600"></div>
+              <span>Początek/koniec blokady</span>
+            </div>
+            <div className="flex items-center gap-2">
+              <div className="w-4 h-4 rounded bg-red-100 border border-red-300"></div>
+              <span>Dni blokady</span>
             </div>
             <div className="flex items-center gap-2">
               <div className="w-4 h-4 rounded bg-gray-50 border border-gray-200"></div>
@@ -228,7 +274,7 @@ export default function KalendarzePanel() {
             </div>
           </div>
           <p className="text-xs text-gray-500 mt-3 italic">
-            Kliknij na dzień z rezerwacją aby zobaczyć szczegóły gościa
+            Kliknij na dzień z rezerwacją lub blokadą aby zobaczyć szczegóły
           </p>
         </div>
 
@@ -236,7 +282,9 @@ export default function KalendarzePanel() {
         {selectedReservation && (
           <div className="bg-white rounded-xl shadow-lg p-6">
             <div className="flex justify-between items-start mb-4">
-              <h3 className="text-xl font-bold text-[#3c3333]">Szczegóły rezerwacji</h3>
+              <h3 className="text-xl font-bold text-[#3c3333]">
+                {selectedReservation.isBlocked ? 'Szczegóły blokady' : 'Szczegóły rezerwacji'}
+              </h3>
               <button
                 onClick={() => setSelectedReservation(null)}
                 className="text-gray-400 hover:text-gray-600 text-xl"
@@ -247,25 +295,55 @@ export default function KalendarzePanel() {
             
             <div className="grid md:grid-cols-2 gap-6">
               <div>
-                <h4 className="font-semibold text-gray-700 mb-3">Dane gościa:</h4>
+                <h4 className="font-semibold text-gray-700 mb-3">
+                  {selectedReservation.isBlocked ? 'Informacje o blokadzie:' : 'Dane gościa:'}
+                </h4>
                 <div className="space-y-2 text-sm">
-                  <p><strong>Imię i nazwisko:</strong> {selectedReservation.imie} {selectedReservation.nazwisko}</p>
-                  <p><strong>Email:</strong> {selectedReservation.email}</p>
-                  <p><strong>Telefon:</strong> {selectedReservation.telefon}</p>
-                  {selectedReservation.uwagi && (
-                    <p><strong>Uwagi:</strong> {selectedReservation.uwagi}</p>
+                  {selectedReservation.isBlocked ? (
+                    <>
+                      <p><strong>Typ:</strong> <span className="text-red-600 font-semibold">Blokada administratorska</span></p>
+                      <p><strong>Powód:</strong> {selectedReservation.nazwisko}</p>
+                    </>
+                  ) : (
+                    <>
+                      <p><strong>Imię i nazwisko:</strong> {selectedReservation.imie} {selectedReservation.nazwisko}</p>
+                      <p><strong>Email:</strong> {selectedReservation.email}</p>
+                      <p><strong>Telefon:</strong> {selectedReservation.telefon}</p>
+                      {selectedReservation.bookingMetadata?.source === 'booking.com' && (
+                        <div className="mt-2 p-2 bg-blue-50 rounded-lg border border-blue-200">
+                          <p className="text-blue-800 text-xs font-semibold">📱 REZERWACJA Z BOOKING.COM</p>
+                          <p className="text-blue-600 text-xs">
+                            <strong>ID:</strong> {selectedReservation.bookingMetadata.reservationId}
+                          </p>
+                          {selectedReservation.bookingMetadata.commission > 0 && (
+                            <p className="text-orange-600 text-xs">
+                              <strong>Prowizja:</strong> {selectedReservation.bookingMetadata.commission} PLN
+                            </p>
+                          )}
+                        </div>
+                      )}
+                      {selectedReservation.uwagi && (
+                        <p><strong>Uwagi:</strong> {selectedReservation.uwagi}</p>
+                      )}
+                    </>
                   )}
                 </div>
               </div>
               
               <div>
-                <h4 className="font-semibold text-gray-700 mb-3">Szczegóły pobytu:</h4>
+                <h4 className="font-semibold text-gray-700 mb-3">
+                  {selectedReservation.isBlocked ? 'Okres blokady:' : 'Szczegóły pobytu:'}
+                </h4>
                 <div className="space-y-2 text-sm">
                   <p><strong>Domek:</strong> {selectedReservation.domekId.replace('D', '')}</p>
-                  <p><strong>Przyjazd:</strong> {selectedReservation.startDate.toLocaleDateString('pl-PL')}</p>
-                  <p><strong>Wyjazd:</strong> {selectedReservation.endDate.toLocaleDateString('pl-PL')}</p>
-                  <p><strong>Liczba osób:</strong> {selectedReservation.liczbOsob}</p>
-                  <p><strong>Status:</strong> <span className="text-green-600 font-semibold">Potwierdzona</span></p>
+                  <p><strong>{selectedReservation.isBlocked ? 'Początek blokady:' : 'Przyjazd:'}</strong> {selectedReservation.startDate.toLocaleDateString('pl-PL')}</p>
+                  <p><strong>{selectedReservation.isBlocked ? 'Koniec blokady:' : 'Wyjazd:'}</strong> {selectedReservation.endDate.toLocaleDateString('pl-PL')}</p>
+                  {!selectedReservation.isBlocked && (
+                    <>
+                      <p><strong>Liczba osób:</strong> {selectedReservation.liczbOsob}</p>
+                      <p><strong>Status:</strong> <span className="text-green-600 font-semibold">Potwierdzona</span></p>
+                    </>
+                  )}
                 </div>
               </div>
             </div>

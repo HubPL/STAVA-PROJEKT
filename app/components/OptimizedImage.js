@@ -1,7 +1,7 @@
 'use client';
 
 import Image from 'next/image';
-import { useState, forwardRef } from 'react';
+import { useState, forwardRef, useRef, useEffect } from 'react';
 import { getImagePlaceholder } from '@/lib/storage';
 
 /**
@@ -18,10 +18,37 @@ const OptimizedImage = forwardRef(function OptimizedImage({
   quality = 85,
   sizes = '100vw',
   onLoad,
+  lazy = true, // nowy prop
   ...props
 }, ref) {
   const [isLoading, setIsLoading] = useState(true);
   const [hasError, setHasError] = useState(false);
+  const [shouldLoad, setShouldLoad] = useState(!lazy || priority);
+  const imgRef = useRef(null);
+
+  // Intersection Observer dla lazy loading
+  useEffect(() => {
+    if (!lazy || priority || shouldLoad) return;
+
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          setShouldLoad(true);
+          observer.disconnect();
+        }
+      },
+      { 
+        threshold: 0.1,
+        rootMargin: '50px' // ładuj 50px przed wejściem w viewport
+      }
+    );
+
+    if (imgRef.current) {
+      observer.observe(imgRef.current);
+    }
+
+    return () => observer.disconnect();
+  }, [lazy, priority, shouldLoad]);
 
   // Placeholder dla ładowania
   const placeholder = getImagePlaceholder(width, height);
@@ -47,28 +74,44 @@ const OptimizedImage = forwardRef(function OptimizedImage({
   };
 
   return (
-    <div className={`relative overflow-hidden ${className}`}>
-      <Image
-        ref={ref}
-        src={hasError ? errorPlaceholder : src}
-        alt={alt}
-        width={width}
-        height={height}
-        quality={quality}
-        priority={priority}
-        sizes={sizes}
-        placeholder="blur"
-        blurDataURL={placeholder}
-        onLoad={handleLoad}
-        onError={handleError}
-        className={`transition-all duration-500 ${
-          isLoading ? 'scale-105 blur-sm' : 'scale-100 blur-0'
-        }`}
-        {...props}
-      />
+    <div ref={imgRef} className={`relative overflow-hidden ${className}`}>
+      {shouldLoad ? (
+        <Image
+          ref={ref}
+          src={hasError ? errorPlaceholder : src}
+          alt={alt}
+          width={width}
+          height={height}
+          quality={quality}
+          priority={priority}
+          sizes={sizes}
+          placeholder="blur"
+          blurDataURL={placeholder}
+          onLoad={handleLoad}
+          onError={handleError}
+          className={`transition-all duration-500 ${
+            isLoading ? 'scale-105 blur-sm' : 'scale-100 blur-0'
+          }`}
+          {...props}
+        />
+      ) : (
+        // Placeholder podczas oczekiwania na lazy load
+        <div 
+          className="w-full h-full bg-gray-100 animate-pulse flex items-center justify-center"
+          style={{ width, height }}
+        >
+          <svg 
+            className="w-8 h-8 text-gray-400" 
+            fill="currentColor" 
+            viewBox="0 0 20 20"
+          >
+            <path fillRule="evenodd" d="M4 3a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V5a2 2 0 00-2-2H4zm12 12H4l4-8 3 6 2-4 3 6z" clipRule="evenodd" />
+          </svg>
+        </div>
+      )}
       
       {/* Loading overlay */}
-      {isLoading && !hasError && (
+      {shouldLoad && isLoading && !hasError && (
         <div className="absolute inset-0 bg-[#FFF9E8] animate-pulse" />
       )}
     </div>

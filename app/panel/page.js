@@ -114,7 +114,7 @@ const AdminPanel = () => {
       ));
 
       // Wyślij email o statusie (jeśli potrzebne)
-      if (newStatus === 'potwierdzona' || newStatus === 'odrzucona') {
+      if (newStatus === 'potwierdzona' || newStatus === 'odrzucona' || newStatus === 'anulowana') {
         try {
           const emailResponse = await fetch('/api/send-status-email', {
             method: 'POST',
@@ -296,6 +296,12 @@ const AdminPanel = () => {
             >
               Minimalny pobyt
             </Link>
+            <Link
+              href="/panel/booking-rezerwacje"
+              className="bg-blue-800 text-white px-4 py-2 rounded-lg hover:bg-blue-900 transition-colors"
+            >
+              + Booking.com
+            </Link>
             <button
               onClick={logoutAdmin}
               className="bg-red-600 text-white px-4 py-2 rounded-lg hover:bg-red-700 transition-colors"
@@ -416,14 +422,31 @@ const AdminPanel = () => {
                     {/* Nagłówek rezerwacji */}
                     <div className="flex flex-col md:flex-row md:justify-between md:items-start mb-6 pb-4 border-b">
                       <div>
-                        <h3 className="text-xl font-bold text-gray-900 mb-2">
+                        <h3 className="text-xl font-bold text-gray-900 mb-2 flex items-center gap-2">
                           {rezerwacja.imie} {rezerwacja.nazwisko}
+                          {rezerwacja.bookingMetadata?.source === 'booking.com' && (
+                            <span className="text-xs bg-blue-600 text-white px-2 py-1 rounded-full">
+                              📱 Booking.com
+                            </span>
+                          )}
                         </h3>
                         <div className="text-sm text-gray-600 space-y-1">
                           <p>📧 {rezerwacja.email}</p>
                           <p>📞 {rezerwacja.telefon}</p>
                           {rezerwacja.uwagi && (
                             <p className="text-xs italic">💬 {rezerwacja.uwagi}</p>
+                          )}
+                          {rezerwacja.bookingMetadata?.reservationId && (
+                            <div className="mt-2 pt-2 border-t text-xs">
+                              <p className="text-blue-600">
+                                🔗 ID Booking.com: <strong>{rezerwacja.bookingMetadata.reservationId}</strong>
+                              </p>
+                              {rezerwacja.bookingMetadata.commission > 0 && (
+                                <p className="text-orange-600">
+                                  💰 Prowizja: {rezerwacja.bookingMetadata.commission} PLN
+                                </p>
+                              )}
+                            </div>
                           )}
                         </div>
                       </div>
@@ -500,9 +523,24 @@ const AdminPanel = () => {
                             )}
                           </button>
                         </div>
+                      ) : rezerwacja.status === 'potwierdzona' ? (
+                        <button
+                          onClick={() => handleStatusChange(rezerwacja.id, 'anulowana')}
+                          disabled={updatingStatus[rezerwacja.id]}
+                          className="bg-orange-600 text-white px-6 py-2 rounded-lg hover:bg-orange-700 disabled:opacity-50 flex items-center gap-2"
+                        >
+                          {updatingStatus[rezerwacja.id] ? (
+                            <>
+                              <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white"></div>
+                              Anulowanie...
+                            </>
+                          ) : (
+                            '🚫 Anuluj rezerwację'
+                          )}
+                        </button>
                       ) : (
                         <span className="text-gray-500 text-sm bg-gray-100 px-4 py-2 rounded-lg">
-                          Rezerwacja została rozpatrzona
+                          Rezerwacja została rozpatrzona ({rezerwacja.status})
                         </span>
                       )}
                     </div>

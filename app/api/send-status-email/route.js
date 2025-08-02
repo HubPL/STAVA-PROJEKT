@@ -58,10 +58,10 @@ export async function POST(request) {
     }
     
     // Dodatkowa walidacja statusu
-    const allowedStatuses = ['potwierdzona', 'odrzucona'];
+    const allowedStatuses = ['potwierdzona', 'odrzucona', 'anulowana'];
     if (!allowedStatuses.includes(newStatus)) {
       return NextResponse.json(
-        { error: 'Nieprawidłowy status. Dozwolone: potwierdzona, odrzucona' },
+        { error: 'Nieprawidłowy status. Dozwolone: potwierdzona, odrzucona, anulowana' },
         { status: 400 }
       );
     }

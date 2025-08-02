@@ -4,6 +4,11 @@ const nextConfig = {
   compress: true,
   poweredByHeader: false,
   
+  // Performance optimizations
+  experimental: {
+    optimizePackageImports: ['react-icons', 'date-fns'],
+  },
+  
   // Optymalizacja obrazów
   images: {
     formats: ['image/webp', 'image/avif'],
