@@ -47,6 +47,7 @@ const MultiDomekCalendar = ({ onSelectionChange }) => {
   });
   const [hoveredDate, setHoveredDate] = useState({ domekId: null, date: null });
   const [availability, setAvailability] = useState({});
+  const [edgeStarts, setEdgeStarts] = useState({});
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [config, setConfig] = useState(null);
@@ -69,11 +70,22 @@ const MultiDomekCalendar = ({ onSelectionChange }) => {
         ]);
 
         const occupiedDates = {};
+        const edgeStartDates = {};
         
+        // Helper do zaznaczania startów jako skrajnych dni
+        const markEdgeStart = (map, dateObj, domekId) => {
+          const ds = format(dateObj, 'yyyy-MM-dd');
+          if (!map[ds]) map[ds] = new Set();
+          map[ds].add(domekId);
+        };
+
         // Przetwarzanie rezerwacji
         rezerwacje.forEach(rez => {
           let current = rez.startDate instanceof Date ? rez.startDate : parseISO(rez.startDate);
           const finalEnd = rez.endDate instanceof Date ? rez.endDate : parseISO(rez.endDate);
+
+          // Zaznacz dzień startu rezerwacji jako skrajny dla danego domku
+          markEdgeStart(edgeStartDates, current, rez.domekId);
           
           while (current < finalEnd) {
             const dateString = format(current, 'yyyy-MM-dd');
@@ -88,6 +100,9 @@ const MultiDomekCalendar = ({ onSelectionChange }) => {
         blokady.forEach(blokada => {
           let current = blokada.od;
           const finalEnd = blokada.do;
+
+          // Zaznacz dzień startu blokady jako skrajny
+          markEdgeStart(edgeStartDates, blokada.od, blokada.domek_id);
           
           while (current < finalEnd) {
             const dateString = format(current, 'yyyy-MM-dd');
@@ -99,6 +114,7 @@ const MultiDomekCalendar = ({ onSelectionChange }) => {
         });
 
         setAvailability(occupiedDates);
+        setEdgeStarts(edgeStartDates);
       } catch (err) {
         console.error('Błąd pobierania dostępności:', err);
         setError('Nie udało się załadować kalendarza');
@@ -152,10 +168,12 @@ const MultiDomekCalendar = ({ onSelectionChange }) => {
   const handleDayClick = useCallback(async (date, domekId) => {
     const isPast = isBefore(date, startOfDay(new Date()));
     const isUnavailable = !isDayAvailable(date, domekId);
-    
-    if (isPast || isUnavailable) return;
-
     const currentSelection = selectedDomki[domekId];
+    const selectingEnd = currentSelection.startDate && !currentSelection.endDate;
+    const canPickOccupiedAsEnd = selectingEnd && isAfter(date, currentSelection.startDate);
+    
+    // Zablokuj tylko jeśli dzień jest w przeszłości lub zajęty i nie spełnia wyjątkowego przypadku końca
+    if (isPast || (isUnavailable && !canPickOccupiedAsEnd)) return;
     
     // Reset po pełnym wyborze lub pierwsze kliknięcie
     if (!currentSelection.startDate || (currentSelection.startDate && currentSelection.endDate)) {
@@ -278,7 +296,7 @@ const MultiDomekCalendar = ({ onSelectionChange }) => {
   const emptyDays = firstDayOfWeek === 0 ? 6 : firstDayOfWeek - 1;
 
   // Określanie stylu dla dnia
-  const getDayStyle = useCallback((date, domekId) => {
+  const getDayStyle = useCallback((date, domekId, endCandidateDate) => {
     const isPast = isBefore(date, startOfDay(new Date()));
     const isAvailable = isDayAvailable(date, domekId);
     const selection = selectedDomki[domekId];
@@ -290,6 +308,11 @@ const MultiDomekCalendar = ({ onSelectionChange }) => {
       hoveredDate.domekId === domekId && hoveredDate.date &&
       isAfter(hoveredDate.date, selection.startDate) && 
       isWithinInterval(date, { start: selection.startDate, end: hoveredDate.date });
+    const selectingEnd = selection.startDate && !selection.endDate;
+    const canClickOccupiedEnd = !isAvailable && selectingEnd && endCandidateDate && isSameDay(date, endCandidateDate);
+    // Stałe oznaczanie skrajnych dni (startów istniejących rezerwacji/blokad) niebieską obwódką
+    const ds = format(date, 'yyyy-MM-dd');
+    const isEdgeStart = edgeStarts[ds] && edgeStarts[ds].has(domekId);
 
     let baseClasses = 'relative w-full aspect-square flex items-center justify-center text-sm font-medium rounded-lg border transition-all duration-200 ';
 
@@ -317,9 +340,17 @@ const MultiDomekCalendar = ({ onSelectionChange }) => {
     if (isAvailable) {
       return baseClasses + COLORS.available;
     } else {
+      // Stały niebieski border dla skrajnych startów (czytelna informacja o możliwości zakończenia dnia wcześniej)
+      if (isEdgeStart) {
+        return baseClasses + 'bg-red-100 text-red-700 border-2 border-blue-600';
+      }
+      // Dodatkowe wzmocnienie pod kursorem w trakcie wyboru końca
+      if (canClickOccupiedEnd) {
+        return baseClasses + 'bg-red-50 text-red-700 border-2 border-blue-600 cursor-pointer shadow-[inset_0_0_0_2px_rgba(37,99,235,0.6)]';
+      }
       return baseClasses + COLORS.occupied;
     }
-  }, [selectedDomki, hoveredDate, isDayAvailable]);
+  }, [selectedDomki, hoveredDate, isDayAvailable, edgeStarts]);
 
   // Obsługa nawigacji
   const handlePrevMonth = () => setCurrentMonth(subMonths(currentMonth, 1));
@@ -427,7 +458,16 @@ const MultiDomekCalendar = ({ onSelectionChange }) => {
           {monthDays.map(date => {
             const isPast = isBefore(date, startOfDay(new Date()));
             const isAvailable = isDayAvailable(date, domekId);
-            const isClickable = !isPast && isAvailable;
+            const selection = selectedDomki[domekId];
+            const selectingEnd = selection?.startDate && !selection?.endDate;
+            const isUnavailable = !isAvailable;
+            // Skrajny dzień dozwolony jako koniec to dokładnie dzień startu innej rezerwacji,
+            // więc wyróżnimy tylko DOKŁADNIE wskazany kursorem/kandydat końca, a nie wszystkie po starcie
+            const endCandidateDate = selectingEnd ? hoveredDate?.date : null;
+            const canOccupiedEndHighlight = selectingEnd && isUnavailable && endCandidateDate && isSameDay(date, endCandidateDate);
+            // Pozwól wybrać datę końcową nawet jeśli dzień jest zajęty,
+            // o ile jest po dacie startowej. Walidacja zakresu nastąpi później.
+            const isClickable = !isPast && (isAvailable || (selectingEnd && isAfter(date, selection.startDate)));
 
             return (
               <button
@@ -436,7 +476,8 @@ const MultiDomekCalendar = ({ onSelectionChange }) => {
                 onMouseEnter={() => isClickable && setHoveredDate({ domekId, date })}
                 onMouseLeave={() => setHoveredDate({ domekId: null, date: null })}
                 disabled={!isClickable}
-                className={getDayStyle(date, domekId)}
+                className={getDayStyle(date, domekId, endCandidateDate)}
+                title={canOccupiedEndHighlight ? 'Możesz zakończyć rezerwację tego dnia' : ''}
               >
                 <span className={isToday(date) ? 'font-bold' : ''}>
                   {format(date, 'd')}
