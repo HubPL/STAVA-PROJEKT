@@ -73,12 +73,16 @@ const OptimizedImage = forwardRef(function OptimizedImage({
     setIsLoading(false);
   };
 
+  // Zabezpieczenie przed pustym src – użyj placeholdera błędu
+  const isValidSrc = typeof src === 'string' && src.trim().length > 0;
+  const finalSrc = hasError || !isValidSrc ? errorPlaceholder : src;
+
   return (
     <div ref={imgRef} className={`relative overflow-hidden ${className}`}>
       {shouldLoad ? (
         <Image
           ref={ref}
-          src={hasError ? errorPlaceholder : src}
+          src={finalSrc}
           alt={alt}
           width={width}
           height={height}

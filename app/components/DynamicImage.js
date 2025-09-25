@@ -62,19 +62,25 @@ export default function DynamicImage({
       className={`relative overflow-hidden cursor-pointer group rounded-lg shadow-lg hover:shadow-xl transition-all duration-300 ${fixedAspectRatio ? '' : 'break-inside-avoid mb-4'} ${aspectRatio} ${className}`}
       onClick={onClick}
     >
-      <OptimizedImage
-        ref={imgRef}
-        src={src}
-        alt={alt}
-        width={400}
-        height={300}
-        className={`w-full h-full object-cover transition-all duration-500 group-hover:scale-110 ${
-          isLoaded ? 'opacity-100' : 'opacity-0'
-        }`}
-        quality={85}
-        onLoad={handleImageLoad}
-        {...props}
-      />
+      {src ? (
+        <OptimizedImage
+          ref={imgRef}
+          src={src}
+          alt={alt}
+          width={400}
+          height={300}
+          className={`w-full h-full object-cover transition-all duration-500 group-hover:scale-110 ${
+            isLoaded ? 'opacity-100' : 'opacity-0'
+          }`}
+          quality={85}
+          onLoad={handleImageLoad}
+          {...props}
+        />
+      ) : (
+        <div className="w-full h-full bg-[#FFF9E8] flex items-center justify-center">
+          <div className="w-8 h-8 border-2 border-[#3c3333] border-t-transparent rounded-full animate-spin" />
+        </div>
+      )}
       
       {/* Loading state */}
       {!isLoaded && (

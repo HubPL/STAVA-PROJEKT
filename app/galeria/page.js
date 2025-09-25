@@ -44,7 +44,8 @@ export default function GaleriaPage() {
       setLoading(true);
       try {
         const preparedImages = await prepareImages();
-        setImages(preparedImages);
+        // Odfiltruj elementy bez src
+        setImages(preparedImages.filter(img => img && img.src));
       } catch (error) {
         console.error('Błąd podczas ładowania galerii:', error);
       } finally {
