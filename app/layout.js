@@ -9,10 +9,10 @@ import './globals.css';
 
 export const metadata = {
   title: {
-    default: "STAVA - Domek wypoczynkowy w Kiszewie | Wypoczynek na Kaszubach",
+    default: "STAVA Kiszewa – Domek w lesie na Kaszubach | Rezerwacja online",
     template: "%s | STAVA Kiszewa"
   },
-  description: "Ośrodek wypoczynkowy STAVA w Starej Kiszewie. Komfortowy domek wypoczynkowy otoczony naturą na Kaszubach. Rezerwuj online - wypoczynek w lesie nad jeziorami.",
+  description: "Komfortowy domek 67 m² w Starej Kiszewie: 2 sypialnie, kominek, klimatyzacja, 3 tarasy. Sprawdź dostępność i zarezerwuj pobyt w naturze.",
   keywords: ["domek wypoczynkowy", "Stara Kiszewa", "wypoczynek", "Kaszuby", "nocleg", "STAVA", "domek w lesie", "las", "natura", "odpoczynek", "jezior"],
   authors: [{ name: "STAVA" }],
   creator: "STAVA",
@@ -24,8 +24,8 @@ export const metadata = {
   },
   metadataBase: new URL("https://stavakiszewa.pl"),
   openGraph: {
-    title: "STAVA - Domek wypoczynkowy w Kiszewie",
-    description: "Ośrodek wypoczynkowy STAVA w Starej Kiszewie. Komfortowy domek wypoczynkowy otoczony naturą na Kaszubach.",
+    title: "STAVA Kiszewa – Domek w lesie na Kaszubach | Rezerwacja online",
+    description: "Komfortowy domek 67 m² w Starej Kiszewie: 2 sypialnie, kominek, klimatyzacja, 3 tarasy.",
     url: "https://stavakiszewa.pl",
     siteName: "STAVA Kiszewa",
     images: [
@@ -41,8 +41,8 @@ export const metadata = {
   },
   twitter: {
     card: "summary_large_image",
-    title: "STAVA - Domek wypoczynkowy w Kiszewie",
-    description: "Komfortowy domek wypoczynkowy otoczony naturą na Kaszubach. Rezerwuj online!",
+    title: "STAVA Kiszewa – Domek w lesie na Kaszubach",
+    description: "Komfortowy domek 67 m², 2 sypialnie, kominek, klimatyzacja. Rezerwuj online!",
     images: ["https://firebasestorage.googleapis.com/v0/b/stava-62c2a.firebasestorage.app/o/seo%2Fog-image.jpg?alt=media"],
   },
   robots: {
