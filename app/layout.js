@@ -9,10 +9,10 @@ import './globals.css';
 
 export const metadata = {
   title: {
-    default: "STAVA Kiszewa – Domek w lesie na Kaszubach | Rezerwacja online",
+    default: "STAVA - Domy wypoczynkowe całoroczne w Starej Kiszewie na Kaszubach",
     template: "%s | STAVA Kiszewa"
   },
-  description: "Komfortowy domek 67 m² w Starej Kiszewie: 2 sypialnie, kominek, klimatyzacja, 3 tarasy. Sprawdź dostępność i zarezerwuj pobyt w naturze.",
+  description: "Domki o wysokim standardzie, schowane w cieniu drzew - z dala od miejskiego zgiełku. W miejscowości Stara Kiszewa",
   keywords: ["domek wypoczynkowy", "Stara Kiszewa", "wypoczynek", "Kaszuby", "nocleg", "STAVA", "domek w lesie", "las", "natura", "odpoczynek", "jezior"],
   authors: [{ name: "STAVA" }],
   creator: "STAVA",
@@ -24,8 +24,8 @@ export const metadata = {
   },
   metadataBase: new URL("https://stavakiszewa.pl"),
   openGraph: {
-    title: "STAVA Kiszewa – Domek w lesie na Kaszubach | Rezerwacja online",
-    description: "Komfortowy domek 67 m² w Starej Kiszewie: 2 sypialnie, kominek, klimatyzacja, 3 tarasy.",
+    title: "STAVA - Domy wypoczynkowe całoroczne w Starej Kiszewie na Kaszubach",
+    description: "Domki o wysokim standardzie, schowane w cieniu drzew - z dala od miejskiego zgiełku. W miejscowości Stara Kiszewa",
     url: "https://stavakiszewa.pl",
     siteName: "STAVA Kiszewa",
     images: [
@@ -41,8 +41,8 @@ export const metadata = {
   },
   twitter: {
     card: "summary_large_image",
-    title: "STAVA Kiszewa – Domek w lesie na Kaszubach",
-    description: "Komfortowy domek 67 m², 2 sypialnie, kominek, klimatyzacja. Rezerwuj online!",
+    title: "STAVA - Domy wypoczynkowe całoroczne w Starej Kiszewie na Kaszubach",
+    description: "Domki o wysokim standardzie, schowane w cieniu drzew - z dala od miejskiego zgiełku. W miejscowości Stara Kiszewa",
     images: ["https://firebasestorage.googleapis.com/v0/b/stava-62c2a.firebasestorage.app/o/seo%2Fog-image.jpg?alt=media"],
   },
   robots: {
@@ -92,6 +92,11 @@ export default function RootLayout({ children }) {
               "url": "https://stavakiszewa.pl",
               "telephone": "+48886627447",
               "email": "kontakt@stavakiszewa.pl",
+              "sameAs": [
+                "https://www.facebook.com/people/STAVA/61576052219084/",
+                "https://www.instagram.com/stavakiszewa",
+                "https://www.tiktok.com/@stavakiszewa"
+              ],
               "address": {
                 "@type": "PostalAddress",
                 "streetAddress": "ul. Wygonińska 38",
@@ -126,10 +131,10 @@ export default function RootLayout({ children }) {
               ],
               "priceRange": "$$",
               "paymentAccepted": ["Cash", "Bank Transfer"],
-              "starRating": {
-                "@type": "Rating",
-                "ratingValue": "4.8",
-                "bestRating": "5"
+              "aggregateRating": {
+                "@type": "AggregateRating",
+                "ratingValue": "4.9",
+                "reviewCount": "25"
               },
               "numberOfRooms": 3,
               "petsAllowed": true,
