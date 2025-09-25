@@ -584,7 +584,7 @@ const MultiDomekCalendar = ({ onSelectionChange }) => {
         </div>
         <div className="mt-3 space-y-1 text-xs text-gray-600">
           <p className="italic">
-            * Minimalny pobyt: 2 doby | Dzisiejsza data oznaczona kropką
+            * Dzisiejsza data oznaczona kropką
           </p>
           <p className="italic">
             * Cena za domek obejmuje 4 osoby. Dodatkowe osoby: {config?.ceny?.cena_za_dodatkowa_osoba || 'koszt ustalany w panelu administracyjnym'} PLN/osobę/dobę

@@ -393,11 +393,7 @@ export default function OfertaPage() {
                             >
                               {aktualnaCena ? t('cottages.reserve_now') : t('cottages.ask_availability')}
                             </Link>
-                            {aktualnaCena && (
-                                <p className="text-sm text-center mt-4 text-[#3c3333]/60">
-                                    {t('cottages.min_stay', '', { nights: config?.min_nocy || 2 })}
-                                </p>
-                            )}
+                            {/* Usunięto komunikat o minimalnym pobycie, bo zależy od sezonu */}
                         </div>
                     </div>
                 </div>
