@@ -93,10 +93,10 @@ const Header = () => {
           <Link href={basePath || "/"} className="group" onClick={() => setIsMobileMenuOpen(false)}>
             <div className="relative">
               <Image
-                src={shouldShowWhiteLogo ? LOGO_URL : LOGO_BLACK_URL} 
-                alt="STAVA Logo" 
-                width={180} 
-                height={180} 
+                src={shouldShowWhiteLogo ? LOGO_URL : LOGO_BLACK_URL}
+                alt="STAVA Logo"
+                width={180}
+                height={180}
                 priority
                 className="h-24 w-auto scale-150 transition-all duration-300 group-hover:scale-[1.375]"
               />
