@@ -8,7 +8,7 @@ import { onAuthChange } from '@/lib/auth';
 import { useTranslation } from '../../lib/i18n';
 import LanguageSwitcher from './LanguageSwitcher';
 
-const LOGO_URL = "https://firebasestorage.googleapis.com/v0/b/stava-62c2a.firebasestorage.app/o/global%2Flogo.webp?alt=media&token=5e6f9ec9-d680-4d21-a85f-722c3a8bd2fe";
+const LOGO_URL = "https://firebasestorage.googleapis.com/v0/b/stava-62c2a.firebasestorage.app/o/global%2Flogo.webp?alt=media&token=6f619bd5-72df-4ba5-bf71-9baa11d97771";
 const LOGO_BLACK_URL = "https://firebasestorage.googleapis.com/v0/b/stava-62c2a.firebasestorage.app/o/global%2FLogo_black.webp?alt=media&token=7bc56914-443b-47c6-af3e-22486d8ade69";
 
 const Header = () => {
