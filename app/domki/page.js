@@ -39,7 +39,7 @@ const formatDate = (dateString) => {
 };
 
 // Komponent tabeli cen sezonowych
-const TabelaCenSezonowych = ({ config, t }) => {
+const TabelaCenSezonowych = ({ config, t, locale = 'pl' }) => {
     if (!config?.ceny?.sezonowe || config.ceny.sezonowe.length === 0) {
         return (
             <div className="text-center text-gray-500">
@@ -49,10 +49,11 @@ const TabelaCenSezonowych = ({ config, t }) => {
     }
 
     // Pobierz cenę podstawową z bazy danych
-    const cenaPostawowa = config.ceny.podstawowa || config.cena_podstawowa;
+    const cenaPodstawowa = config.ceny.podstawowa || config.cena_podstawowa;
+    const cenaPodstawowaWeekend = config.ceny.podstawowa_weekend || cenaPodstawowa;
 
     // Jeśli nie ma ceny w bazie, pokaż komunikat
-    if (!cenaPostawowa) {
+    if (!cenaPodstawowa) {
         return (
             <div className="text-center text-gray-500">
                 <p>{t('cottages.no_pricing_info')}</p>
@@ -67,33 +68,40 @@ const TabelaCenSezonowych = ({ config, t }) => {
                     <tr className="border-b-2 border-[#3c3333]">
                         <th className="text-left py-3 font-lumios text-lg">{t('cottages.season')}</th>
                         <th className="text-left py-3 font-lumios text-lg">{t('cottages.period')}</th>
-                        <th className="text-right py-3 font-lumios text-lg">{t('cottages.price_difference')}</th>
+                        <th className="text-right py-3 font-lumios text-base">{locale === 'en' ? 'Weekday' : 'Dzień powszedni'}</th>
+                        <th className="text-right py-3 font-lumios text-base">Weekend</th>
                     </tr>
                 </thead>
                 <tbody>
                     {config.ceny.sezonowe.map((sezon, index) => {
-                        const roznica = sezon.cena - cenaPostawowa;
-                        const roznicaText = roznica > 0 ? `+${roznica} zł` : `${roznica} zł`;
-                        const roznicaColor = roznica > 0 ? 'text-orange-600' : roznica < 0 ? 'text-green-600' : 'text-gray-600';
-                        
+                        const cenaWeekday = sezon.cena_weekday || sezon.cena;
+                        const cenaWeekend = sezon.cena_weekend || sezon.cena;
+
                         return (
                             <tr key={index} className="border-b border-[#3c3333]/20 hover:bg-[#FFF9E8]/50 transition-colors">
                                 <td className="py-4 font-medium">{sezon.nazwa}</td>
                                 <td className="py-4 text-gray-600">
                                     {formatDate(sezon.od)} - {formatDate(sezon.do)}
                                 </td>
-                                <td className={`py-4 text-right font-semibold ${roznicaColor}`}>
-                                    {roznicaText}
+                                <td className="py-4 text-right font-semibold">
+                                    {cenaWeekday} zł
+                                </td>
+                                <td className="py-4 text-right font-semibold">
+                                    {cenaWeekend} zł
                                 </td>
                             </tr>
                         );
                     })}
                 </tbody>
             </table>
-                            <div className="mt-4 p-4 bg-[#FFF9E8]/50 rounded-lg">
+            <div className="mt-4 p-4 bg-[#FFF9E8]/50 rounded-lg">
                 <p className="text-sm text-gray-600">
                     <FiDollarSign className="inline mr-2" />
-                    {t('cottages.base_price')} <strong>{cenaPostawowa} PLN {t('cottages.per_night', 'per night')}</strong>
+                    {t('cottages.base_price')} <strong>{cenaPodstawowa} PLN</strong> ({locale === 'en' ? 'weekday' : 'dzień powszedni'})
+                    {cenaPodstawowaWeekend !== cenaPodstawowa && (
+                        <> / <strong>{cenaPodstawowaWeekend} PLN</strong> (weekend)</>
+                    )}
+                    {' '}{t('cottages.per_night', 'per night')}
                 </p>
                 <p className="text-xs text-gray-500 mt-1">
                     {t('cottages.prices_may_vary')}
@@ -322,7 +330,7 @@ export default function OfertaPage() {
                                             {t('cottages.prices_differ')} {t('cottages.season_link')}:
                                         </p>
                                     </div>
-                                    <TabelaCenSezonowych config={config} t={t} />
+                                    <TabelaCenSezonowych config={config} t={t} locale={locale} />
                                 </div>
                             </div>
                         )}

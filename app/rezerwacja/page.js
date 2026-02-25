@@ -351,60 +351,69 @@ const ReservationPage = () => {
                               {/* Szczegóły cenowe */}
                               {domek.cenaZaDobe && (
                                 <div className="pt-2 border-t border-gray-100">
-                                                                {/* Rozliczenie sezonowe jeśli istnieje */}
-                              {domek.rozliczenieSezonowe && domek.rozliczenieSezonowe.length > 0 ? (
-                                <>
-                                  {domek.rozliczenieSezonowe.map((sezon, idx) => (
-                                    <div key={idx} className="mb-2">
-                                      <div className="text-xs text-gray-600 font-medium">{sezon.nazwa}:</div>
-                                      <div className="flex justify-between text-xs text-gray-500">
-                                        <span>
-                                          {sezon.dni} {sezon.dni === 1 ? 'noc' : 'nocy'} × {sezon.cena} PLN
-                                          {sezon.oplataZaDodatkoweOsoby > 0 && ` + ${domek.dodatkoweOsoby} osób × ${domek.cenaZaDodatkowaOsoba} PLN`}
-                                        </span>
-                                        <span>{sezon.cenaCałkowita} PLN</span>
-                                      </div>
-                                    </div>
-                                  ))}
-                                </>
-                              ) : (
-                                /* Standardowe rozliczenie - tylko jeśli nie ma sezonów */
-                                <>
-                                  {domek.cenaBazowa ? (
+                                  {/* Rozliczenie sezonowe jeśli istnieje */}
+                                  {domek.rozliczenieSezonowe && domek.rozliczenieSezonowe.length > 0 ? (
                                     <>
-                                      <div className="flex justify-between text-xs text-gray-500">
-                                        <span>
-                                          Cena bazowa ({domek.bazowaLiczbaOsob || 4} osób):
-                                        </span>
-                                        <span>{domek.cenaBazowa} PLN/noc</span>
-                                      </div>
-                                      {domek.dodatkoweOsoby > 0 && (
-                                        <div className="flex justify-between text-xs text-gray-500">
-                                          <span>
-                                            +{domek.dodatkoweOsoby} {domek.dodatkoweOsoby === 1 ? 'osoba' : 'osoby'} × {domek.cenaZaDodatkowaOsoba} PLN/noc:
-                                          </span>
-                                          <span>+{domek.cenaZaDodatkowaOsoba * domek.dodatkoweOsoby} PLN/noc</span>
+                                      {domek.rozliczenieSezonowe.map((sezon, idx) => (
+                                        <div key={idx} className="mb-2">
+                                          <div className="text-xs text-gray-600 font-medium">
+                                            {sezon.nazwa}{sezon.typDnia ? ` (${sezon.typDnia})` : ''}:
+                                          </div>
+                                          <div className="flex justify-between text-xs text-gray-500">
+                                            <span>
+                                              {sezon.dni} {sezon.dni === 1 ? 'noc' : 'nocy'} × {sezon.cena} PLN
+                                              {sezon.oplataZaDodatkoweOsoby > 0 && ` + ${domek.dodatkoweOsoby} os. × ${domek.cenaZaDodatkowaOsoba} PLN`}
+                                              {sezon.oplatZaZwierze > 0 && ` + zwierzę ${sezon.oplatZaZwierze} PLN`}
+                                            </span>
+                                            <span>{sezon.cenaCałkowita} PLN</span>
+                                          </div>
                                         </div>
-                                      )}
-                                      <div className="flex justify-between text-xs text-gray-500 border-t border-gray-100 pt-1 mt-1">
-                                        <span>
-                                          Łącznie za dobę ({domek.cenaBazowa}{domek.dodatkoweOsoby > 0 ? ` + ${domek.dodatkoweOsoby}×${domek.cenaZaDodatkowaOsoba}` : ''}):
-                                        </span>
-                                        <span>{domek.cenaZaDobe} PLN</span>
-                                      </div>
-                                      <div className="flex justify-between text-xs text-gray-500">
-                                        <span>{domek.iloscNocy} {domek.iloscNocy === 1 ? 'noc' : 'nocy'}:</span>
-                                        <span>{domek.iloscNocy} × {domek.cenaZaDobe} PLN</span>
-                                      </div>
+                                      ))}
                                     </>
                                   ) : (
-                                    /* Fallback gdy cenaBazowa jest null (sezonowe) */
-                                    <div className="flex justify-between text-xs text-gray-500">
-                                      <span>Szczegóły cenowe dostępne po wyborze dat</span>
-                                    </div>
+                                    /* Standardowe rozliczenie - tylko jeśli nie ma sezonów */
+                                    <>
+                                      {domek.cenaBazowa ? (
+                                        <>
+                                          <div className="flex justify-between text-xs text-gray-500">
+                                            <span>
+                                              Cena bazowa ({domek.bazowaLiczbaOsob || 4} osób):
+                                            </span>
+                                            <span>{domek.cenaBazowa} PLN/noc</span>
+                                          </div>
+                                          {domek.dodatkoweOsoby > 0 && (
+                                            <div className="flex justify-between text-xs text-gray-500">
+                                              <span>
+                                                +{domek.dodatkoweOsoby} {domek.dodatkoweOsoby === 1 ? 'osoba' : 'osoby'} × {domek.cenaZaDodatkowaOsoba} PLN/noc:
+                                              </span>
+                                              <span>+{domek.cenaZaDodatkowaOsoba * domek.dodatkoweOsoby} PLN/noc</span>
+                                            </div>
+                                          )}
+                                          {domek.czyMaZwierze && domek.cenaZaZwierze > 0 && (
+                                            <div className="flex justify-between text-xs text-gray-500">
+                                              <span>Zwierzę:</span>
+                                              <span>+{domek.cenaZaZwierze} PLN/noc</span>
+                                            </div>
+                                          )}
+                                          <div className="flex justify-between text-xs text-gray-500 border-t border-gray-100 pt-1 mt-1">
+                                            <span>{domek.iloscNocy} {domek.iloscNocy === 1 ? 'noc' : 'nocy'} × {domek.cenaZaDobe} PLN:</span>
+                                            <span>{domek.cenaCałkowita} PLN</span>
+                                          </div>
+                                        </>
+                                      ) : (
+                                        /* Fallback gdy cenaBazowa jest null (sezonowe) */
+                                        <div className="flex justify-between text-xs text-gray-500">
+                                          <span>Szczegóły cenowe dostępne po wyborze dat</span>
+                                        </div>
+                                      )}
+                                    </>
                                   )}
-                                </>
+                                </div>
                               )}
+                              {/* Info o zwierzęciu */}
+                              {domek.czyMaZwierze && (
+                                <div className="flex justify-between text-xs text-amber-700 bg-amber-50 rounded px-2 py-1 mt-1">
+                                  <span>Ze zwierzęciem</span>
                                 </div>
                               )}
                               

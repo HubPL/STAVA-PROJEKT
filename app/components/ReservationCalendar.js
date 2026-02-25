@@ -41,9 +41,9 @@ const COLORS = {
 const MultiDomekCalendar = ({ onSelectionChange }) => {
   const [currentMonth, setCurrentMonth] = useState(new Date());
   const [selectedDomki, setSelectedDomki] = useState({
-    'D1': { startDate: null, endDate: null, liczbOsob: 4 },
-    'D2': { startDate: null, endDate: null, liczbOsob: 4 },
-    'D3': { startDate: null, endDate: null, liczbOsob: 4 }
+    'D1': { startDate: null, endDate: null, liczbOsob: 4, czyMaZwierze: false },
+    'D2': { startDate: null, endDate: null, liczbOsob: 4, czyMaZwierze: false },
+    'D3': { startDate: null, endDate: null, liczbOsob: 4, czyMaZwierze: false }
   });
   const [hoveredDate, setHoveredDate] = useState({ domekId: null, date: null });
   const [availability, setAvailability] = useState({});
@@ -148,17 +148,18 @@ const MultiDomekCalendar = ({ onSelectionChange }) => {
   }, [isDayAvailable]);
 
   // Obliczanie ceny dla domku
-  const obliczCeneDomku = useCallback((startDate, endDate, liczbOsob, config) => {
+  const obliczCeneDomku = useCallback((startDate, endDate, liczbOsob, config, czyMaZwierze = false) => {
     if (!startDate || !endDate || !config) return null;
-    
+
     const nights = differenceInDays(endDate, startDate);
-    const obliczenia = kalkulujCeneZOsobami(config, liczbOsob, nights, startDate, endDate);
-    
+    const obliczenia = kalkulujCeneZOsobami(config, liczbOsob, nights, startDate, endDate, czyMaZwierze);
+
     return {
       domekId: null, // będzie ustawione przez wywołującego
       startDate,
       endDate,
       liczbOsob,
+      czyMaZwierze,
       iloscNocy: nights,
       ...obliczenia
     };
@@ -246,10 +247,10 @@ const MultiDomekCalendar = ({ onSelectionChange }) => {
   const clearSelection = useCallback((domekId) => {
     setSelectedDomki(prev => ({
       ...prev,
-      [domekId]: { 
+      [domekId]: {
         ...prev[domekId],
-        startDate: null, 
-        endDate: null 
+        startDate: null,
+        endDate: null
       }
     }));
     setError(null);
@@ -259,9 +260,20 @@ const MultiDomekCalendar = ({ onSelectionChange }) => {
   const handleLiczbOsobChange = useCallback((domekId, liczbOsob) => {
     setSelectedDomki(prev => ({
       ...prev,
-      [domekId]: { 
+      [domekId]: {
         ...prev[domekId],
-        liczbOsob 
+        liczbOsob
+      }
+    }));
+  }, []);
+
+  // Obsługa zmiany checkbox zwierzęcia
+  const handleZwierzeChange = useCallback((domekId, czyMaZwierze) => {
+    setSelectedDomki(prev => ({
+      ...prev,
+      [domekId]: {
+        ...prev[domekId],
+        czyMaZwierze
       }
     }));
   }, []);
@@ -272,10 +284,11 @@ const MultiDomekCalendar = ({ onSelectionChange }) => {
       .filter(([_, selection]) => selection.startDate && selection.endDate)
       .map(([domekId, selection]) => {
         const calculation = obliczCeneDomku(
-          selection.startDate, 
-          selection.endDate, 
-          selection.liczbOsob, 
-          config
+          selection.startDate,
+          selection.endDate,
+          selection.liczbOsob,
+          config,
+          selection.czyMaZwierze
         );
         return calculation ? { ...calculation, domekId } : null;
       })
@@ -400,18 +413,34 @@ const MultiDomekCalendar = ({ onSelectionChange }) => {
             </h3>
           </div>
           
-          {/* Liczba osób */}
-          <div className="flex items-center gap-2">
-            <label className="text-sm text-gray-600">Osoby:</label>
-            <select
-              value={selection.liczbOsob}
-              onChange={(e) => handleLiczbOsobChange(domekId, parseInt(e.target.value))}
-              className="text-sm border border-gray-300 rounded px-2 py-1 bg-white"
-            >
-              {[1, 2, 3, 4, 5, 6].map(num => (
-                <option key={num} value={num}>{num}</option>
-              ))}
-            </select>
+          {/* Liczba osób i zwierzę */}
+          <div className="flex items-center gap-3 flex-wrap">
+            <div className="flex items-center gap-1">
+              <label className="text-sm text-gray-600">Osoby:</label>
+              <select
+                value={selection.liczbOsob}
+                onChange={(e) => handleLiczbOsobChange(domekId, parseInt(e.target.value))}
+                className="text-sm border border-gray-300 rounded px-2 py-1 bg-white"
+              >
+                {[1, 2, 3, 4, 5, 6].map(num => (
+                  <option key={num} value={num}>{num}</option>
+                ))}
+              </select>
+            </div>
+            {(config?.ceny?.cena_za_zwierze || 0) > 0 && (
+              <div className="flex items-center gap-1">
+                <input
+                  type="checkbox"
+                  id={`zwierze-${domekId}`}
+                  checked={selection.czyMaZwierze}
+                  onChange={(e) => handleZwierzeChange(domekId, e.target.checked)}
+                  className="h-4 w-4 text-[#3c3333] border-gray-300 rounded cursor-pointer"
+                />
+                <label htmlFor={`zwierze-${domekId}`} className="text-sm text-gray-600 cursor-pointer">
+                  Zwierzę
+                </label>
+              </div>
+            )}
           </div>
         </div>
 
@@ -587,8 +616,18 @@ const MultiDomekCalendar = ({ onSelectionChange }) => {
             * Dzisiejsza data oznaczona kropką
           </p>
           <p className="italic">
-            * Cena za domek obejmuje 4 osoby. Dodatkowe osoby: {config?.ceny?.cena_za_dodatkowa_osoba || 'koszt ustalany w panelu administracyjnym'} PLN/osobę/dobę
+            * Cena za domek obejmuje {config?.bazowa_liczba_osob || 4} osób. Dodatkowe osoby: {config?.ceny?.cena_za_dodatkowa_osoba || 0} PLN/osobę/dobę
           </p>
+          {(config?.ceny?.cena_za_zwierze || 0) > 0 && (
+            <p className="italic">
+              * Opłata za zwierzę: {config.ceny.cena_za_zwierze} PLN/dobę
+            </p>
+          )}
+          {config?.ceny?.podstawowa_weekend && config.ceny.podstawowa_weekend !== config.ceny.podstawowa && (
+            <p className="italic">
+              * Ceny weekendowe (pt-sob) mogą różnić się od cen w dni powszednie
+            </p>
+          )}
         </div>
       </div>
     </div>

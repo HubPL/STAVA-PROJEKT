@@ -21,14 +21,23 @@ export default function CenyPanel() {
   // Stan edycji ceny za dodatkową osobę
   const [editingExtraPerson, setEditingExtraPerson] = useState(false);
   const [extraPersonPriceTemp, setExtraPersonPriceTemp] = useState('');
-  
+
+  // Stan edycji ceny za zwierzę
+  const [editingPet, setEditingPet] = useState(false);
+  const [petPriceTemp, setPetPriceTemp] = useState('');
+
+  // Stan edycji ceny weekendowej
+  const [editingWeekend, setEditingWeekend] = useState(false);
+  const [weekendPriceTemp, setWeekendPriceTemp] = useState('');
+
   // Stan formularza nowego sezonu
   const [showNewSeason, setShowNewSeason] = useState(false);
   const [newSeason, setNewSeason] = useState({
     nazwa: '',
     od: '',
     do: '',
-    cena: ''
+    cena_weekday: '',
+    cena_weekend: ''
   });
   
   // Stan edycji sezonu
@@ -91,7 +100,7 @@ export default function CenyPanel() {
       setMessage({ type: 'error', text: 'Podaj prawidłową cenę (może być 0)' });
       return;
     }
-    
+
     setSaving(true);
     try {
       await updateConfig({
@@ -112,32 +121,98 @@ export default function CenyPanel() {
       setSaving(false);
     }
   };
+
+  // Zapisywanie ceny za zwierzę
+  const savePetPrice = async () => {
+    const newPrice = parseInt(petPriceTemp);
+    if (isNaN(newPrice) || newPrice < 0) {
+      setMessage({ type: 'error', text: 'Podaj prawidłową cenę (może być 0)' });
+      return;
+    }
+
+    setSaving(true);
+    try {
+      await updateConfig({
+        ...config,
+        ceny: {
+          ...config.ceny,
+          cena_za_zwierze: newPrice
+        }
+      });
+      await loadConfig();
+      setEditingPet(false);
+      setMessage({ type: 'success', text: 'Opłata za zwierzę zaktualizowana!' });
+    } catch (error) {
+      console.error("Błąd aktualizacji opłaty za zwierzę:", error);
+      setMessage({ type: 'error', text: 'Wystąpił błąd podczas zapisu' });
+    } finally {
+      setSaving(false);
+    }
+  };
+
+  // Zapisywanie ceny weekendowej
+  const saveWeekendPrice = async () => {
+    const newPrice = parseInt(weekendPriceTemp);
+    if (isNaN(newPrice) || newPrice < 1) {
+      setMessage({ type: 'error', text: 'Podaj prawidłową cenę' });
+      return;
+    }
+
+    setSaving(true);
+    try {
+      await updateConfig({
+        ...config,
+        ceny: {
+          ...config.ceny,
+          podstawowa_weekend: newPrice
+        }
+      });
+      await loadConfig();
+      setEditingWeekend(false);
+      setMessage({ type: 'success', text: 'Cena weekendowa zaktualizowana!' });
+    } catch (error) {
+      console.error("Błąd aktualizacji ceny weekendowej:", error);
+      setMessage({ type: 'error', text: 'Wystąpił błąd podczas zapisu' });
+    } finally {
+      setSaving(false);
+    }
+  };
   
   // Dodawanie nowego sezonu
   const addNewSeason = async () => {
     const newSeasonName = newSeason.nazwa;
     const newSeasonFrom = newSeason.od;
     const newSeasonTo = newSeason.do;
-    const newSeasonPrice = newSeason.cena;
+    const weekdayPrice = newSeason.cena_weekday;
+    const weekendPrice = newSeason.cena_weekend;
 
     if (!newSeasonName || !newSeasonFrom || !newSeasonTo) {
       setMessage({ type: 'error', text: 'Wypełnij wszystkie pola' });
       return;
     }
 
-    if (!newSeasonPrice || isNaN(parseFloat(newSeasonPrice)) || parseFloat(newSeasonPrice) <= 0) {
-      setMessage({ type: 'error', text: 'Podaj prawidłową cenę' });
+    if (!weekdayPrice || isNaN(parseFloat(weekdayPrice)) || parseFloat(weekdayPrice) <= 0) {
+      setMessage({ type: 'error', text: 'Podaj prawidłową cenę za dzień powszedni' });
       return;
     }
-    
+
+    if (!weekendPrice || isNaN(parseFloat(weekendPrice)) || parseFloat(weekendPrice) <= 0) {
+      setMessage({ type: 'error', text: 'Podaj prawidłową cenę za weekend' });
+      return;
+    }
+
     setSaving(true);
     try {
       const newSeasonWithId = {
-        ...newSeason,
+        nazwa: newSeason.nazwa,
+        od: newSeason.od,
+        do: newSeason.do,
         id: `season_${Date.now()}`,
-        cena: parseFloat(newSeasonPrice)
+        cena_weekday: parseFloat(weekdayPrice),
+        cena_weekend: parseFloat(weekendPrice),
+        cena: parseFloat(weekdayPrice) // kompatybilność wsteczna
       };
-      
+
       await updateConfig({
         ...config,
         ceny: {
@@ -145,10 +220,10 @@ export default function CenyPanel() {
           sezonowe: [...(config.ceny?.sezonowe || []), newSeasonWithId]
         }
       });
-      
+
       await loadConfig();
       setShowNewSeason(false);
-      setNewSeason({ nazwa: '', od: '', do: '', cena: '' });
+      setNewSeason({ nazwa: '', od: '', do: '', cena_weekday: '', cena_weekend: '' });
       setMessage({ type: 'success', text: 'Sezon dodany!' });
     } catch (error) {
       console.error("Błąd dodawania sezonu:", error);
@@ -190,21 +265,22 @@ export default function CenyPanel() {
   
   // Aktualizacja sezonu
   const updateSeason = async () => {
-    const updatedPrice = parseInt(editingSeason.cena);
-    if (isNaN(updatedPrice) || updatedPrice < 1) {
-      setMessage({ type: 'error', text: 'Podaj prawidłową cenę' });
+    const weekdayPrice = parseInt(editingSeason.cena_weekday || editingSeason.cena);
+    const weekendPrice = parseInt(editingSeason.cena_weekend || editingSeason.cena);
+    if (isNaN(weekdayPrice) || weekdayPrice < 1 || isNaN(weekendPrice) || weekendPrice < 1) {
+      setMessage({ type: 'error', text: 'Podaj prawidłowe ceny' });
       return;
     }
-    
+
     setSaving(true);
     try {
       await updateConfig({
         ...config,
         ceny: {
           ...config.ceny,
-          sezonowe: config.ceny.sezonowe.map(s => 
-            s.id === editingSeasonId 
-              ? { ...editingSeason, cena: updatedPrice }
+          sezonowe: config.ceny.sezonowe.map(s =>
+            s.id === editingSeasonId
+              ? { ...editingSeason, cena_weekday: weekdayPrice, cena_weekend: weekendPrice, cena: weekdayPrice }
               : s
           )
         }
@@ -286,12 +362,13 @@ export default function CenyPanel() {
           </div>
         )}
 
-        {/* Cena podstawowa */}
+        {/* Cena podstawowa - dzień powszedni */}
         <div className="bg-white rounded-3xl shadow-xl p-6 mb-8 border border-[#3c3333]/20">
-          <h2 className="text-2xl font-lumios text-[#3c3333] mb-4">Cena podstawowa</h2>
+          <h2 className="text-2xl font-lumios text-[#3c3333] mb-4">Cena podstawowa (dzień powszedni)</h2>
+          <p className="text-xs text-gray-500 mb-3">Poniedziałek - Czwartek (noc z pon. na wt., z wt. na śr., ze śr. na czw., z czw. na pt.)</p>
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-sm text-[#3c3333] mb-2">Domyślna cena za dobę (PLN)</p>
+              <p className="text-sm text-[#3c3333] mb-2">Cena za dobę w dni powszednie (PLN)</p>
               {editingBase ? (
                 <div className="flex items-center gap-2">
                   <input
@@ -322,6 +399,54 @@ export default function CenyPanel() {
                     onClick={() => {
                       setEditingBase(true);
                       setBasePriceTemp(config?.ceny?.podstawowa || 380);
+                    }}
+                    className="p-2 text-blue-600 hover:bg-blue-50 rounded"
+                  >
+                    <FiEdit2 />
+                  </button>
+                </div>
+              )}
+            </div>
+          </div>
+        </div>
+
+        {/* Cena podstawowa - weekend */}
+        <div className="bg-white rounded-3xl shadow-xl p-6 mb-8 border border-[#3c3333]/20">
+          <h2 className="text-2xl font-lumios text-[#3c3333] mb-4">Cena podstawowa (weekend)</h2>
+          <p className="text-xs text-gray-500 mb-3">Piątek - Sobota (noc z pt. na sob., z sob. na ndz.)</p>
+          <div className="flex items-center justify-between">
+            <div>
+              <p className="text-sm text-[#3c3333] mb-2">Cena za dobę w weekend (PLN)</p>
+              {editingWeekend ? (
+                <div className="flex items-center gap-2">
+                  <input
+                    type="number"
+                    value={weekendPriceTemp}
+                    onChange={(e) => setWeekendPriceTemp(e.target.value)}
+                    className="px-3 py-2 border border-[#3c3333]/20 rounded-md"
+                    placeholder="Cena weekendowa"
+                  />
+                  <button
+                    onClick={saveWeekendPrice}
+                    disabled={saving}
+                    className="p-2 bg-green-600 text-white rounded hover:bg-green-700"
+                  >
+                    <FiSave />
+                  </button>
+                  <button
+                    onClick={() => setEditingWeekend(false)}
+                    className="p-2 bg-gray-400 text-white rounded hover:bg-gray-500"
+                  >
+                    <FiX />
+                  </button>
+                </div>
+              ) : (
+                <div className="flex items-center gap-3">
+                  <span className="text-3xl font-bold text-[#3c3333]">{config?.ceny?.podstawowa_weekend || config?.ceny?.podstawowa || 380} PLN</span>
+                  <button
+                    onClick={() => {
+                      setEditingWeekend(true);
+                      setWeekendPriceTemp(config?.ceny?.podstawowa_weekend || config?.ceny?.podstawowa || 380);
                     }}
                     className="p-2 text-blue-600 hover:bg-blue-50 rounded"
                   >
@@ -390,13 +515,76 @@ export default function CenyPanel() {
           
           {/* Przykład kalkulacji */}
           <div className="mt-6 p-4 bg-[#FFF9E8]/50 rounded-lg">
-            <h4 className="font-semibold text-[#3c3333] mb-2">Przykład kalkulacji:</h4>
+            <h4 className="font-semibold text-[#3c3333] mb-2">Przykład kalkulacji (dzień powszedni):</h4>
             <div className="text-sm text-[#3c3333] space-y-1">
               <p>• {config?.bazowa_liczba_osob || 4} osoby: {config?.ceny?.podstawowa || 380} PLN za dobę</p>
               <p>• 5 osób: {config?.ceny?.podstawowa || 380} + {config?.ceny?.cena_za_dodatkowa_osoba || 0} = {(config?.ceny?.podstawowa || 380) + (config?.ceny?.cena_za_dodatkowa_osoba || 0)} PLN za dobę</p>
               <p>• 6 osób: {config?.ceny?.podstawowa || 380} + 2×{config?.ceny?.cena_za_dodatkowa_osoba || 0} = {(config?.ceny?.podstawowa || 380) + 2*(config?.ceny?.cena_za_dodatkowa_osoba || 0)} PLN za dobę</p>
             </div>
           </div>
+        </div>
+
+        {/* Opłata za zwierzę */}
+        <div className="bg-white rounded-3xl shadow-xl p-6 mb-8 border border-[#3c3333]/20">
+          <h2 className="text-2xl font-lumios text-[#3c3333] mb-4">Opłata za zwierzę</h2>
+          <div className="mb-4">
+            <p className="text-sm text-[#3c3333] mb-2">
+              Dodatkowa opłata za dobę, gdy gość zabiera ze sobą zwierzę. Gość zaznacza to przy rezerwacji.
+            </p>
+          </div>
+          <div className="flex items-center justify-between">
+            <div>
+              <p className="text-sm text-[#3c3333] mb-2">Opłata za zwierzę za dobę (PLN)</p>
+              {editingPet ? (
+                <div className="flex items-center gap-2">
+                  <input
+                    type="number"
+                    value={petPriceTemp}
+                    onChange={(e) => setPetPriceTemp(e.target.value)}
+                    className="px-3 py-2 border border-[#3c3333]/20 rounded-md"
+                    placeholder="Opłata za zwierzę"
+                    min="0"
+                  />
+                  <button
+                    onClick={savePetPrice}
+                    disabled={saving}
+                    className="p-2 bg-green-600 text-white rounded hover:bg-green-700"
+                  >
+                    <FiSave />
+                  </button>
+                  <button
+                    onClick={() => setEditingPet(false)}
+                    className="p-2 bg-gray-400 text-white rounded hover:bg-gray-500"
+                  >
+                    <FiX />
+                  </button>
+                </div>
+              ) : (
+                <div className="flex items-center gap-3">
+                  <span className="text-3xl font-bold text-[#3c3333]">
+                    +{config?.ceny?.cena_za_zwierze || 0} PLN
+                  </span>
+                  <button
+                    onClick={() => {
+                      setEditingPet(true);
+                      setPetPriceTemp(config?.ceny?.cena_za_zwierze || 0);
+                    }}
+                    className="p-2 text-blue-600 hover:bg-blue-50 rounded"
+                  >
+                    <FiEdit2 />
+                  </button>
+                </div>
+              )}
+            </div>
+          </div>
+          {(config?.ceny?.cena_za_zwierze || 0) > 0 && (
+            <div className="mt-6 p-4 bg-[#FFF9E8]/50 rounded-lg">
+              <h4 className="font-semibold text-[#3c3333] mb-2">Przykład:</h4>
+              <div className="text-sm text-[#3c3333] space-y-1">
+                <p>• 3 noce ze zwierzęciem: 3 × {config?.ceny?.cena_za_zwierze} = +{3 * (config?.ceny?.cena_za_zwierze || 0)} PLN do ceny pobytu</p>
+              </div>
+            </div>
+          )}
         </div>
 
         {/* Ceny sezonowe */}
@@ -415,7 +603,7 @@ export default function CenyPanel() {
           {showNewSeason && (
             <div className="bg-[#FFF9E8]/50 p-4 rounded-lg mb-6">
               <h3 className="font-semibold mb-3">Nowy sezon</h3>
-              <div className="grid grid-cols-1 md:grid-cols-5 gap-3">
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-3 mb-3">
                 <input
                   type="text"
                   placeholder="Nazwa sezonu"
@@ -435,14 +623,23 @@ export default function CenyPanel() {
                   onChange={(e) => setNewSeason({...newSeason, do: e.target.value})}
                   className="px-3 py-2 border border-[#3c3333]/20 rounded-md"
                 />
+              </div>
+              <div className="grid grid-cols-1 md:grid-cols-4 gap-3">
                 <input
                   type="number"
-                  placeholder="Cena PLN"
-                  value={newSeason.cena}
-                  onChange={(e) => setNewSeason({...newSeason, cena: e.target.value})}
+                  placeholder="Cena dzień powszedni (PLN)"
+                  value={newSeason.cena_weekday}
+                  onChange={(e) => setNewSeason({...newSeason, cena_weekday: e.target.value})}
                   className="px-3 py-2 border border-[#3c3333]/20 rounded-md"
                 />
-                <div className="flex gap-2">
+                <input
+                  type="number"
+                  placeholder="Cena weekend (PLN)"
+                  value={newSeason.cena_weekend}
+                  onChange={(e) => setNewSeason({...newSeason, cena_weekend: e.target.value})}
+                  className="px-3 py-2 border border-[#3c3333]/20 rounded-md"
+                />
+                <div className="flex gap-2 md:col-span-2">
                   <button
                     onClick={addNewSeason}
                     disabled={saving}
@@ -453,7 +650,7 @@ export default function CenyPanel() {
                   <button
                     onClick={() => {
                       setShowNewSeason(false);
-                      setNewSeason({ nazwa: '', od: '', do: '', cena: '' });
+                      setNewSeason({ nazwa: '', od: '', do: '', cena_weekday: '', cena_weekend: '' });
                     }}
                     className="px-4 py-2 bg-gray-400 text-white rounded hover:bg-gray-500"
                   >
@@ -470,11 +667,12 @@ export default function CenyPanel() {
               <table className="min-w-full divide-y divide-[#3c3333]/20">
                 <thead className="bg-[#FFF9E8]/50">
                   <tr>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-[#3c3333] uppercase tracking-wider">Nazwa</th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-[#3c3333] uppercase tracking-wider">Od</th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-[#3c3333] uppercase tracking-wider">Do</th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-[#3c3333] uppercase tracking-wider">Cena</th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-[#3c3333] uppercase tracking-wider">Akcje</th>
+                    <th className="px-4 py-3 text-left text-xs font-medium text-[#3c3333] uppercase tracking-wider">Nazwa</th>
+                    <th className="px-4 py-3 text-left text-xs font-medium text-[#3c3333] uppercase tracking-wider">Od</th>
+                    <th className="px-4 py-3 text-left text-xs font-medium text-[#3c3333] uppercase tracking-wider">Do</th>
+                    <th className="px-4 py-3 text-left text-xs font-medium text-[#3c3333] uppercase tracking-wider">Dzień powszedni</th>
+                    <th className="px-4 py-3 text-left text-xs font-medium text-[#3c3333] uppercase tracking-wider">Weekend</th>
+                    <th className="px-4 py-3 text-left text-xs font-medium text-[#3c3333] uppercase tracking-wider">Akcje</th>
                   </tr>
                 </thead>
                 <tbody className="bg-white divide-y divide-[#3c3333]/20">
@@ -482,15 +680,15 @@ export default function CenyPanel() {
                     <tr key={sezon.id}>
                       {editingSeasonId === sezon.id ? (
                         <>
-                          <td className="px-6 py-4">
+                          <td className="px-4 py-4">
                             <input
                               type="text"
                               value={editingSeason.nazwa}
                               onChange={(e) => setEditingSeason({...editingSeason, nazwa: e.target.value})}
-                              className="px-2 py-1 border border-[#3c3333]/20 rounded"
+                              className="px-2 py-1 border border-[#3c3333]/20 rounded w-full"
                             />
                           </td>
-                          <td className="px-6 py-4">
+                          <td className="px-4 py-4">
                             <input
                               type="date"
                               value={editingSeason.od}
@@ -498,7 +696,7 @@ export default function CenyPanel() {
                               className="px-2 py-1 border border-[#3c3333]/20 rounded"
                             />
                           </td>
-                          <td className="px-6 py-4">
+                          <td className="px-4 py-4">
                             <input
                               type="date"
                               value={editingSeason.do}
@@ -506,15 +704,25 @@ export default function CenyPanel() {
                               className="px-2 py-1 border border-[#3c3333]/20 rounded"
                             />
                           </td>
-                          <td className="px-6 py-4">
+                          <td className="px-4 py-4">
                             <input
                               type="number"
-                              value={editingSeason.cena}
-                              onChange={(e) => setEditingSeason({...editingSeason, cena: e.target.value})}
+                              value={editingSeason.cena_weekday || editingSeason.cena || ''}
+                              onChange={(e) => setEditingSeason({...editingSeason, cena_weekday: e.target.value})}
                               className="px-2 py-1 border border-[#3c3333]/20 rounded w-24"
+                              placeholder="Pn-Czw"
                             />
                           </td>
-                          <td className="px-6 py-4 flex gap-2">
+                          <td className="px-4 py-4">
+                            <input
+                              type="number"
+                              value={editingSeason.cena_weekend || editingSeason.cena || ''}
+                              onChange={(e) => setEditingSeason({...editingSeason, cena_weekend: e.target.value})}
+                              className="px-2 py-1 border border-[#3c3333]/20 rounded w-24"
+                              placeholder="Pt-Sob"
+                            />
+                          </td>
+                          <td className="px-4 py-4 flex gap-2">
                             <button
                               onClick={updateSeason}
                               disabled={saving}
@@ -532,11 +740,12 @@ export default function CenyPanel() {
                         </>
                       ) : (
                         <>
-                          <td className="px-6 py-4 font-medium">{sezon.nazwa}</td>
-                          <td className="px-6 py-4">{sezon.od}</td>
-                          <td className="px-6 py-4">{sezon.do}</td>
-                          <td className="px-6 py-4 font-semibold">{sezon.cena} PLN</td>
-                          <td className="px-6 py-4 flex gap-2">
+                          <td className="px-4 py-4 font-medium">{sezon.nazwa}</td>
+                          <td className="px-4 py-4">{sezon.od}</td>
+                          <td className="px-4 py-4">{sezon.do}</td>
+                          <td className="px-4 py-4 font-semibold">{sezon.cena_weekday || sezon.cena} PLN</td>
+                          <td className="px-4 py-4 font-semibold">{sezon.cena_weekend || sezon.cena} PLN</td>
+                          <td className="px-4 py-4 flex gap-2">
                             <button
                               onClick={() => {
                                 setEditingSeasonId(sezon.id);
