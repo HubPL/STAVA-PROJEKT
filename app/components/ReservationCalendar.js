@@ -366,7 +366,10 @@ const MultiDomekCalendar = ({ onSelectionChange }) => {
   }, [selectedDomki, hoveredDate, isDayAvailable, edgeStarts]);
 
   // Obsługa nawigacji
-  const handlePrevMonth = () => setCurrentMonth(subMonths(currentMonth, 1));
+  const isCurrentMonthOrEarlier = !isAfter(startOfMonth(currentMonth), startOfMonth(new Date()));
+  const handlePrevMonth = () => {
+    if (!isCurrentMonthOrEarlier) setCurrentMonth(subMonths(currentMonth, 1));
+  };
   const handleNextMonth = () => setCurrentMonth(addMonths(currentMonth, 1));
 
   // Obsługa nawigacji mobilnej
@@ -448,7 +451,8 @@ const MultiDomekCalendar = ({ onSelectionChange }) => {
         <div className="flex items-center justify-between mb-4">
           <button
             onClick={handlePrevMonth}
-            className="p-2 rounded-full hover:bg-gray-100 transition-colors"
+            disabled={isCurrentMonthOrEarlier}
+            className="p-2 rounded-full hover:bg-gray-100 transition-colors disabled:opacity-30 disabled:cursor-not-allowed"
             aria-label="Poprzedni miesiąc"
           >
             <FiChevronLeft className="w-4 h-4" />

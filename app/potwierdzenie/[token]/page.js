@@ -209,49 +209,41 @@ export default function PotwierdzeniePage({ params }) {
             <div className="mt-8 pt-8 border-t border-[#3c3333]/20">
               <h3 className="text-2xl font-lumios text-[#3c3333] mb-6">Szczegóły Pobytu</h3>
               
-              <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
-                <div className="bg-[#FFF9E8]/50 p-4 rounded-lg">
-                  <div className="w-8 h-8 bg-[#3c3333]/20 rounded-full flex items-center justify-center mb-2">
-                    <svg className="w-4 h-4 text-[#3c3333]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
-                    </svg>
+              {reservation.selectedDomki && reservation.selectedDomki.length > 0 ? (
+                <div className="space-y-4">
+                  {reservation.selectedDomki.map((domek, idx) => (
+                    <div key={idx} className="bg-[#FFF9E8]/50 p-4 rounded-lg border border-[#3c3333]/10">
+                      <h4 className="font-semibold text-[#3c3333] mb-3">Domek {domek.domekId?.replace('D', '')}</h4>
+                      <div className="grid grid-cols-2 md:grid-cols-4 gap-3 text-sm">
+                        <div>
+                          <span className="text-[#3c3333]/60 block">Przyjazd</span>
+                          <span className="text-[#3c3333] font-medium">{formatDate(domek.startDate)}</span>
+                        </div>
+                        <div>
+                          <span className="text-[#3c3333]/60 block">Wyjazd</span>
+                          <span className="text-[#3c3333] font-medium">{formatDate(domek.endDate)}</span>
+                        </div>
+                        <div>
+                          <span className="text-[#3c3333]/60 block">Liczba osób</span>
+                          <span className="text-[#3c3333] font-medium">{domek.liczbOsob}</span>
+                        </div>
+                        <div>
+                          <span className="text-[#3c3333]/60 block">Cena</span>
+                          <span className="text-[#3c3333] font-bold">{domek.cenaCałkowita || domek.cenaCalkowitaDomku} PLN</span>
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                  <div className="flex justify-between items-center pt-2 border-t border-[#3c3333]/20">
+                    <span className="font-semibold text-[#3c3333]">Łączna cena:</span>
+                    <span className="text-xl font-bold text-[#3c3333]">
+                      {reservation.selectedDomki.reduce((sum, d) => sum + (d.cenaCałkowita || d.cenaCalkowitaDomku || 0), 0)} PLN
+                    </span>
                   </div>
-                  <h4 className="font-semibold text-[#3c3333]">Domek</h4>
-                  <p className="text-[#3c3333]">{reservation.domekNazwa || 'Nie określono'}</p>
                 </div>
-                
-                <div className="bg-[#FFF9E8]/50 p-4 rounded-lg">
-                  <div className="w-8 h-8 bg-[#3c3333]/20 rounded-full flex items-center justify-center mb-2">
-                    <svg className="w-4 h-4 text-[#3c3333]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197m13.5-9a2.5 2.5 0 11-5 0 2.5 2.5 0 015 0z" />
-                    </svg>
-                  </div>
-                  <h4 className="font-semibold text-[#3c3333]">Liczba osób</h4>
-                  <p className="text-[#3c3333]">{reservation.liczbOsob || 'Nie określono'}</p>
-                </div>
-                
-                <div className="bg-[#FFF9E8]/50 p-4 rounded-lg">
-                  <div className="w-8 h-8 bg-[#3c3333]/20 rounded-full flex items-center justify-center mb-2">
-                    <svg className="w-4 h-4 text-[#3c3333]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
-                    </svg>
-                  </div>
-                  <h4 className="font-semibold text-[#3c3333]">Termin</h4>
-                  <p className="text-[#3c3333] text-sm">
-                    {formatDate(reservation.startDate)} - {formatDate(reservation.endDate)}
-                  </p>
-                </div>
-                
-                <div className="bg-[#FFF9E8]/50 p-4 rounded-lg">
-                  <div className="w-8 h-8 bg-[#3c3333]/20 rounded-full flex items-center justify-center mb-2">
-                    <svg className="w-4 h-4 text-[#3c3333]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1" />
-                    </svg>
-                  </div>
-                  <h4 className="font-semibold text-[#3c3333]">Cena całkowita</h4>
-                  <p className="text-[#3c3333] font-bold">{reservation.cenaCałkowita || 'Nie określono'} PLN</p>
-                </div>
-              </div>
+              ) : (
+                <p className="text-[#3c3333]/60">Brak szczegółów domków</p>
+              )}
             </div>
 
             {/* Uwagi */}
