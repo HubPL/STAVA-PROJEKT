@@ -73,7 +73,7 @@ const OptimizedImage = forwardRef(function OptimizedImage({
     setIsLoading(false);
   };
 
-  // Zabezpieczenie przed pustym src – użyj placeholdera błędu
+  // Zabezpieczenie przed pustym src - użyj placeholdera błędu
   const isValidSrc = typeof src === 'string' && src.trim().length > 0;
   const finalSrc = hasError || !isValidSrc ? errorPlaceholder : src;
 
